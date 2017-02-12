@@ -1,0 +1,58 @@
+﻿start_messages:
+  revolution: It was revolution, my sir, now you are the boss
+  legacy: You took this kingfom in legacy from father of your brother
+  self_proclaimed: You came from ${kingdom_name} and created your own kingdom with friends
+  
+commands:
+  hire:
+    list:
+      - Hire
+  train:
+    list:
+      - Train
+      - Instruct
+  build:
+    list:
+      - Build
+      - Construct
+
+jobs:
+  no_job: Who..?
+  peasant:
+    names:
+      - peasant
+      - rusticman
+    miss: You must have a peasant in your kingdom
+
+  builder:
+    names:
+      - builder
+    miss: You need a builder
+
+  smith:
+    names:
+      - smith
+      - forger
+      - farrier
+
+buildings:
+  no_building: What to build, sir?
+  forge:
+    names:
+      - forge
+      - smithy
+    miss: Build forge first
+
+resources:
+  gold: 
+    name: Gold
+    miss: We don't have so much money
+  rock: 
+    name: Rock
+    miss: We don't have so much rock
+  iron: 
+    name: Iron
+    miss: We don't have so much iron
+
+answers:
+  yes: "Yes, Sir"
