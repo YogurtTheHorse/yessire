@@ -1,0 +1,29 @@
+{
+  "version": "1.0.0-*",
+  "buildOptions": {
+    "emitEntryPoint": true
+  },
+
+  "dependencies": {
+    "Microsoft.AspNetCore.Hosting": "1.0.0",
+    "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0",
+    "Microsoft.AspNetCore.Server.Kestrel": "1.0.1",
+    "Microsoft.NETCore.App": {
+      "type": "platform",
+      "version": "1.0.1"
+    },
+    "Microsoft.AspNetCore.Owin": "1.0.0",
+    "MongoDB.Driver": "2.4.2",
+    "Nancy": "2.0.0-clinteastwood",
+    "Newtonsoft.Json": "9.0.1",
+    "YamlDotNet": "4.1.1-pre325",
+    "YesSir.Shared": "1.0.0-*",
+    "System.Text.Encoding.CodePages": "4.0.1"
+  },
+
+  "frameworks": {
+    "netcoreapp1.0": {
+      "imports": "dnxcore50"
+    }
+  }
+}

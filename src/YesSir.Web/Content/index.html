@@ -1,0 +1,143 @@
+<html>
+<head>
+  <style type="text/css">
+    @font-face {
+      font-family: 'basis';
+      src: url('fonts/basis33.ttf');
+    }
+
+    body {
+      background-color: #141519;
+    }
+
+    a {
+      color: #B51927;
+    }
+
+      a:visited {
+        color: #360701;
+      }
+
+    * {
+      font-smooth: never;
+      font-family: "basis";
+      font-size: 26px;
+    }
+
+    #inner {
+      display: table;
+      width: 60%;
+      vertical-align: middle;
+      margin-left: auto;
+      margin-right: auto;
+      max-width: 750px;
+    }
+
+    #content {
+      top: 10px;
+      left: 10px;
+      border-style: solid;
+      border-width: 34px 24px 52px 48px;
+      -moz-border-image: url(imgs/scroll-x4.png) 34 24 52 48 stretch;
+      -webkit-border-image: url(imgs/scroll-x4.png) 34 24 52 48 stretch;
+      -o-border-image: url(imgs/scroll-x4.png) 34 24 52 48 stretch;
+      border-image: url(imgs/scroll-x4.png) 34 24 52 48 fill stretch;
+    }
+
+    #outer {
+      display: table;
+      height: 100%;
+      width: 100%;
+    }
+
+    #middle {
+      display: table-cell;
+      vertical-align: middle;
+    }
+
+    #printing {
+      position: relative;
+    }
+
+    #printing-img {
+      position: absolute;
+      bottom: 0;
+      right: 32px;
+    }
+
+    #button {
+      position: relative;
+      top: 40px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      display: inline-block;
+    }
+
+    #textbox {
+      display: inline-block;
+      position: relative;
+      border-style: solid;
+      border-width: 20px 20px 20px 20px;
+      -moz-border-image: url(imgs/textbox.png) 20 20 20 20 round repeat;
+      -webkit-border-image: url(imgs/textbox.png) 20 20 20 20 round repeat;
+      -o-border-image: url(imgs/textbox.png) 20 20 20 20 round repeat;
+      border-image: url(imgs/textbox.png) 20 20 20 20 fill round repeat;
+      display: inline-block;
+    }
+
+    #email {
+      border: 0;
+      background: transparent;
+    }
+  </style>
+  <script>
+    function validateEmail(email) {
+      var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      return re.test(email);
+    }
+    function httpGet(theUrl) {
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.open("GET", theUrl, true); // false for synchronous request
+      xmlHttp.send(null);
+      xmlHttp.responseText;
+    }
+    function subscribe() {
+      var em = document.getElementById('email').value;
+
+      if (validateEmail(em)) {
+        httpGet("subscribe/" + em);
+        alert('Мы тебя запомнили');
+      } else {
+        alert('Кажется, это не эмэил. Проверь-ка');
+      }
+    }
+  </script>
+  <meta charset="UTF-8">
+</head>
+<body>
+  <div id="outer" style="width:100%">
+    <div id="middle">
+      <div id="inner">
+        <div id="content">
+          <div style="color:#350501;position:relative; padding-left: 10px; padding-right: 10px; padding-bottom: 20px;">
+            Привет! Я, <a href="https://vk.com/yegorf1">@yegorf1</a>, сейчас работаю над новой текстовой игрой. Она будет выпущена в телеграме, на этом сайте и возможно где-то еще. Суть игры - в управление королевством. Нужно отдавать приказы, учитывать настроение подданных, их нравы, не забывать о ресурсах, голоде и вообще быть везде и сразу.<br />
+            (да, караваны можно будет грабить)<br /><br />
+            Если тебе хочется принять участие в Закрытом бета тесте, оставь свой email и мы тебе обязательно напишем
+          </div>
+          <div id="textbox">
+            <input id="email" />
+          </div>
+          <button type="button" id="button" onclick="subscribe();">
+            <img src="imgs/btn.png" alt="" />
+          </button>
+        </div>
+        <div id="printing">
+          <img src="imgs/printing.png" id="printing-img" />
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

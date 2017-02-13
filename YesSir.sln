@@ -3,47 +3,58 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YesSir.Backend", "YesSir.Backend\YesSir.Backend.csproj", "{492B1B2C-A2A8-4C10-94FE-C23FE751F4AD}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02DA253A-EEE7-4C82-8364-30EF31E0EDF2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YesSir.CLI", "YesSir.Console\YesSir.CLI.csproj", "{6ED4DC96-D82D-4576-BB06-40EB6FF58AEC}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0F93EBC2-9273-45B8-99CD-3E07786D42F0}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YesSir.Shared", "YesSir.Shared\YesSir.Shared.csproj", "{36BF2595-A015-4723-AA8D-95023E89715E}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "YesSir.Backend", "src\YesSir.Backend\YesSir.Backend.xproj", "{F2BEF78F-2AAB-439B-B76E-D5D96622F253}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YesSir.Telegram", "YesSir.Telegram\YesSir.Telegram.csproj", "{872DE413-3BB4-4FA3-82F6-BE3E2FE9D50D}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "YesSir.Shared", "src\YesSir.Shared\YesSir.Shared.xproj", "{258CC520-0A04-492A-AD22-B1B3B92596BC}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "YesSir.CLI", "src\YesSir.CLI\YesSir.CLI.xproj", "{EB48B8ED-1A91-42B6-8530-1C84AAD96E2C}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "YesSir.Telegram", "src\YesSir.Telegram\YesSir.Telegram.xproj", "{11AF0B8C-FE65-4A24-95B1-4F0F2457BFC0}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "YesSir.Web", "src\YesSir.Web\YesSir.Web.xproj", "{79AA22E8-22AF-4F6C-8F73-670A09595410}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Checking|Any CPU = Checking|Any CPU
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{492B1B2C-A2A8-4C10-94FE-C23FE751F4AD}.Checking|Any CPU.ActiveCfg = Debug|Any CPU
-		{492B1B2C-A2A8-4C10-94FE-C23FE751F4AD}.Checking|Any CPU.Build.0 = Debug|Any CPU
-		{492B1B2C-A2A8-4C10-94FE-C23FE751F4AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{492B1B2C-A2A8-4C10-94FE-C23FE751F4AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{492B1B2C-A2A8-4C10-94FE-C23FE751F4AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{492B1B2C-A2A8-4C10-94FE-C23FE751F4AD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6ED4DC96-D82D-4576-BB06-40EB6FF58AEC}.Checking|Any CPU.ActiveCfg = Debug|Any CPU
-		{6ED4DC96-D82D-4576-BB06-40EB6FF58AEC}.Checking|Any CPU.Build.0 = Debug|Any CPU
-		{6ED4DC96-D82D-4576-BB06-40EB6FF58AEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6ED4DC96-D82D-4576-BB06-40EB6FF58AEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6ED4DC96-D82D-4576-BB06-40EB6FF58AEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6ED4DC96-D82D-4576-BB06-40EB6FF58AEC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{36BF2595-A015-4723-AA8D-95023E89715E}.Checking|Any CPU.ActiveCfg = Debug|Any CPU
-		{36BF2595-A015-4723-AA8D-95023E89715E}.Checking|Any CPU.Build.0 = Debug|Any CPU
-		{36BF2595-A015-4723-AA8D-95023E89715E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{36BF2595-A015-4723-AA8D-95023E89715E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{36BF2595-A015-4723-AA8D-95023E89715E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{36BF2595-A015-4723-AA8D-95023E89715E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{872DE413-3BB4-4FA3-82F6-BE3E2FE9D50D}.Checking|Any CPU.ActiveCfg = Debug|Any CPU
-		{872DE413-3BB4-4FA3-82F6-BE3E2FE9D50D}.Checking|Any CPU.Build.0 = Debug|Any CPU
-		{872DE413-3BB4-4FA3-82F6-BE3E2FE9D50D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{872DE413-3BB4-4FA3-82F6-BE3E2FE9D50D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{872DE413-3BB4-4FA3-82F6-BE3E2FE9D50D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{872DE413-3BB4-4FA3-82F6-BE3E2FE9D50D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2BEF78F-2AAB-439B-B76E-D5D96622F253}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2BEF78F-2AAB-439B-B76E-D5D96622F253}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2BEF78F-2AAB-439B-B76E-D5D96622F253}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2BEF78F-2AAB-439B-B76E-D5D96622F253}.Release|Any CPU.Build.0 = Release|Any CPU
+		{258CC520-0A04-492A-AD22-B1B3B92596BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{258CC520-0A04-492A-AD22-B1B3B92596BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{258CC520-0A04-492A-AD22-B1B3B92596BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{258CC520-0A04-492A-AD22-B1B3B92596BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB48B8ED-1A91-42B6-8530-1C84AAD96E2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB48B8ED-1A91-42B6-8530-1C84AAD96E2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB48B8ED-1A91-42B6-8530-1C84AAD96E2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB48B8ED-1A91-42B6-8530-1C84AAD96E2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11AF0B8C-FE65-4A24-95B1-4F0F2457BFC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11AF0B8C-FE65-4A24-95B1-4F0F2457BFC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11AF0B8C-FE65-4A24-95B1-4F0F2457BFC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11AF0B8C-FE65-4A24-95B1-4F0F2457BFC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79AA22E8-22AF-4F6C-8F73-670A09595410}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79AA22E8-22AF-4F6C-8F73-670A09595410}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79AA22E8-22AF-4F6C-8F73-670A09595410}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79AA22E8-22AF-4F6C-8F73-670A09595410}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F2BEF78F-2AAB-439B-B76E-D5D96622F253} = {02DA253A-EEE7-4C82-8364-30EF31E0EDF2}
+		{258CC520-0A04-492A-AD22-B1B3B92596BC} = {02DA253A-EEE7-4C82-8364-30EF31E0EDF2}
+		{EB48B8ED-1A91-42B6-8530-1C84AAD96E2C} = {02DA253A-EEE7-4C82-8364-30EF31E0EDF2}
+		{11AF0B8C-FE65-4A24-95B1-4F0F2457BFC0} = {02DA253A-EEE7-4C82-8364-30EF31E0EDF2}
+		{79AA22E8-22AF-4F6C-8F73-670A09595410} = {02DA253A-EEE7-4C82-8364-30EF31E0EDF2}
 	EndGlobalSection
 EndGlobal
