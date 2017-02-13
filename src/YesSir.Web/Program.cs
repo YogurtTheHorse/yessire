@@ -38,6 +38,7 @@ namespace YesSir.Backend {
 		public SimpleModule() {
 			Get("/subscribe/{value}", args => {
 				File.AppendAllText(@"subscriptions.txt", args.value + Environment.NewLine);
+				Console.WriteLine("Subscripted: " + args.value);
 
 				return HttpStatusCode.OK;
 			});
@@ -69,7 +70,7 @@ namespace YesSir.Backend {
 						.UseKestrel()
 						.UseIISIntegration()
 						.UseStartup<Startup>()
-						.UseUrls("http://localhost:80")
+						.UseUrls("http://+:80")
 						.Build();
 
 			Console.WriteLine("Starting Nancy on http://localhost:80");
