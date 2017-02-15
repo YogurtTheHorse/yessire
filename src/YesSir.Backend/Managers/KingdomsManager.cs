@@ -16,7 +16,6 @@ namespace YesSir.Backend.Managers {
 			}
 		}
 
-
 		public static void SaveKingdom(Kingdom kingdom) {
 			var cursor = DatabaseManager.Kingdoms.Find(k => k.UserId == kingdom.UserId);
 			if (cursor.Count() == 0) {

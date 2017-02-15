@@ -1,7 +1,11 @@
 {
   "version": "1.0.0-*",
   "buildOptions": {
-    "emitEntryPoint": true
+    "emitEntryPoint": true,
+    "copyToOutput": [
+      "locals",
+      "Scripts"
+    ]
   },
 
   "dependencies": {
@@ -18,7 +22,8 @@
     "Newtonsoft.Json": "9.0.1",
     "YamlDotNet": "4.1.1-pre325",
     "YesSir.Shared": "1.0.0-*",
-    "System.Text.Encoding.CodePages": "4.0.1"
+    "System.Text.Encoding.CodePages": "4.0.1",
+    "MoonSharp": "2.0.0"
   },
 
   "frameworks": {

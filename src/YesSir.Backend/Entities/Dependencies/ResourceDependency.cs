@@ -1,9 +1,11 @@
-﻿using System;
+﻿using MoonSharp.Interpreter;
+using System;
 using YesSir.Backend.Entities.Kingdoms;
 using YesSir.Backend.Managers;
 using YesSir.Shared.Messages;
 
-namespace YesSir.Backend.Commands.Dependencies {
+namespace YesSir.Backend.Entities.Dependencies {
+	[MoonSharpUserData]
 	public class ResourceDependency : IDependency {
 		private readonly string Resorce;
 		private readonly int Count;
@@ -14,7 +16,7 @@ namespace YesSir.Backend.Commands.Dependencies {
 		}
 
 		public Tuple<bool, MessageCallback> CheckKingdom(Kingdom kingdom) {
-			if (kingdom.GetResource(Resorce) > Count) {
+			if (kingdom.GetResource(Resorce) >= Count) {
 				return new Tuple<bool, MessageCallback>(true, new MessageCallback());
 			} else {
 				MessageCallback cb = new MessageCallback() {
@@ -25,8 +27,9 @@ namespace YesSir.Backend.Commands.Dependencies {
 			}
 		}
 
-		public void Use(Kingdom kingdom) {
+		public IUsable Use(Kingdom kingdom) {
 			kingdom.Resources[Resorce] -= Count;
+			return null;
 		}
 	}
 }

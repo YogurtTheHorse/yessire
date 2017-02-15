@@ -24,5 +24,9 @@ namespace YesSir.Backend.Managers {
 		public static float NextDefaultSkill() {
 			return 0.1f + (float)Instance.NextDouble() / 5f;
 		}
+
+		public static float QuanticFloat(float max=1) {
+			return (float)Math.Pow(Instance.NextDouble() * max, 10);
+		}
 	}
 }

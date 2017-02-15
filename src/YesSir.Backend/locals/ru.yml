@@ -16,7 +16,7 @@ commands:
       - Обучи
       - Натренируй
 
-  mine:
+  extract:
     list:
       - Добыть
       - Добывать
@@ -27,6 +27,15 @@ commands:
     list:
       - Построить
       - Построй
+
+  create:
+    list:
+      - Создай
+      - Создать
+      - Сделай
+      - Сделать
+      - Испеки
+      - Испечь
 
 jobs:
   no_job: Кого нанять-то?
@@ -51,6 +60,16 @@ jobs:
       - строител
     miss: Нужен строитель
 
+  baker:
+    names:
+      - пекар
+
+  woodcutter:
+    names:
+      - лесоруб
+      - дровосек
+    miss: Нужен дровосек
+
 buildings:
   no_building: Что построить-то?
   forge:
@@ -58,6 +77,33 @@ buildings:
     names:
       - кузниц
     miss: Нужно построить кузницу
+
+  farm:
+    name: Ферма
+    names:
+      - ферма
+    miss: Нужно построить ферму
+
+  field:
+    name: Поле
+    names:
+      - поле
+    miss: Нужно обустроить поле
+  bakery:
+    name: Пекарня
+    names:
+      - пекарня
+      - пекарню
+      - булочная
+      - булочную
+    miss: Нужна пекарня
+
+  mill:
+    name: Мельница
+    names:
+      - мельница
+      - мельницу
+    miss: Нужна мельница
 
 resources:
   gold: 
@@ -75,7 +121,7 @@ resources:
   iron: 
     name: Железо
     names:
-      -   железо
+      - железо
       - железную руду
     miss: "Недостаточно железа, всевышний"
   wood:
@@ -85,12 +131,34 @@ resources:
       - дерево
       - деревья
     miss: Нехватка дерева
+  corn:
+    name: Зерно
+    names:
+      - зерна
+      - зерно
+    miss: Нет зерна
+     
+  flour:
+    name: Мука
+    names:
+      - мука
+      - муку
+    miss: Нет муки
+
+  bread:
+    name: Хлеб
+    names:
+      - хлеб
+      - булочку
+      - булочка
+    miss: Нет хлеба
 
 answers:
   yes: "Да, Сир"
 
 problems:
   no_people: "Все заняты, Милорд"
+  dont_work: "{0} отказался работать."
 
 notifications:
   builded: "Здание построено: {0}"

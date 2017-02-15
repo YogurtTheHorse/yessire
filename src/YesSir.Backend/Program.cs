@@ -107,7 +107,9 @@ namespace YesSir.Backend {
 						.UseUrls("http://localhost:9797")
 						.Build();
 
+			ContentManager.Init();
 			UsersManager.Init();
+
 			Console.OutputEncoding = Encoding.UTF8;
 			Console.InputEncoding = Encoding.UTF8;
 

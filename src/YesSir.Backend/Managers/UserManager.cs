@@ -5,10 +5,11 @@ using System.Collections.Generic;
 using YesSir.Backend.Descriptions;
 using YesSir.Backend.Commands.Parts;
 using YesSir.Backend.Entities.Kingdoms;
-using YesSir.Backend.Commands.Dependencies;
+using YesSir.Backend.Entities.Dependencies;
 using YesSir.Shared.Messages;
 using YesSir.Shared.Users;
 using YesSir.Shared.Queues;
+using System.Linq;
 
 namespace YesSir.Backend.Managers {
 	public static class UsersManager {
@@ -58,14 +59,27 @@ namespace YesSir.Backend.Managers {
 					resourceTuples.Add(new Tuple<string, object>(s, r));
 				}
 			}
-			CommandPart orePart = new CommandPart("ore", resourceTuples.ToArray());
+			CommandPart extractable = new CommandPart("resource", resourceTuples.FindAll(t => {
+				return (t.Item2 as ResourceDescription).Extractable;
+			}).ToArray());
 			Commands.Add(new Command(
 				new IDependency[] { new HumanDependency() },
 				new CommandPart(
-					Locale.GetArray("commands.mine.list"),
-					new CommandPart[] { orePart, new CommandPart() }
-				), 
-				(k, dict) => k.Mine(dict)
+					Locale.GetArray("commands.extract.list"),
+					new CommandPart[] { extractable, new CommandPart() }
+				),
+				(k, dict) => k.Extract(dict)
+			));
+			CommandPart creatable = new CommandPart("resource", resourceTuples.FindAll(t => {
+				return (t.Item2 as ResourceDescription).Creatable;
+			}).ToArray());
+			Commands.Add(new Command(
+				new IDependency[] { new HumanDependency() },
+				new CommandPart(
+					Locale.GetArray("commands.create.list"),
+					new CommandPart[] { creatable, new CommandPart() }
+				),
+				(k, dict) => k.Create(dict)
 			));
 
 			List<Tuple<string, object>> buildingsTuples = new List<Tuple<string, object>>();

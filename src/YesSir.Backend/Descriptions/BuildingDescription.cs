@@ -1,5 +1,5 @@
 ﻿using System;
-using YesSir.Backend.Commands.Dependencies;
+using YesSir.Backend.Entities.Dependencies;
 using YesSir.Backend.Entities.Kingdoms;
 using YesSir.Backend.Managers;
 

@@ -1,9 +1,11 @@
-﻿using System;
+﻿using MoonSharp.Interpreter;
+using System;
 using YesSir.Backend.Entities.Kingdoms;
 using YesSir.Backend.Managers;
 using YesSir.Shared.Messages;
 
-namespace YesSir.Backend.Commands.Dependencies {
+namespace YesSir.Backend.Entities.Dependencies {
+	[MoonSharpUserData]
 	public class HumanDependency : IDependency {
 		public HumanDependency() { }
 
@@ -19,6 +21,6 @@ namespace YesSir.Backend.Commands.Dependencies {
 			}
 		}
 
-		public void Use(Kingdom kingdom) { }
+		public IUsable Use(Kingdom kingdom) { return null; }
 	}
 }

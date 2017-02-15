@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Text;
+using System.Threading;
 using YesSir.Shared;
 using YesSir.Shared.Messages;
 using YesSir.Shared.Users;
 
 namespace YesSir.CLI {
 	class Program {
-		public static void Print(MessageCallback msg) {
+		public static void Print(MessageCallback msg) {	
 			Console.Write("\r{0}> ", msg.Format());
 		}
 
 		static void Main(string[] args) {
+			Thread.Sleep(2000);
 			UserInfo ui = new UserInfo();
 			ui.Name = "Test";
 			ui.Language = "en";

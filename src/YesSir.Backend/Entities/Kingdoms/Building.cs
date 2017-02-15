@@ -1,22 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using YesSir.Backend.Managers;
 
 namespace YesSir.Backend.Entities.Kingdoms {
-	public class Building {
+	public class Building : IUsable {
+		public Guid Id { get; set; }
 		public Guid KingdomId;
-		public Guid BuildingId;
-		
+
 		public string Name;
 		public float Quality;
 
-		public bool IsBusy = false;
+		public bool IsBusy { get; set; } = false;
 
-		public string GetName(string langiage) {
-			return Locale.Get("buildings." + Name + ".name", langiage);
+		public string GetName(string language) {
+			return Locale.Get("buildings." + Name + ".name", language);
+		}
+
+		public EUsableType GetUsableType() {
+			return EUsableType.Building;
 		}
 	}
 }

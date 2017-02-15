@@ -1,25 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using YesSir.Backend.Commands.Dependencies;
+using MoonSharp.Interpreter;
+using YesSir.Backend.Entities.Dependencies;
 using YesSir.Backend.Descriptions;
 using YesSir.Backend.Entities;
+using System.Reflection;
 
 namespace YesSir.Backend.Managers {
-	public static class ContentManager {
+	[MoonSharpUserData]
+	public class ContentManager {
 		private static List<BuildingDescription> Buildings = new List<BuildingDescription>();
 		private static List<JobDescription> Jobs = new List<JobDescription>();
 		private static List<string> Skills = new List<string>();
 		private static List<ResourceDescription> StandartResources = new List<ResourceDescription>();
 
-		static ContentManager() {
-			RegisterJob("peasant", "farming", 10);
-			RegisterJob("builder", "building", 100);
-			RegisterJob("miner", "mining", 100);
-			RegisterBuilding("forge", new Dictionary<string, int>() {
-				{ "rock", 5 },
-				{ "iron", 5 }
-			});
+		public static void Init() {
+			UserData.RegisterAssembly(typeof(ContentManager).GetTypeInfo().Assembly);
+			Script sc = new Script();
+			
+			sc.Globals["building_dep"] = (Func<string, bool, BuildingDependency>)((s, b) => new BuildingDependency(s, b));
+			sc.Globals["resource_dep"] = (Func<string, int, ResourceDependency>)((s, r) => new ResourceDependency(s, r));
+
+			sc.Globals["contentmanager"] = new ContentManager();
+			sc.DoFile("Scripts/content.lua");
 
 			foreach (ETask e in Enum.GetValues(typeof(ETask))) {
 				Skills.Add(e.ToString().ToLower());
@@ -31,11 +34,19 @@ namespace YesSir.Backend.Managers {
 				"chopping"
 			});
 
-			RegisterResource("wood", 1, false);
+			//RegisterResource("corn", 1, "farming", new IDependency[] { new BuildingDependency("field", true) });
+			RegisterResource("flour", 2, "milling", null, new IDependency[] { new BuildingDependency("mill", true), new ResourceDependency("corn", 2) });
+			RegisterResource("bread", 1.5f, "bakinkg", null, new IDependency[] { new BuildingDependency("bakery", true), new ResourceDependency("flour", 2) });
 
-			RegisterResource("rock", 1, true);
-			RegisterResource("iron", 1.5f, true);
-			RegisterResource("gold", 2f, true);
+			RegisterResource("wood", 1, "chopping", new IDependency[] { });
+
+			RegisterResource("rock", 1, "mining", new IDependency[] { });
+			RegisterResource("iron", 1.5f, "mining", new IDependency[] { });
+			RegisterResource("gold", 2f, "mining", new IDependency[] { });
+		}
+
+		public static string GetJobBySkill(string skill, string language) {
+			return Jobs.Find(j => j.SkillName == skill).GetName(language);
 		}
 
 		public static ResourceDescription[] GetResources() {
@@ -54,20 +65,24 @@ namespace YesSir.Backend.Managers {
 			return Jobs.ToArray();
 		}
 
-		public static void RegisterResource(string name, float difficulty, bool isOre) {
+		public static void RegisterResource(string name, float difficulty, string skill = "mining", IDependency[] deps = null, IDependency[] cdeps = null) {
 			StandartResources.Add(new ResourceDescription() {
 				Name = name,
 				Difficulty = difficulty,
-				IsOre = isOre
+				Skill = skill,
+				Extractable = deps != null,
+				ExtractionDependencies = deps ?? new IDependency[] { },
+				Creatable = cdeps != null,
+				CreationDependencies = cdeps ?? new IDependency[] { }
 			});
 		}
 
-		public static void RegisterJob(string name, string skillname, int money, string builing = "", IDependency[] addition = null) {
+		public static void RegisterJob(string name, string skillname, int money, string building = "", IDependency[] addition = null) {
 			List<IDependency> deps = new List<IDependency>();
 			//deps.Add(new HumanDependency("peasant"));
 
-			if (builing != "") {
-				deps.Add(new BuildingDependency(builing));
+			if (building != "") {
+				deps.Add(new BuildingDependency(building, true));
 			}
 
 			if (addition != null) {
