@@ -11,10 +11,12 @@ namespace YesSir.Backend.Descriptions {
 		public string Name;
 		public float Difficulty;
 		public string Skill;
-		public bool Extractable = false, 
-					Creatable = false;
+		public bool Extractable = false,
+					Creatable = false,
+					IsFood = false;
 
 		public IDependency[] ExtractionDependencies, CreationDependencies;
+
 
 		public string[] GetAcceptableNames(string language = "full") {
 			return Locale.GetArray("resources." + Name + ".names", language);

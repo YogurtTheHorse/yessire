@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.IdGenerators;
 using MongoDB.Driver;
-
+using YesSir.Backend.Entities.Items;
 using YesSir.Backend.Entities.Kingdoms;
 using YesSir.Shared.Messages;
 using YesSir.Shared.Queues;
@@ -42,6 +42,11 @@ namespace YesSir.Backend.Managers {
 				cm.SetIgnoreExtraElements(true);
 			});
 			BsonClassMap.RegisterClassMap<Building>(cm => {
+				cm.AutoMap();
+				cm.MapMember(c => c.Id).SetElementName("_id").SetIdGenerator(CombGuidGenerator.Instance);
+				cm.SetIgnoreExtraElements(true);
+			});
+			BsonClassMap.RegisterClassMap<Item>(cm => {
 				cm.AutoMap();
 				cm.MapMember(c => c.Id).SetElementName("_id").SetIdGenerator(CombGuidGenerator.Instance);
 				cm.SetIgnoreExtraElements(true);

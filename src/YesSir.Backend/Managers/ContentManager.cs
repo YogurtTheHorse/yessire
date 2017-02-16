@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
+
 using MoonSharp.Interpreter;
+
 using YesSir.Backend.Entities.Dependencies;
 using YesSir.Backend.Descriptions;
 using YesSir.Backend.Entities;
-using System.Reflection;
 
 namespace YesSir.Backend.Managers {
 	[MoonSharpUserData]
@@ -15,14 +17,7 @@ namespace YesSir.Backend.Managers {
 		private static List<ResourceDescription> StandartResources = new List<ResourceDescription>();
 
 		public static void Init() {
-			UserData.RegisterAssembly(typeof(ContentManager).GetTypeInfo().Assembly);
-			Script sc = new Script();
-			
-			sc.Globals["building_dep"] = (Func<string, bool, BuildingDependency>)((s, b) => new BuildingDependency(s, b));
-			sc.Globals["resource_dep"] = (Func<string, int, ResourceDependency>)((s, r) => new ResourceDependency(s, r));
-
-			sc.Globals["contentmanager"] = new ContentManager();
-			sc.DoFile("Scripts/content.lua");
+			ScriptManager.DoFile("Scripts/content.lua");
 
 			foreach (ETask e in Enum.GetValues(typeof(ETask))) {
 				Skills.Add(e.ToString().ToLower());
@@ -33,16 +28,6 @@ namespace YesSir.Backend.Managers {
 				"mining",
 				"chopping"
 			});
-
-			//RegisterResource("corn", 1, "farming", new IDependency[] { new BuildingDependency("field", true) });
-			RegisterResource("flour", 2, "milling", null, new IDependency[] { new BuildingDependency("mill", true), new ResourceDependency("corn", 2) });
-			RegisterResource("bread", 1.5f, "bakinkg", null, new IDependency[] { new BuildingDependency("bakery", true), new ResourceDependency("flour", 2) });
-
-			RegisterResource("wood", 1, "chopping", new IDependency[] { });
-
-			RegisterResource("rock", 1, "mining", new IDependency[] { });
-			RegisterResource("iron", 1.5f, "mining", new IDependency[] { });
-			RegisterResource("gold", 2f, "mining", new IDependency[] { });
 		}
 
 		public static string GetJobBySkill(string skill, string language) {
@@ -75,6 +60,18 @@ namespace YesSir.Backend.Managers {
 				Creatable = cdeps != null,
 				CreationDependencies = cdeps ?? new IDependency[] { }
 			});
+		}
+
+		public static void RegisterFood(string name, float difficulty, string skill = "mining", IDependency[] deps = null, IDependency[] cdeps = null) {
+			RegisterResource(name, difficulty, skill, deps, cdeps);
+			StandartResources.Last().IsFood = true;
+		}
+
+		public static string[] GetFood() {
+			return StandartResources
+				.FindAll(r => r.IsFood)
+				.Select(r => r.Name)
+				.ToArray();
 		}
 
 		public static void RegisterJob(string name, string skillname, int money, string building = "", IDependency[] addition = null) {

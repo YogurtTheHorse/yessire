@@ -16,7 +16,7 @@ namespace YesSir.Backend.Entities.Dependencies {
 		}
 
 		public Tuple<bool, MessageCallback> CheckKingdom(Kingdom kingdom) {
-			if (kingdom.GetResource(Resorce) >= Count) {
+			if (kingdom.GetResourcesCount(Resorce) >= Count) {
 				return new Tuple<bool, MessageCallback>(true, new MessageCallback());
 			} else {
 				MessageCallback cb = new MessageCallback() {
@@ -28,7 +28,7 @@ namespace YesSir.Backend.Entities.Dependencies {
 		}
 
 		public IUsable Use(Kingdom kingdom) {
-			kingdom.Resources[Resorce] -= Count;
+			kingdom.Resources[Resorce].RemoveRange(0, Count);
 			return null;
 		}
 	}

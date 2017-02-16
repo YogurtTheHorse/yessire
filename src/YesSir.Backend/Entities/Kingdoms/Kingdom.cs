@@ -9,6 +9,7 @@ using YesSir.Backend.Helpers;
 using YesSir.Backend.Managers;
 using YesSir.Shared.Messages;
 using YesSir.Shared.Users;
+using YesSir.Backend.Entities.Items;
 
 namespace YesSir.Backend.Entities.Kingdoms {
 	public class Kingdom {
@@ -16,16 +17,18 @@ namespace YesSir.Backend.Entities.Kingdoms {
 		public string Language;
 		public List<Human> Humans;
 		public List<Building> Buildings;
-		public Dictionary<string, int> Resources;
+		public Dictionary<string, List<Item>> Resources;
 
 		public Kingdom() {
 			Humans = new List<Human>();
 			Buildings = new List<Building>();
-			Resources = new Dictionary<string, int>() {
-				{ "money", 1000 }//,
-				//{ "rock", 25 },
-				//{ "wood", 25 }
-			};
+			Resources = new Dictionary<string, List<Item>>();
+
+
+
+			Resources.Add("money", Item.GenerateItems(1000, "money", 0.5f));
+			Resources.Add("rock", Item.GenerateItems(50, "rock", 0.5f));
+			//Resources.Add("rock", Item.GenerateItems(50, "rock", 0.5f));
 		}
 
 		public Kingdom(UserInfo userinfo) : this() {
@@ -33,15 +36,17 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			this.Language = userinfo.Language;
 		}
 
-		public int GetResource(string resorce) {
-			int res = 0;
-			Resources.TryGetValue(resorce, out res);
-			return res;
+		public int GetResourcesCount(string resorce) {
+			if (Resources.ContainsKey(resorce)) {
+				return Resources[resorce].Count;
+			} else {
+				return 0;
+			}
 		}
 
 		public bool TakeResource(string resource, int count) {
-			if (GetResource(resource) >= count) {
-				Resources[resource] -= count;
+			if (GetResourcesCount(resource) >= count) {
+				Resources[resource].RemoveRange(0, count);
 				return true;
 			} else {
 				return false;
@@ -67,6 +72,8 @@ namespace YesSir.Backend.Entities.Kingdoms {
 		}
 
 		private MessageCallback[] UpdateLife(Human h, float delta) {
+			while (h.Satiety < 0.5f && h.Eat(this)) ;
+
 			if (h.DepressionLevel >= GetDayTime() * 14) {
 				h.IsInDepression = true;
 				// Depression
@@ -92,6 +99,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			HumanTask t = h.TasksToDo.FirstOrDefault();
 			while (t != null) {
 				t.TimeLeft -= delta;
+
 				h.Worked(delta, t.Difficulty);
 				if (t.TimeLeft <= 0) {
 					if (t.Skill != null) {
@@ -125,7 +133,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 
 						case ETask.Extraction:
 						case ETask.Creation:
-							AddResource(t.Destination, 1);
+							AddResource(t.Destination, 1, h.GetSkill(t.Skill));
 							break;
 					}
 					t = h.TasksToDo.FirstOrDefault();
@@ -133,6 +141,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 					break;
 				}
 			}
+
 			return res.ToArray();
 		}
 
@@ -171,8 +180,12 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			}
 		}
 
-		private void AddResource(string r, int cnt) {
-			Resources[r] = cnt + Resources.Get(r);
+		private void AddResource(string r, int cnt, float quality=0.5f) {
+			if (Resources.ContainsKey(r)) {
+				Resources[r].AddRange(Item.GenerateItems(cnt, r, quality));
+			} else {
+				Resources[r] = Item.GenerateItems(cnt, r, quality);
+			}
 		}
 
 		public MessageCallback Extract(Dictionary<string, object> dict) {
@@ -275,7 +288,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 		}
 
 		private void CreateHumanWithSkills(Tuple<string, float>[] tuples) {
-			Human h = new Human("John", RandomManager.Select<ESex>(), 32);
+			Human h = new Human(GenerateName(this.Language), RandomManager.Select<ESex>(), 32);
 			h.HumanId = (Guid)CombGuidGenerator.Instance.GenerateId(this, h);
 			foreach (string skill in ContentManager.GetSkills()) {
 				h.SetSkill(skill, RandomManager.NextDefaultSkill());
@@ -284,6 +297,10 @@ namespace YesSir.Backend.Entities.Kingdoms {
 				h.SetSkill(t.Item1, t.Item2);
 			}
 			Humans.Add(h);
+		}
+
+		private string GenerateName(string lang) {
+			return Locale.GetArray(lang + ".firstnames", "names").RandomChoice() + " " + Locale.GetArray(lang + ".lastnames", "names").RandomChoice();
 		}
 
 		public MessageCallback Build(Dictionary<string, object> dict) {

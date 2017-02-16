@@ -5,6 +5,7 @@ using YamlDotNet.Serialization;
 using YesSir.Backend.Helpers;
 
 namespace YesSir.Backend.Managers {
+	[MoonSharp.Interpreter.MoonSharpUserData]
 	public static class Locale {
 		private static Dictionary<string, Dictionary<string, object>> LocalsCache = new Dictionary<string, Dictionary<string, object>>();
 		public static string LocalsFolderPath = "locals";

@@ -57,16 +57,47 @@ namespace YesSir.Backend.Entities.Kingdoms {
 		}
 
 		public void Worked(float delta, float difficulty) {
-			Satiety -= delta * difficulty / 100f;
+			Satiety -= delta * difficulty / 10f;
 		}
 
 		public string GetName(string language) {
 			return GetJobName(language) + " " + Name;
 		}
 
+		public string GetStatus(string language) {
+			if (TasksToDo.Count == 0) {
+				return Locale.Get("status.idle", language);
+			} else {
+				switch (TasksToDo[0].TaskType) {
+					case ETask.Building:
+						return string.Format(Locale.Get("status.building", language), Locale.Get("buildings." + TasksToDo[0].Destination + ".name", language));
+
+					case ETask.Creation:
+					case ETask.Extraction:
+						var tsk = TasksToDo[0].TaskType.ToString().ToLower();
+						return string.Format(Locale.Get("status." + tsk, language), Locale.Get("resources." + TasksToDo[0].Destination + ".name", language));
+
+					default:
+						return "-";
+				}
+			}
+		}
+
 		private string GetJobName(string language) {
 			string bestat = Skills.Aggregate((first, second) => first.Value > second.Value ? first : second).Key;
 			return ContentManager.GetJobBySkill(bestat, language);
+		}
+
+		public bool Eat(Kingdom kingdom) {
+			foreach (string food in ContentManager.GetFood()) {
+				if (kingdom.GetResourcesCount(food) > 0) {
+					kingdom.TakeResource(food, 1);
+
+					return true;
+				}
+			}
+
+			return false;
 		}
 	}
 

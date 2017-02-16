@@ -12,10 +12,11 @@ using YesSir.Shared.Queues;
 using System.Linq;
 
 namespace YesSir.Backend.Managers {
+	[MoonSharp.Interpreter.MoonSharpUserData]
 	public static class UsersManager {
 		private static List<Command> Commands;
 
-		public static void Init() {
+		static UsersManager() {
 			Commands = new List<Command>();
 
 			List<Tuple<string, object>> jobTuples = new List<Tuple<string, object>>();
@@ -111,15 +112,13 @@ namespace YesSir.Backend.Managers {
 
 #if DEBUG
 		private static void LoadDebugCommands() {
-			Commands.Add(new Command(new IDependency[] { }, new CommandPart(new string[] { "res" }), (k, d) => {
-				string msg = "";
-				foreach (KeyValuePair<string, int> r in k.Resources) {
-					msg += string.Format("{0}: {1}\n", r.Key, r.Value);
-				}
-				return new MessageCallback(msg, ECharacter.Admin);
-			}));
 			Commands.Add(new Command(new IDependency[] { }, new CommandPart(new string[] { "deb" }), (k, d) => {
 				string msg = ObjectDumper.Dump(k);
+				return new MessageCallback(msg, ECharacter.Admin);
+			}));
+
+			Commands.Add(new Command(new IDependency[] { }, new CommandPart(new string[] { "tas" }), (k, d) => {
+				string msg = string.Join("\n", k.Humans.Select(h => h.GetName(k.Language) + ": " + h.GetStatus(k.Language)));
 				return new MessageCallback(msg, ECharacter.Admin);
 			}));
 		}
