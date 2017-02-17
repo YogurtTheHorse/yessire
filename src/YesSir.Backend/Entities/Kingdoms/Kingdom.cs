@@ -23,12 +23,6 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			Humans = new List<Human>();
 			Buildings = new List<Building>();
 			Resources = new Dictionary<string, List<Item>>();
-
-
-
-			Resources.Add("money", Item.GenerateItems(1000, "money", 0.5f));
-			Resources.Add("rock", Item.GenerateItems(50, "rock", 0.5f));
-			//Resources.Add("rock", Item.GenerateItems(50, "rock", 0.5f));
 		}
 
 		public Kingdom(UserInfo userinfo) : this() {
@@ -54,7 +48,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 		}
 
 		public float GetDayTime() {
-			return 1f;
+			return 15f;
 		}
 
 		public MessageCallback[] Update(float delta) {
@@ -180,7 +174,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			}
 		}
 
-		private void AddResource(string r, int cnt, float quality=0.5f) {
+		public void AddResource(string r, int cnt, float quality = 0.5f) {
 			if (Resources.ContainsKey(r)) {
 				Resources[r].AddRange(Item.GenerateItems(cnt, r, quality));
 			} else {

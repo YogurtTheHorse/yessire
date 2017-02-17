@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using YesSir.Backend.Managers;
 
 namespace YesSir.Backend.Entities.Items {
+	[MoonSharp.Interpreter.MoonSharpUserData]
 	public class Item {
 		public Guid Id;
 		public string Name;
