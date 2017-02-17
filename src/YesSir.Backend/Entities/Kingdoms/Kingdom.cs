@@ -18,6 +18,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 		public List<Human> Humans;
 		public List<Building> Buildings;
 		public Dictionary<string, List<Item>> Resources;
+		public bool Starving = false;
 
 		public Kingdom() {
 			Humans = new List<Human>();
@@ -53,24 +54,44 @@ namespace YesSir.Backend.Entities.Kingdoms {
 
 		public MessageCallback[] Update(float delta) {
 			List<MessageCallback> res = new List<MessageCallback>();
+			List<Human> died = new List<Human>();
 			foreach (Human h in Humans) {
 				if (h.TasksToDo.Count > 0) {
-					MessageCallback[] msg = WorkTasks(h, delta);
-					res.AddRange(msg);
-					msg = UpdateLife(h, delta);
-					res.AddRange(msg);
+					res.AddRange(WorkTasks(h, delta));
 				}
+				res.AddRange(UpdateLife(h, delta));
+
+				if (h.Died) {
+					died.Add(h);
+				}
+			}
+
+			foreach (Human h in died) {
+				Humans.Remove(h);
 			}
 
 			return res.ToArray();
 		}
 
 		private MessageCallback[] UpdateLife(Human h, float delta) {
-			while (h.Satiety < 0.5f && h.Eat(this)) ;
+			List<MessageCallback> res = new List<MessageCallback>();
+			if (h.Satiety < 0.5f) {
+				while (h.Satiety < 0.9f && h.Eat(this)) ;
+				if (h.Satiety < 0.9f && !Starving) {
+					Starving = true;
+
+					res.Add(new MessageCallback(Locale.Get("problems.starving", Language), ECharacter.Knight));
+				}
+				if (h.Satiety <= 0) {
+					h.Died = true;
+
+					res.Add(new MessageCallback(string.Format(Locale.Get("problems.died", Language), h.Name), ECharacter.Knight));
+					return res.ToArray();
+				}
+			}
 
 			if (h.DepressionLevel >= GetDayTime() * 14) {
 				h.IsInDepression = true;
-				// Depression
 			} else {
 				h.IsInDepression = false;
 
@@ -85,7 +106,16 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			}
 
 
-			return new MessageCallback[] { };
+			return res.ToArray();
+		}
+
+		public void AddBuilding(string name, float quality=0.5f) {
+			Building b = new Building();
+			b.Id = (Guid)CombGuidGenerator.Instance.GenerateId(this, b);
+			b.KingdomId = this.UserId;
+			b.Name = name;
+			b.Quality = quality;
+			Buildings.Add(b);
 		}
 
 		private MessageCallback[] WorkTasks(Human h, float delta) {
@@ -112,13 +142,8 @@ namespace YesSir.Backend.Entities.Kingdoms {
 					}
 					switch (t.TaskType) {
 						case ETask.Building:
-							Building b = new Building();
-							b.Id = (Guid)CombGuidGenerator.Instance.GenerateId(this, b);
-							b.KingdomId = this.UserId;
-							b.Name = t.Destination;
-							b.Quality = h.GetSkill("building");
-							Buildings.Add(b);
-							res.Add(new MessageCallback(string.Format(Locale.Get("notifications.builded", this.Language), b.GetName(this.Language)), ECharacter.King));
+							AddBuilding(t.Destination, h.GetSkill("building"));
+							res.Add(new MessageCallback(string.Format(Locale.Get("notifications.builded", this.Language), h.GetName(this.Language)), ECharacter.King));
 							break;
 
 						case ETask.Training:

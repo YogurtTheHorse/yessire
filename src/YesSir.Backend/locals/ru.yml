@@ -170,5 +170,7 @@ answers:
 problems:
   no_people: "Все заняты, Милорд"
   dont_work: "{0} отказался работать."
+  starving: "Люди голадают"
+  died: "{0} пал жертвой голодания"
 notifications:
   builded: "Здание построено: {0}"

@@ -7,6 +7,7 @@ using YesSir.Backend.Managers;
 using YesSir.Shared.Messages;
 
 namespace YesSir.Backend.Entities.Kingdoms {
+	[MoonSharp.Interpreter.MoonSharpUserData]
 	public class Human {
 		public Guid HumanId;
 		public float DepressionLevel = 0;
@@ -19,8 +20,10 @@ namespace YesSir.Backend.Entities.Kingdoms {
 		public float Age = 0;
 		public List<HumanTask> TasksToDo;
 		public Dictionary<string, float> Skills;
+		public bool Died = false;
 
 		public bool IsInDepression = false;
+
 
 		public Human() {
 			Skills = new Dictionary<string, float>();

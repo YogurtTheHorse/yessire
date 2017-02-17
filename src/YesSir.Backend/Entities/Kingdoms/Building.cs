@@ -2,6 +2,7 @@
 using YesSir.Backend.Managers;
 
 namespace YesSir.Backend.Entities.Kingdoms {
+	[MoonSharp.Interpreter.MoonSharpUserData]
 	public class Building : IUsable {
 		public Guid Id { get; set; }
 		public Guid KingdomId;
