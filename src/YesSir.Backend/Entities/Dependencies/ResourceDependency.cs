@@ -29,6 +29,9 @@ namespace YesSir.Backend.Entities.Dependencies {
 
 		public IUsable Use(Kingdom kingdom) {
 			kingdom.Resources[Resorce].RemoveRange(0, Count);
+			if (kingdom.Resources[Resorce].Count == 0) {
+				kingdom.Resources.Remove(Resorce);
+			}
 			return null;
 		}
 	}
