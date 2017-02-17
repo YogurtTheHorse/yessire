@@ -93,8 +93,8 @@ namespace YesSir.Backend.Entities.Kingdoms {
 
 		public bool Eat(Kingdom kingdom) {
 			foreach (string food in ContentManager.GetFood()) {
-				if (kingdom.GetResourcesCount(food) > 0) {
-					kingdom.TakeResource(food, 1);
+				if (kingdom.TakeResource(food, 1)) {
+					Satiety += 0.05f;
 
 					return true;
 				}
