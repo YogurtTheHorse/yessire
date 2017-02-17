@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using YesSir.Backend.Entities.Kingdoms;
 
 namespace YesSir.Backend.Entities {
@@ -26,11 +22,12 @@ namespace YesSir.Backend.Entities {
 					break;
 				case ETask.Building:
 					Skill = "building";
-					TimeLeft = 1f / h.GetSkill(Skill);
+					TimeLeft = 0.3f / h.GetSkill(Skill);
 					break;
+				case ETask.Creation:
 				case ETask.Extraction:
 					Skill = skill ?? "mining";
-					TimeLeft = 1f / h.GetSkill(Skill);
+					TimeLeft = 0.05f / h.GetSkill(Skill);
 					break;
 				default:
 					Skill = skill;
