@@ -109,7 +109,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			return res.ToArray();
 		}
 
-		public void AddBuilding(string name, float quality=0.5f) {
+		public void AddBuilding(string name, float quality = 0.5f) {
 			Building b = new Building();
 			b.Id = (Guid)CombGuidGenerator.Instance.GenerateId(this, b);
 			b.KingdomId = this.UserId;
@@ -357,9 +357,22 @@ namespace YesSir.Backend.Entities.Kingdoms {
 		}
 
 		private Human FindBySkill(string skillname, bool maximal = true) {
-			return Humans.Aggregate((curMin, x) =>
-				(curMin == null || (maximal ? x.GetSkill(skillname) < curMin.GetSkill(skillname) : x.GetSkill(skillname) > curMin.GetSkill(skillname)) ? x : curMin)
-			);
+			int mn_cnt = Humans.Min((h) => h.TasksToDo.Count);
+			var selected = Humans.Where((h) => h.TasksToDo.Count == mn_cnt);
+
+			Human res = null;
+			float mx = -1;
+
+			foreach(var h in selected) {
+				float p = h.GetSkill(skillname);
+
+				if (maximal ? p > mx : p < mx) {
+					mx = p;
+					res = h;
+				}
+			}
+
+			return res;
 		}
 	}
 }
