@@ -27,11 +27,11 @@
 
         function sendMessage() {
             message = document.getElementById('message').value;
-            socket.emit('message', {'id': userID, 'msg': message});
-            addNewLineToTextarea('Вы: ' + message)
+            socket.emit('sendMessage', {'id': userID, 'msg': message});
+            addNewLineToTextarea('Вы: ' + message);
         }
 
-        function getMessage() {
+        function getMessages() {
             socket.emit('getMessages', userID);
         }
 
@@ -41,13 +41,18 @@
         }
 
         socket.on('connect', function () {
-            socket.emit('startGame', userID)
+            socket.emit('startGame', userID);
         });
 
-        socket.on('get', function (data) {
+        socket.on('sendMessage', function () {
+            getMessages();
+        })
+
+        socket.on('getMessages', function (data) {
+            console.log(data);
             messages = JSON.parse(data);
-            for (message in messages)
-                addNewLineToTextarea(message.Message.From + ': ' + message.Message.Text);
+            for (var i = 0; i < messages.length; i++)
+                addNewLineToTextarea(messages[i].Message.From + ': ' + messages[i].Message.Text);
         });
     </script>
 </body>
