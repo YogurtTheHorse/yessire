@@ -221,7 +221,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 				}
 			}
 
-			Human h = FindBySkill("mining");
+			Human h = FindBySkill(r.Skill);
 			HumanTask t = new HumanTask() {
 				Destination = r.Name,
 				TaskType = ETask.Extraction,
