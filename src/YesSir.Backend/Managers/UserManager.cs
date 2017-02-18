@@ -117,6 +117,12 @@ namespace YesSir.Backend.Managers {
 				return new MessageCallback(msg, ECharacter.Admin);
 			}));
 
+			Commands.Add(new Command(new IDependency[] { }, new CommandPart(new string[] { "res" }), (k, d) => {
+				string msg = string.Join("\n", k.Resources.Select(r => r.Key + ": " + r.Value.Count));
+
+				return new MessageCallback(msg, ECharacter.Admin);
+			}));
+
 			Commands.Add(new Command(new IDependency[] { }, new CommandPart(new string[] { "tas" }), (k, d) => {
 				string msg = string.Join("\n", k.Humans.Select(h => h.GetName(k.Language) + ": " + h.GetStatus(k.Language)));
 				return new MessageCallback(msg, ECharacter.Admin);
