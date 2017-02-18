@@ -7,7 +7,7 @@ def index():
     '''Home page'''
     return render_template('index.html')
 
-@app.route('/subscribe/<email>', methods=['POST'])
+@app.route('/subscribe/<email>', methods=['POST', 'GET'])
 def subscribe(email):
     '''POST-request for subscribe email'''
 
