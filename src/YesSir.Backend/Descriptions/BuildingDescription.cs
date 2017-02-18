@@ -4,7 +4,7 @@ using YesSir.Backend.Entities.Kingdoms;
 using YesSir.Backend.Managers;
 
 namespace YesSir.Backend.Descriptions {
-	public struct BuildingDescription {
+	public class BuildingDescription {
 		public string Name;
 		public IDependency[] Dependencies;
 
@@ -16,6 +16,10 @@ namespace YesSir.Backend.Descriptions {
 			return new Building() {
 				Name = Name
 			};
+		}
+
+		public string GetName(string language) {
+			return Locale.Get("buildings." + Name + ".name", language);
 		}
 	}
 }

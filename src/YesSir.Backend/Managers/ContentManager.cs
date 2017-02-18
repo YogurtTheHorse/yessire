@@ -119,5 +119,10 @@ namespace YesSir.Backend.Managers {
 				Dependencies = deps.ToArray()
 			});
 		}
+
+		public static string GetBuildingName(string building, string language) {
+			var buildingd = Buildings.Find((b) => b.Name == building);
+			return buildingd != null ? buildingd.GetName(language) : "";
+		}
 	}
 }

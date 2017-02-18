@@ -143,7 +143,9 @@ namespace YesSir.Backend.Entities.Kingdoms {
 					switch (t.TaskType) {
 						case ETask.Building:
 							AddBuilding(t.Destination, h.GetSkill("building"));
-							res.Add(new MessageCallback(string.Format(Locale.Get("notifications.builded", this.Language), h.GetName(this.Language)), ECharacter.King));
+							string bname = ContentManager.GetBuildingName(t.Destination, Language);
+							string msg = string.Format(Locale.Get("notifications.builded", Language), bname);
+							res.Add(new MessageCallback(msg, ECharacter.King));
 							break;
 
 						case ETask.Training:
@@ -363,7 +365,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			Human res = null;
 			float mx = -1;
 
-			foreach(var h in selected) {
+			foreach (var h in selected) {
 				float p = h.GetSkill(skillname);
 
 				if (maximal ? p > mx : p < mx) {
