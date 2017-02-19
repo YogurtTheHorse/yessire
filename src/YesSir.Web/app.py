@@ -11,7 +11,3 @@ from views import play
 if __name__ == '__main__':
     print('Starting Flask server...')
     socketio.run(app)
-
-@socketio.on('message')
-def handle_message(message):
-    print('received message: ' + message)

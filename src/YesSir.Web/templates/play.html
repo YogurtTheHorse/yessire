@@ -44,15 +44,24 @@
             socket.emit('startGame', userID);
         });
 
-        socket.on('sendMessage', function () {
+        socket.on('startGame', function () {
             getMessages();
+        });
+
+        socket.on('sendMessage', function () {
+            setTimeout(getMessages, 20);
         })
 
         socket.on('getMessages', function (data) {
             console.log(data);
             messages = JSON.parse(data);
-            for (var i = 0; i < messages.length; i++)
+            for (var i = 0; i < messages.length; i++) {
+                var from = messages[i].Message.From;
+                if (from === '1')
+                    from = 'Советник';
+
                 addNewLineToTextarea(messages[i].Message.From + ': ' + messages[i].Message.Text);
+            }
         });
     </script>
 </body>

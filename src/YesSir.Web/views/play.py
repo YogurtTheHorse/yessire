@@ -1,7 +1,8 @@
 from app import app, socketio
 from flask import render_template
 from flask_socketio import emit
-from urllib.request import urlopen
+from requests import get
+from urllib.parse import quote
 
 @app.route('/play')
 def play_page():
@@ -24,7 +25,12 @@ def handle_send_message(message):
 def handle_get_messages(message):
     return emit('getMessages', method('/get/web/%s' % message))
 
+@socketio.on('message')
+def test(message):
+    print(message)
+    return
+
 def method(path):
     '''HTTP-request'''
-    print('http://localhost:9797' + path)
-    return urlopen('http://localhost:9797' + path).read()
+    request = get('http://localhost:9797' + quote(path))
+    return request.text
