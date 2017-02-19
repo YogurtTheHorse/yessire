@@ -10,4 +10,4 @@ from views import play
 
 if __name__ == '__main__':
     print('Starting Flask server...')
-    socketio.run(app)
+    socketio.run(app, port=80)
