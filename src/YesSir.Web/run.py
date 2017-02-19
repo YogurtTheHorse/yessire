@@ -1,4 +1,4 @@
-from app import app
+from app import app, socketio
 
 print('Starting Flask server...')
-app.run(host='0.0.0.0', port=80)
+socketio.run(app, host='0.0.0.0', port=80)

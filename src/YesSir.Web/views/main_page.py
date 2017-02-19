@@ -1,14 +1,13 @@
 from app import app
 from flask import render_template
-HTTP_OK_CODE = 200
+from flask_api import status
 
 @app.route('/')
-@app.route('/index')
 def index():
     '''Home page'''
     return render_template('index.html')
 
-@app.route('/subscribe/<email>', methods=['POST'])
+@app.route('/subscribe/<email>', methods=['POST', 'GET'])
 def subscribe(email):
     '''POST-request for subscribe email'''
 
@@ -16,4 +15,4 @@ def subscribe(email):
         f.write(email + '\n')
         print('Subscribed: ' + email)
 
-    return '', HTTP_OK_CODE
+    return '', status.HTTP_200_OK
