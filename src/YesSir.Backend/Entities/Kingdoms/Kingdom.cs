@@ -152,8 +152,8 @@ namespace YesSir.Backend.Entities.Kingdoms {
 							h.UpgradeSkill(t.Destination);
 							break;
 
-						case ETask.Extraction:
-						case ETask.Creation:
+						case ETask.Extracting:
+						case ETask.Creating:
 							AddResource(t.Destination, 1, h.GetSkill(t.Skill));
 							break;
 					}
@@ -183,7 +183,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			Human h = FindBySkill(r.Skill);
 			HumanTask t = new HumanTask() {
 				Destination = r.Name,
-				TaskType = ETask.Creation
+				TaskType = ETask.Creating
 			};
 			t.CalculateTaskTime(h, r.Difficulty, r.Skill);
 			foreach (IDependency dep in r.ExtractionDependencies) {
@@ -226,7 +226,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			Human h = FindBySkill(r.Skill);
 			HumanTask t = new HumanTask() {
 				Destination = r.Name,
-				TaskType = ETask.Extraction,
+				TaskType = ETask.Extracting,
 				Repeating = true
 			};
 			t.CalculateTaskTime(h, r.Difficulty, r.Skill);

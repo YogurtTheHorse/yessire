@@ -24,8 +24,8 @@ namespace YesSir.Backend.Entities {
 					Skill = "building";
 					TimeLeft = 0.3f / h.GetSkill(Skill);
 					break;
-				case ETask.Creation:
-				case ETask.Extraction:
+				case ETask.Creating:
+				case ETask.Extracting:
 					Skill = skill ?? "mining";
 					TimeLeft = 0.05f / h.GetSkill(Skill);
 					break;

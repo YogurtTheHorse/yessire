@@ -75,8 +75,8 @@ namespace YesSir.Backend.Entities.Kingdoms {
 					case ETask.Building:
 						return string.Format(Locale.Get("status.building", language), Locale.Get("buildings." + TasksToDo[0].Destination + ".name", language));
 
-					case ETask.Creation:
-					case ETask.Extraction:
+					case ETask.Creating:
+					case ETask.Extracting:
 						var tsk = TasksToDo[0].TaskType.ToString().ToLower();
 						return string.Format(Locale.Get("status." + tsk, language), Locale.Get("resources." + TasksToDo[0].Destination + ".name", language));
 

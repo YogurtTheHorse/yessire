@@ -26,7 +26,8 @@ namespace YesSir.Backend.Managers {
 			Skills.AddRange(new string[] {
 				"farming",
 				"mining",
-				"chopping"
+				"chopping",
+				"milling"
 			});
 		}
 

@@ -29,13 +29,14 @@ cm.RegisterBuilding ("bakery", {
 
 
 -- Resources
-cm.RegisterResource ("corn", 1, "farming", {
-	building_dep ("field", true)
+cm.RegisterResource ("grain", 1, "farming")
+cm.RegisterResource ("millet", 1, nil, {
+	resource_dep ("grain", 2)
 })
 
-cm.RegisterResource("flour", 2, "milling", nil, {
-	building_dep("mill", true), 
-	resource_dep("corn", 2) 
+cm.RegisterResource ("flour", 2, "milling", nil, {
+	building_dep ("mill", true),
+	resource_dep ("millet", 2)
 })
 cm.RegisterFood ("bread", 1.5, "bakinkg", nil, {
 	building_dep ("bakery", true),
@@ -45,8 +46,8 @@ cm.RegisterFood ("fish", 1, "fishing", {
 	building_dep ("fishery", true)
 })
 
-cm.RegisterResource("wood", 1, "chopping", { })
+cm.RegisterResource ("wood", 1, "chopping", { })
 
-cm.RegisterResource("rock", 1, "mining", { })
-cm.RegisterResource("iron", 1.5, "mining", { })
+cm.RegisterResource ("rock", 1, "mining", { })
+cm.RegisterResource ("iron", 1.5, "mining", { })
 cm.RegisterResource ("gold", 2, "mining", { })
