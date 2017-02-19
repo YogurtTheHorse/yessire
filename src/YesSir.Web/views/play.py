@@ -5,6 +5,7 @@ from requests import get
 from urllib.parse import quote
 
 @app.route('/play')
+@app.route('/', subdomain='play')
 def play_page():
     return render_template('play.html')
 
