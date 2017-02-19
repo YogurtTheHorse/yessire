@@ -246,4 +246,4 @@ __pycache__/
 *.py[cod]
 
 *.swp
-**/subsriptions.txt
+**/subscriptions.txt
