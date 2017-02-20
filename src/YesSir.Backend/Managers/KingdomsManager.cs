@@ -21,7 +21,7 @@ namespace YesSir.Backend.Managers {
 			if (cursor.Count() == 0) {
 				DatabaseManager.Kingdoms.InsertOneAsync(kingdom);
 			} else {
-				DatabaseManager.Kingdoms.ReplaceOneAsync(k => k.UserId == kingdom.UserId, kingdom);
+				DatabaseManager.Kingdoms.ReplaceOne(k => k.UserId == kingdom.UserId, kingdom);
 			}
 		}
 
@@ -30,6 +30,7 @@ namespace YesSir.Backend.Managers {
 			kingdom.UserId = ui.Id;
 			kingdom.Language = ui.Language;
 			SaveKingdom(kingdom);
+			kingdom = FindKingdom(ui);
 
 			int res = RandomManager.Next(0, 3);
 

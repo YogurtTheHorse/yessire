@@ -7,8 +7,8 @@ using YesSir.Shared.Messages;
 namespace YesSir.Backend.Entities.Dependencies {
 	[MoonSharpUserData]
 	public class BuildingDependency : IDependency {
-		private string BuildingName;
-		private bool CheckBusy;
+		public string BuildingName;
+		public bool CheckBusy;
 
 		public BuildingDependency(string builing, bool busy = false) {
 			this.BuildingName = builing;

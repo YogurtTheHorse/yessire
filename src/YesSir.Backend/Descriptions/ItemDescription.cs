@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using YesSir.Backend.Entities.Dependencies;
+using YesSir.Backend.Entities.Items;
 using YesSir.Backend.Managers;
 
 namespace YesSir.Backend.Descriptions {
-	public class ResourceDescription {
+	public class ItemDescription {
 		public string Name;
 		public float Difficulty;
 		public string Skill;
@@ -16,7 +17,6 @@ namespace YesSir.Backend.Descriptions {
 					IsFood = false;
 
 		public IDependency[] ExtractionDependencies, CreationDependencies;
-
 
 		public string[] GetAcceptableNames(string language = "full") {
 			return Locale.GetArray("resources." + Name + ".names", language);

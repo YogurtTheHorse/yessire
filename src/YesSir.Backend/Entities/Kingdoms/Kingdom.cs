@@ -165,13 +165,13 @@ namespace YesSir.Backend.Entities.Kingdoms {
 
 			return res.ToArray();
 		}
-
+		
 		public MessageCallback Create(Dictionary<string, object> dict) {
 			if (!dict.ContainsKey("resource")) {
 				return new MessageCallback(Locale.Get("resources.no_resource", this.Language), ECharacter.Knight);
 			}
 
-			ResourceDescription r = (ResourceDescription)dict["resource"];
+			ItemDescription r = (ItemDescription)dict["resource"];
 
 			foreach (IDependency dep in r.CreationDependencies) {
 				Tuple<bool, MessageCallback> res = dep.CheckKingdom(this);
@@ -196,7 +196,6 @@ namespace YesSir.Backend.Entities.Kingdoms {
 					ECharacter.Knight
 				);
 			} else {
-
 				return new MessageCallback(Locale.Get("answers.yes", this.Language));
 			}
 		}
@@ -214,7 +213,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 				return new MessageCallback(Locale.Get("resources.no_resource", this.Language), ECharacter.Knight);
 			}
 
-			ResourceDescription r = (ResourceDescription)dict["resource"];
+			ItemDescription r = (ItemDescription)dict["resource"];
 
 			foreach (IDependency dep in r.ExtractionDependencies) {
 				Tuple<bool, MessageCallback> res = dep.CheckKingdom(this);

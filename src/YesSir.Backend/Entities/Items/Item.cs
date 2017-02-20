@@ -6,7 +6,6 @@ using YesSir.Backend.Managers;
 namespace YesSir.Backend.Entities.Items {
 	[MoonSharp.Interpreter.MoonSharpUserData]
 	public class Item {
-		public Guid Id;
 		public string Name;
 		public float Quality;
 
@@ -17,7 +16,6 @@ namespace YesSir.Backend.Entities.Items {
 					Name = name,
 					Quality = RandomManager.NextFloat() * (diff * 2) + quality - diff
 				};
-				items[i].Id = (Guid)CombGuidGenerator.Instance.GenerateId(null, items[i]);
 			}
 			return new List<Item>(items);
 		}

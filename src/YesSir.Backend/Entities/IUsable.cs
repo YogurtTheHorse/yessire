@@ -9,6 +9,7 @@ namespace YesSir.Backend.Entities {
 	
 	public enum EUsableType {
 		Building,
-		Item
+		Item,
+		Container
 	}
 }

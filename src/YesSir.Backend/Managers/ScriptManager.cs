@@ -17,7 +17,7 @@ namespace YesSir.Backend.Managers {
 			UserData.RegisterType<Kingdom>();
 
 			Script.Globals["building_dep"] = (Func<string, bool, BuildingDependency>)((s, b) => new BuildingDependency(s, b));
-			Script.Globals["resource_dep"] = (Func<string, int, ResourceDependency>)((s, r) => new ResourceDependency(s, r)); ;
+			Script.Globals["item_dep"] = (Func<string, int, ItemDependency>)((s, r) => new ItemDependency(s, r)); ;
 			Script.Globals["human_dep"] = (Func<HumanDependency>)(() => new HumanDependency());
 			
 			Script.Globals["gen_items"] = (Func<int, string, float, float, List<Item>>)((cnt, name, quality, diff) => Item.GenerateItems(cnt, name, quality, diff));

@@ -6,21 +6,21 @@ using YesSir.Shared.Messages;
 
 namespace YesSir.Backend.Entities.Dependencies {
 	[MoonSharpUserData]
-	public class ResourceDependency : IDependency {
-		private readonly string Resorce;
-		private readonly int Count;
+	public class ItemDependency : IDependency {
+		public string ItemName;
+		public readonly int Count;
 
-		public ResourceDependency(string resourceName, int count) {
-			this.Resorce = resourceName;
+		public ItemDependency(string itemName, int count) {
+			this.ItemName = itemName;
 			this.Count = count;
 		}
 
 		public Tuple<bool, MessageCallback> CheckKingdom(Kingdom kingdom) {
-			if (kingdom.GetResourcesCount(Resorce) >= Count) {
+			if (kingdom.GetResourcesCount(ItemName) >= Count) {
 				return new Tuple<bool, MessageCallback>(true, new MessageCallback());
 			} else {
 				MessageCallback cb = new MessageCallback() {
-					Text = Locale.Get("resources." + Resorce + ".miss", kingdom.Language),
+					Text = Locale.Get("resources." + ItemName + ".miss", kingdom.Language),
 					From = ECharacter.Knight
 				};
 				return new Tuple<bool, MessageCallback>(false, cb);
@@ -28,10 +28,11 @@ namespace YesSir.Backend.Entities.Dependencies {
 		}
 
 		public IUsable Use(Kingdom kingdom) {
-			kingdom.Resources[Resorce].RemoveRange(0, Count);
-			if (kingdom.Resources[Resorce].Count == 0) {
-				kingdom.Resources.Remove(Resorce);
+			kingdom.Resources[ItemName].RemoveRange(0, Count);
+			if (kingdom.Resources[ItemName].Count == 0) {
+				kingdom.Resources.Remove(ItemName);
 			}
+
 			return null;
 		}
 	}

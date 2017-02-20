@@ -48,7 +48,6 @@ namespace YesSir.Backend.Managers {
 			});
 			BsonClassMap.RegisterClassMap<Item>(cm => {
 				cm.AutoMap();
-				cm.MapMember(c => c.Id).SetElementName("_id").SetIdGenerator(CombGuidGenerator.Instance);
 				cm.SetIgnoreExtraElements(true);
 			});
 			BsonClassMap.RegisterClassMap<Incoming>(cm => {

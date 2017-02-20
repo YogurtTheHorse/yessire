@@ -55,13 +55,13 @@ namespace YesSir.Backend.Managers {
 			));
 
 			List<Tuple<string, object>> resourceTuples = new List<Tuple<string, object>>();
-			foreach (ResourceDescription r in ContentManager.GetResources()) {
+			foreach (ItemDescription r in ContentManager.GetResources()) {
 				foreach (string s in r.GetAcceptableNames()) {
 					resourceTuples.Add(new Tuple<string, object>(s, r));
 				}
 			}
 			CommandPart extractable = new CommandPart("resource", resourceTuples.FindAll(t => {
-				return (t.Item2 as ResourceDescription).Extractable;
+				return (t.Item2 as ItemDescription).Extractable;
 			}).ToArray());
 			Commands.Add(new Command(
 				new IDependency[] { new HumanDependency() },
@@ -72,7 +72,7 @@ namespace YesSir.Backend.Managers {
 				(k, dict) => k.Extract(dict)
 			));
 			CommandPart creatable = new CommandPart("resource", resourceTuples.FindAll(t => {
-				return (t.Item2 as ResourceDescription).Creatable;
+				return (t.Item2 as ItemDescription).Creatable;
 			}).ToArray());
 			Commands.Add(new Command(
 				new IDependency[] { new HumanDependency() },

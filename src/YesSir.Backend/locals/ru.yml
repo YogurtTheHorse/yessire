@@ -32,6 +32,10 @@ commands:
     - "Сделать"
     - "Испеки"
     - "Испечь"
+  draw:
+    list:
+    - "набрать"
+    - "набери"
 jobs:
   no_job: "Кого нанять-то?"
   peasant:
@@ -42,6 +46,10 @@ jobs:
     - "рабочий"
     - "рабочего"
     miss: "Нужен крестьянин"
+  smith:
+    name: "Кузнец"
+    names:
+    - "кузнец"
   miner:
     name: "Шахтер"
     names:
@@ -72,6 +80,10 @@ jobs:
     - "рыболов"
 buildings:
   no_building: "Что построить-то?"
+  well:
+    name: "Колодец"
+    names:
+    - "колодец"
   forge:
     name: "Кузница"
     names:
@@ -144,6 +156,17 @@ resources:
     names:
     - "пшен"
     miss: "Нужно пшено"
+  bucket:
+    name: "Ведро"
+    names:
+    - "ведро"
+    miss: "Нужно ведро"
+  water_bucket:
+    name: "Ведро воды"
+    names:
+    - "ведро вод"
+    - "ведро с вод"
+    miss: "Нужна вода"
   fish:
     name: "Рыба"
     names:
@@ -176,6 +199,7 @@ problems:
   no_people: "Все заняты, Милорд"
   dont_work: "{0} отказался работать."
   starving: "Люди голадают"
+  drawing: "Набирает {0}"
   died: "{0} пал жертвой голодания"
 notifications:
   builded: "Здание построено: {0}"

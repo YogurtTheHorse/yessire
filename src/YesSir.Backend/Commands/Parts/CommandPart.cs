@@ -19,13 +19,13 @@ namespace YesSir.Backend.Commands.Parts {
 			this.Parse = (s) => null;
 		}
 
-		public CommandPart(string[] names, CommandPart[] nextCommands=null) {
+		public CommandPart(string[] names, CommandPart[] nextCommands = null) {
 			this.Type = PartType.Word;
 			this.NextCommands = nextCommands;
 			this.Check = (s) => {
 				foreach (string n in names) {
-					if (s.StartsWith(n.ToLower())) {
-						return new Tuple<bool, int>(true, s.Split(' ')[0].Split(',')[0].Length);
+					if (s.Contains(n.ToLower())) {
+						return new Tuple<bool, int>(true, n.Length + s.IndexOf(n));
 					}
 				}
 
@@ -40,8 +40,8 @@ namespace YesSir.Backend.Commands.Parts {
 			this.NextCommands = nextCommands;
 			this.Check = (s) => {
 				foreach (Tuple<string, object> t in pairs) {
-					if (s.StartsWith(t.Item1.ToLower())) {
-						return new Tuple<bool, int>(true, s.Split(' ')[0].Split(',')[0].Length);
+					if (s.Contains(t.Item1.ToLower())) {
+						return new Tuple<bool, int>(true, s.IndexOf(t.Item1) + t.Item1.Length);
 					}
 				}
 
@@ -49,7 +49,7 @@ namespace YesSir.Backend.Commands.Parts {
 			};
 			this.Parse = (s) => {
 				foreach (Tuple<string, object> t in pairs) {
-					if (s.StartsWith(t.Item1.ToLower())) {
+					if (s.Contains(t.Item1.ToLower())) {
 						return t.Item2;
 					}
 				}
@@ -58,7 +58,7 @@ namespace YesSir.Backend.Commands.Parts {
 			};
 		}
 
-		public CommandPart(string name, Func<string, Tuple<bool, int>> checker, Func<string, object> parser, CommandPart[] nextCommands=null) {
+		public CommandPart(string name, Func<string, Tuple<bool, int>> checker, Func<string, object> parser, CommandPart[] nextCommands = null) {
 			this.Type = PartType.Value;
 			this.ValueName = name;
 			this.Check = checker;

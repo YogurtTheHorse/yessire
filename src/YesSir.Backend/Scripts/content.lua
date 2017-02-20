@@ -3,14 +3,20 @@ local cm = contentmanager
 cm.RegisterJob ("peasant", "farming", 10)
 cm.RegisterJob ("woodcutter", "chopping", 20)
 cm.RegisterJob ("baker", "baking", 20)
+cm.RegisterJob ("miner", "mining", 50)
 cm.RegisterJob ("builder", "building", 100)
-cm.RegisterJob ("miner", "mining", 100)
+cm.RegisterJob ("smith", "smithing", 100)
 
 
 -- 
 cm.RegisterBuilding ("forge", {
 	rock = 5;
 	iron = 5;
+})
+
+cm.RegisterBuilding ("well", {
+	rock = 2;
+	iron = 2;
 })
 
 cm.RegisterBuilding ("field", {
@@ -27,20 +33,28 @@ cm.RegisterBuilding ("bakery", {
 	rock = 5;
 })
 
-
 -- Resources
+cm.RegisterResource ("water_bucket", 1, "farming", nil, {
+	item_dep ("bucket", 1)
+})
+
+cm.RegisterResource ("bucket", 1, "smithing", {
+	item_dep ("iron", 2),
+	building_dep ("forge", true)
+})
+
 cm.RegisterResource ("grain", 1, "farming")
 cm.RegisterResource ("millet", 1, nil, {
-	resource_dep ("grain", 2)
+	item_dep ("grain", 2)
 })
 
 cm.RegisterResource ("flour", 2, "milling", nil, {
 	building_dep ("mill", true),
-	resource_dep ("millet", 2)
+	item_dep ("millet", 2)
 })
 cm.RegisterFood ("bread", 1.5, "bakinkg", nil, {
 	building_dep ("bakery", true),
-	resource_dep ("flour", 2)
+	item_dep ("flour", 2)
 })
 cm.RegisterFood ("fish", 1, "fishing", {
 	building_dep ("fishery", true)
