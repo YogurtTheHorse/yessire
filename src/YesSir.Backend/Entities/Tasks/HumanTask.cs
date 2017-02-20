@@ -41,6 +41,7 @@ namespace YesSir.Backend.Entities {
 		public void Use(IUsable usable) {
 			if (usable != null) {
 				InUse.Add(usable);
+				usable.OnUse();
 				usable.IsBusy = true;
 			}
 		}

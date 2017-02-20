@@ -29,7 +29,7 @@ namespace YesSir.Backend.Managers {
 		}
 
 		public static Incoming GetNextIncoming() {
-			return DatabaseManager.IncomingQueue.FindOneAndDelete(i => i.IsWaiting);
+				return DatabaseManager.IncomingQueue.FindOneAndDelete(i => i.IsWaiting);
 		}
 	}
 }
