@@ -1,5 +1,6 @@
 ﻿using System;
 using YesSir.Backend.Managers;
+using YesSir.Shared.Messages;
 
 namespace YesSir.Backend.Entities.Kingdoms {
 	[MoonSharp.Interpreter.MoonSharpUserData]
@@ -14,23 +15,17 @@ namespace YesSir.Backend.Entities.Kingdoms {
 
 		public bool IsBusy
 		{
-			get
-			{
-				return AvaibalePlace <= UsedPlace;
-			}
-			set
-			{
-				if (value) {
-					UsedPlace++;
-				} else {
-					UsedPlace--;
-				}
-			}
+			get { return AvaibalePlace <= UsedPlace; }
+			set { UsedPlace += value ? 1 : -1; }
 		}
+
+		public virtual MessageCallback[] Update(Kingdom k, float delta) { return new MessageCallback[] { }; }
 
 		public string GetName(string language) {
 			return Locale.Get("buildings." + Name + ".name", language);
 		}
+
+		public virtual void OnUse() { }
 
 		public EUsableType GetUsableType() {
 			return EUsableType.Building;

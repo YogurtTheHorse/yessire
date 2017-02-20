@@ -52,6 +52,14 @@ namespace YesSir.Backend.Managers {
 			return Jobs.ToArray();
 		}
 
+		public static void RegisterGrain(string grain, params string[] args) {
+			foreach (ItemDescription id in StandartResources) {
+				if (args.Contains(id.Name)) {
+					id.Culture = grain;
+				}
+			}
+		}
+
 		public static void RegisterResource(string name, float difficulty, string skill = "mining", IDependency[] deps = null, IDependency[] cdeps = null) {
 			StandartResources.Add(new ItemDescription() {
 				Name = name,

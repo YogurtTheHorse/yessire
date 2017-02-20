@@ -12,6 +12,7 @@ namespace YesSir.Backend.Descriptions {
 		public string Name;
 		public float Difficulty;
 		public string Skill;
+		public string Culture;
 		public bool Extractable = false,
 					Creatable = false,
 					IsFood = false;

@@ -26,6 +26,7 @@ namespace YesSir.Shared.Messages {
 	public enum ECharacter {
 		King = 0,
 		Knight = 1,
-		Admin = 2
+		Admin = 2,
+		Farmer = 3
 	}
 }

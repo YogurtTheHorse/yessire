@@ -32,10 +32,10 @@ commands:
     - "Сделать"
     - "Испеки"
     - "Испечь"
-  draw:
+  grow:
     list:
-    - "набрать"
-    - "набери"
+    - "выращивай"
+    - "вырасти"
 jobs:
   no_job: "Кого нанять-то?"
   peasant:
@@ -84,6 +84,7 @@ buildings:
     name: "Колодец"
     names:
     - "колодец"
+    miss: "Постройте колодец"
   forge:
     name: "Кузница"
     names:
@@ -120,6 +121,8 @@ buildings:
     - "мельницу"
     miss: "Нужна мельница"
 resources:
+  no_resource: "Нет такого"
+  no_culture: "Такое нельзя вырастить"
   gold:
     name: "Золото"
     names:

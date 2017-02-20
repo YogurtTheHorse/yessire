@@ -29,6 +29,7 @@ namespace YesSir.Backend.Entities.Dependencies {
 
 		public IUsable Use(Kingdom kingdom) {
 			kingdom.Resources[ItemName].RemoveRange(0, Count);
+			if (ItemName == "water_bucket") { kingdom.AddResource("bucket", Count); }
 			if (kingdom.Resources[ItemName].Count == 0) {
 				kingdom.Resources.Remove(ItemName);
 			}

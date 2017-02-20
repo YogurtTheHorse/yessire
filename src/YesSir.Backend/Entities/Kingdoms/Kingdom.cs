@@ -65,6 +65,9 @@ namespace YesSir.Backend.Entities.Kingdoms {
 					died.Add(h);
 				}
 			}
+			foreach (Building b in Buildings) {
+				res.AddRange(b.Update(this, delta));
+			}
 
 			foreach (Human h in died) {
 				Humans.Remove(h);
@@ -115,7 +118,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			b.KingdomId = this.UserId;
 			b.Name = name;
 			b.Quality = quality;
-			Buildings.Add(b);
+			Buildings.Add(name == "field" ? new Field(b) : b);
 		}
 
 		private MessageCallback[] WorkTasks(Human h, float delta) {
@@ -165,7 +168,38 @@ namespace YesSir.Backend.Entities.Kingdoms {
 
 			return res.ToArray();
 		}
-		
+
+		public MessageCallback Grow(Dictionary<string, object> dict) {
+			if (!dict.ContainsKey("resource")) {
+				return new MessageCallback(Locale.Get("resources.no_resource", this.Language), ECharacter.Knight);
+			}
+
+			ItemDescription r = (ItemDescription)dict["resource"];
+
+			if (r.Culture == null) {
+				return new MessageCallback(Locale.Get("resources.no_culture", this.Language), ECharacter.Farmer);
+			}
+
+			IDependency dep = new ItemDependency("water_bucket", 2);
+			Tuple<bool, MessageCallback> res = dep.CheckKingdom(this);
+			if (!res.Item1) {
+				return res.Item2;
+			}
+
+			dep.Use(this);
+			foreach (Building b in Buildings) {
+				if (b is Field) {
+					(b as Field).Count = 50;
+					(b as Field).Culture = r.Culture;
+					(b as Field).IsWorking = true;
+					(b as Field).TimeLeft = 3f;
+					break;
+				}
+			}
+
+			return new MessageCallback(Locale.Get("answers.yes", this.Language));
+		}
+
 		public MessageCallback Create(Dictionary<string, object> dict) {
 			if (!dict.ContainsKey("resource")) {
 				return new MessageCallback(Locale.Get("resources.no_resource", this.Language), ECharacter.Knight);

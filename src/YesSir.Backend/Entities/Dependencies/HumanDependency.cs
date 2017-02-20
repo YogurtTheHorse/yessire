@@ -1,5 +1,6 @@
 ﻿using MoonSharp.Interpreter;
 using System;
+using System.Linq;
 using YesSir.Backend.Entities.Kingdoms;
 using YesSir.Backend.Managers;
 using YesSir.Shared.Messages;
@@ -10,7 +11,7 @@ namespace YesSir.Backend.Entities.Dependencies {
 		public HumanDependency() { }
 
 		public Tuple<bool, MessageCallback> CheckKingdom(Kingdom kingdom) {
-			if (kingdom.Humans.Count > 0) {
+			if (kingdom.Humans.Any()) {
 				return new Tuple<bool, MessageCallback>(true, new MessageCallback());
 			} else {
 				MessageCallback cb = new MessageCallback() {

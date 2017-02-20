@@ -35,7 +35,8 @@ cm.RegisterBuilding ("bakery", {
 
 -- Resources
 cm.RegisterResource ("water_bucket", 1, "farming", nil, {
-	item_dep ("bucket", 1)
+	item_dep ("bucket", 1),
+	building_dep ("well", true)
 })
 
 cm.RegisterResource ("bucket", 1, "smithing", {
@@ -43,10 +44,11 @@ cm.RegisterResource ("bucket", 1, "smithing", {
 	building_dep ("forge", true)
 })
 
-cm.RegisterResource ("grain", 1, "farming")
+--cm.RegisterResource ("grain", 1, "farming")
 cm.RegisterResource ("millet", 1, nil, {
 	item_dep ("grain", 2)
 })
+cm.RegisterGrain ("grain", "millet")
 
 cm.RegisterResource ("flour", 2, "milling", nil, {
 	building_dep ("mill", true),

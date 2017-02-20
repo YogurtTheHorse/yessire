@@ -112,6 +112,7 @@ namespace YesSir.Backend {
 			Console.OutputEncoding = Encoding.UTF8;
 			Console.InputEncoding = Encoding.UTF8;
 
+			DatabaseManager.Init();
 			ScriptManager.Init();
 			ContentManager.Init();
 				

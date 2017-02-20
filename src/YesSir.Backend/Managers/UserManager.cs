@@ -82,6 +82,15 @@ namespace YesSir.Backend.Managers {
 				),
 				(k, dict) => k.Create(dict)
 			));
+			CommandPart growable = new CommandPart("resource", resourceTuples.ToArray());
+			Commands.Add(new Command(
+				new IDependency[] { new HumanDependency(), new BuildingDependency("field", true) },
+				new CommandPart(
+					Locale.GetArray("commands.grow.list"),
+					new CommandPart[] { growable, new CommandPart() }
+				),
+				(k, dict) => k.Grow(dict)
+			));
 
 			List<Tuple<string, object>> buildingsTuples = new List<Tuple<string, object>>();
 			foreach (BuildingDescription b in ContentManager.GetBuildings()) {
