@@ -3,9 +3,19 @@ using MongoDB.Driver;
 using System;
 using YesSir.Shared.Users;
 using YesSir.Shared.Messages;
+using System.Collections.Generic;
 
 namespace YesSir.Backend.Managers {
 	public static class KingdomsManager {
+		private static List<Kingdom> Kingdoms;
+		private static float TimeToSave;
+		private const float TIME_TO_SAVE = 30;
+
+		static KingdomsManager() {
+			Kingdoms = DatabaseManager.Kingdoms.Find(_ => true).ToList();
+			TimeToSave = TIME_TO_SAVE;
+		}
+
 		public static Kingdom FindKingdom(UserInfo userinfo) {
 			var cursor = DatabaseManager.Kingdoms.Find(k => k.UserId == userinfo.Id);
 
@@ -21,7 +31,7 @@ namespace YesSir.Backend.Managers {
 			if (cursor.Count() == 0) {
 				DatabaseManager.Kingdoms.InsertOneAsync(kingdom);
 			} else {
-				DatabaseManager.Kingdoms.ReplaceOne(k => k.UserId == kingdom.UserId, kingdom);
+				DatabaseManager.Kingdoms.ReplaceOneAsync(k => k.UserId == kingdom.UserId, kingdom);
 			}
 		}
 
@@ -47,12 +57,18 @@ namespace YesSir.Backend.Managers {
 		}
 
 		public static void UpdateKingdoms(int deltatime) {
-			foreach (Kingdom k in DatabaseManager.Kingdoms.Find(_ => true).ToList()) {
+			foreach (Kingdom k in Kingdoms) {
 				MessageCallback[] msgs = k.Update((deltatime / 1000f) / k.GetDayTime());
 				foreach (MessageCallback msg in msgs) {
 					UsersManager.Send(k.UserId, msg);
 				}
-				SaveKingdom(k);
+			}
+			TimeToSave -= deltatime / 1000f;
+			if (TimeToSave < 0) {
+				TimeToSave = TIME_TO_SAVE;
+				foreach (Kingdom k in Kingdoms) {
+					SaveKingdom(k);
+				}
 			}
 		}
 	}
