@@ -123,46 +123,46 @@ namespace YesSir.Backend.Managers {
 		private static void LoadDebugCommands() {
 			Commands.Add(new Command(new IDependency[] { }, new CommandPart(new string[] { "deb" }), (k, d) => {
 				string msg = ObjectDumper.Dump(k);
-				return new MessageCallback(msg, ECharacter.Admin);
+				return new ExecutionResult(true, new MessageCallback(msg, ECharacter.Admin));
 			}));
 
 			Commands.Add(new Command(new IDependency[] { }, new CommandPart(new string[] { "res" }), (k, d) => {
 				string msg = string.Join("\n", k.Resources.Select(r => r.Key + ": " + r.Value.Count));
 
-				return new MessageCallback(msg, ECharacter.Admin);
+				return new ExecutionResult(new MessageCallback(msg, ECharacter.Admin));
 			}));
 
 			Commands.Add(new Command(new IDependency[] { }, new CommandPart(new string[] { "tas" }), (k, d) => {
 				string msg = string.Join("\n", k.Humans.Select(h => h.GetName(k.Language) + ": " + h.GetStatus(k.Language)));
-				return new MessageCallback(msg, ECharacter.Admin);
+				return new ExecutionResult(new MessageCallback(msg, ECharacter.Admin));
 			}));
 		}
 #endif
 
-		public static MessageCallback[] OnMessage(MessageInfo message) {
+		public static MessageCallback OnMessage(MessageInfo message) {
 			UpdateUserInfo(message.UserInfo);
 			Kingdom kingdom = KingdomsManager.FindKingdom(message.UserInfo);
-			List<MessageCallback> msgs = new List<MessageCallback>();
+			ExecutionResult? exec = null;
 			bool cont = true;
 			string text = message.Text;
 
 			while (cont) {
 				cont = false;
 				foreach (Command c in Commands) {
-					Tuple<int, MessageCallback> res = c.CheckAndExecute(text, kingdom);
-					if (res.Item1 >= 0) {
+					ExecutionResult res = c.CheckAndExecute(text, kingdom);
+					if (res.Applied) {
 						KingdomsManager.SaveKingdom(kingdom);
-						msgs.Add(res.Item2);
-						text = text.Substring(res.Item1);
-						cont = true;
+						text = text.Substring(res.CommandLength);
+						cont = res.Successful;
+						exec = res;
 						break;
 					}
 				}
 			}
-			if (msgs.Count == 0) {
-				return new MessageCallback[] { new MessageCallback("nyet.", ECharacter.Knight) };
+			if (!exec.HasValue) {
+				return new MessageCallback("nyet.", ECharacter.Knight);
 			} else {
-				return msgs.ToArray();
+				return exec.Value.Message;
 			}
 		}
 

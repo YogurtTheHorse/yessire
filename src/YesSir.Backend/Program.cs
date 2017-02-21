@@ -142,9 +142,7 @@ namespace YesSir.Backend {
 			while (inc != null) {
 				switch (inc.Method) {
 					case "message":
-						foreach(MessageCallback msg in UsersManager.OnMessage(inc.Message)) {
-							QueueManager.Push(msg, inc.UserInfo);
-						}
+						QueueManager.Push(UsersManager.OnMessage(inc.Message), inc.UserInfo);
 						break;
 
 					case "start":

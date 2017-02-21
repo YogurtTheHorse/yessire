@@ -10,6 +10,7 @@ using YesSir.Backend.Managers;
 using YesSir.Shared.Messages;
 using YesSir.Shared.Users;
 using YesSir.Backend.Entities.Items;
+using YesSir.Backend.Commands;
 
 namespace YesSir.Backend.Entities.Kingdoms {
 	public class Kingdom {
@@ -169,21 +170,21 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			return res.ToArray();
 		}
 
-		public MessageCallback Grow(Dictionary<string, object> dict) {
+		public ExecutionResult Grow(Dictionary<string, object> dict) {
 			if (!dict.ContainsKey("resource")) {
-				return new MessageCallback(Locale.Get("resources.no_resource", this.Language), ECharacter.Knight);
+				return new ExecutionResult(false, new MessageCallback(Locale.Get("resources.no_resource", this.Language), ECharacter.Knight));
 			}
 
 			ItemDescription r = (ItemDescription)dict["resource"];
 
 			if (r.Culture == null) {
-				return new MessageCallback(Locale.Get("resources.no_culture", this.Language), ECharacter.Farmer);
+				return new ExecutionResult(false, new MessageCallback(Locale.Get("resources.no_culture", this.Language), ECharacter.Farmer));
 			}
 
 			IDependency dep = new ItemDependency("water_bucket", 2);
 			Tuple<bool, MessageCallback> res = dep.CheckKingdom(this);
 			if (!res.Item1) {
-				return res.Item2;
+				return new ExecutionResult(res.Item2);
 			}
 
 			dep.Use(this);
@@ -197,12 +198,12 @@ namespace YesSir.Backend.Entities.Kingdoms {
 				}
 			}
 
-			return new MessageCallback(Locale.Get("answers.yes", this.Language));
+			return new ExecutionResult(new MessageCallback(Locale.Get("answers.yes", this.Language)));
 		}
 
-		public MessageCallback Create(Dictionary<string, object> dict) {
+		public ExecutionResult Create(Dictionary<string, object> dict) {
 			if (!dict.ContainsKey("resource")) {
-				return new MessageCallback(Locale.Get("resources.no_resource", this.Language), ECharacter.Knight);
+				return new ExecutionResult(false, new MessageCallback(Locale.Get("resources.no_resource", this.Language), ECharacter.Knight));
 			}
 
 			ItemDescription r = (ItemDescription)dict["resource"];
@@ -210,7 +211,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			foreach (IDependency dep in r.CreationDependencies) {
 				Tuple<bool, MessageCallback> res = dep.CheckKingdom(this);
 				if (!res.Item1) {
-					return res.Item2;
+					return new ExecutionResult(false, res.Item2);
 				}
 			}
 
@@ -225,12 +226,12 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			}
 
 			if (!h.AddTask(t)) {
-				return new MessageCallback(
+				return new ExecutionResult(false, new MessageCallback(
 					Locale.Get(string.Format("problems.dont_work", h.GetName(Language)), Language),
 					ECharacter.Knight
-				);
+				));
 			} else {
-				return new MessageCallback(Locale.Get("answers.yes", this.Language));
+				return new ExecutionResult(new MessageCallback(Locale.Get("answers.yes", this.Language)));
 			}
 		}
 
@@ -242,9 +243,9 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			}
 		}
 
-		public MessageCallback Extract(Dictionary<string, object> dict) {
+		public ExecutionResult Extract(Dictionary<string, object> dict) {
 			if (!dict.ContainsKey("resource")) {
-				return new MessageCallback(Locale.Get("resources.no_resource", this.Language), ECharacter.Knight);
+				return new ExecutionResult(false, new MessageCallback(Locale.Get("resources.no_resource", this.Language), ECharacter.Knight));
 			}
 
 			ItemDescription r = (ItemDescription)dict["resource"];
@@ -252,7 +253,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			foreach (IDependency dep in r.ExtractionDependencies) {
 				Tuple<bool, MessageCallback> res = dep.CheckKingdom(this);
 				if (!res.Item1) {
-					return res.Item2;
+					return new ExecutionResult(false, res.Item2);
 				}
 			}
 
@@ -268,20 +269,19 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			}
 
 			if (!h.AddTask(t)) {
-				return new MessageCallback(
+				return new ExecutionResult(false, new MessageCallback(
 					Locale.Get(string.Format("problems.dont_work", h.GetName(Language)), Language),
 					ECharacter.Knight
-				);
+				));
 			} else {
-
-				return new MessageCallback(Locale.Get("answers.yes", this.Language));
+				return new ExecutionResult(new MessageCallback(Locale.Get("answers.yes", this.Language)));
 			}
 		}
 
-		public MessageCallback Hire(Dictionary<string, object> dict) {
+		public ExecutionResult Hire(Dictionary<string, object> dict) {
 			int count = (int)(dict.Get("count") ?? 1);
 			if (!dict.ContainsKey("job")) {
-				return new MessageCallback(Locale.Get("jobs.no_job", this.Language), ECharacter.Knight);
+				return new ExecutionResult(false, new MessageCallback(Locale.Get("jobs.no_job", this.Language), ECharacter.Knight));
 			}
 
 			JobDescription j = (JobDescription)dict["job"];
@@ -291,7 +291,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 				foreach (IDependency dep in deps) {
 					Tuple<bool, MessageCallback> res = dep.CheckKingdom(this);
 					if (!res.Item1) {
-						return res.Item2;
+						return new ExecutionResult(false, res.Item2);
 					}
 				}
 				foreach (IDependency dep in j.HireDepence) {
@@ -302,14 +302,14 @@ namespace YesSir.Backend.Entities.Kingdoms {
 				});
 			}
 
-			return new MessageCallback(Locale.Get("answers.yes", this.Language), ECharacter.Knight);
+			return new ExecutionResult(new MessageCallback(Locale.Get("answers.yes", this.Language), ECharacter.Knight));
 		}
 
-		public MessageCallback Train(Dictionary<string, object> dict) {
+		public ExecutionResult Train(Dictionary<string, object> dict) {
 			int count = 1;
 			if (dict.ContainsKey("count")) { count = (int)dict["count"]; }
 			if (!dict.ContainsKey("job")) {
-				return new MessageCallback(Locale.Get("jobs.no_job", this.Language), ECharacter.Knight);
+				return new ExecutionResult(false, new MessageCallback(Locale.Get("jobs.no_job", this.Language), ECharacter.Knight));
 			}
 			JobDescription j = (JobDescription)dict["job"];
 			List<IDependency> deps = new List<IDependency>(j.TrainDepence);
@@ -318,7 +318,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			foreach (IDependency dep in deps) {
 				Tuple<bool, MessageCallback> res = dep.CheckKingdom(this);
 				if (!res.Item1) {
-					return res.Item2;
+					return new ExecutionResult(false, res.Item2);
 				}
 			}
 			Human h = FindBySkill(j.SkillName, false);
@@ -332,12 +332,12 @@ namespace YesSir.Backend.Entities.Kingdoms {
 
 			task.CalculateTaskTime(h);
 			if (!h.AddTask(task)) {
-				return new MessageCallback(
+				return new ExecutionResult(false, new MessageCallback(
 					Locale.Get(string.Format("problems.dont_work", h.GetName(Language)), Language),
 					ECharacter.Knight
-				);
+				));
 			} else {
-				return new MessageCallback(Locale.Get("answers.yes", this.Language));
+				return new ExecutionResult(new MessageCallback(Locale.Get("answers.yes", this.Language)));
 			}
 		}
 
@@ -357,16 +357,16 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			return Locale.GetArray(lang + ".firstnames", "names").RandomChoice() + " " + Locale.GetArray(lang + ".lastnames", "names").RandomChoice();
 		}
 
-		public MessageCallback Build(Dictionary<string, object> dict) {
+		public ExecutionResult Build(Dictionary<string, object> dict) {
 			if (!dict.ContainsKey("building")) {
-				return new MessageCallback(Locale.Get("buildings.no_building", this.Language), ECharacter.Knight);
+				return new ExecutionResult(false, new MessageCallback(Locale.Get("buildings.no_building", this.Language), ECharacter.Knight));
 			}
 			BuildingDescription b = (BuildingDescription)dict["building"];
 
 			foreach (IDependency dep in b.Dependencies) {
 				Tuple<bool, MessageCallback> res = dep.CheckKingdom(this);
 				if (!res.Item1) {
-					return res.Item2;
+					return new ExecutionResult(false, res.Item2);
 				}
 			}
 
@@ -382,12 +382,12 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			t.CalculateTaskTime(h);
 
 			if (!h.AddTask(t)) {
-				return new MessageCallback(
+				return new ExecutionResult(false, new MessageCallback(
 					Locale.Get(string.Format("problems.dont_work", h.GetName(Language)), Language),
 					ECharacter.Knight
-				);
+				));
 			} else {
-				return new MessageCallback(Locale.Get("answers.yes", this.Language));
+				return new ExecutionResult(new MessageCallback(Locale.Get("answers.yes", this.Language)));
 			}
 		}
 
