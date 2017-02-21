@@ -1,26 +1,25 @@
 ﻿start_messages:
-  revolution: My Sir, there has been a revolution. You are the King now.
+  revolution: "My Sir, there has been a revolution. You are the King now."
   legacy: You inherited this kingdom from your father.
   self_proclaimed: You left ${kingdom_name} and created your own kingdom with friends, wife and children.
-  
 commands:
   hire:
     list:
-      - Hire
-      - Employ
-      - Sign on
+    - Hire
+    - Employ
+    - Sign on
   train:
     list:
-      - Train
-      - Instruct
-      - Teach
-      - Educate
-      - Learn
-      - Coach
-      - learnt
-      - studied
-      - trained
- extract:
+    - Train
+    - Instruct
+    - Teach
+    - Educate
+    - Learn
+    - Coach
+    - learnt
+    - studied
+    - trained
+  extract:
     list:
     - Mine
     - Obtain
@@ -33,15 +32,15 @@ commands:
     - obtained
   build:
     list:
-      - Build
-      - Construct
-      - Develop
-      - Set
-      - built
-      - constructed
-      - Make
-      - made
-      - developed
+    - Build
+    - Construct
+    - Develop
+    - Set
+    - built
+    - constructed
+    - Make
+    - made
+    - developed
   create:
     list:
     - Create
@@ -71,30 +70,30 @@ jobs:
   peasant:
     name: Peasant
     names:
-      - peasant
-      - rusticman
-      - farmer
-      - villager
-      - worker
-      - working man
-      - manual
+    - peasant
+    - rusticman
+    - farmer
+    - villager
+    - worker
+    - working man
+    - manual
     miss: You need a peasant
   builder:
     name: Builder
     names:
-      - builder
-      - constructor
-      - housebuilder
-      - construction person
+    - builder
+    - constructor
+    - housebuilder
+    - construction person
     miss: You need a builder
   smith:
-  name: smith
+    name: smith
     names:
-      - smith
-      - blacksmith
-      - forger
-      - farrier
-  miss: You need a smith 
+    - smith
+    - blacksmith
+    - forger
+    - farrier
+  miss: You need a smith
   miner:
     name: Miner
     names:
@@ -125,7 +124,7 @@ jobs:
     - fisherman
     miss: You need a fisher
 buildings:
-  no_building: What do you want to build, Sir?
+  no_building: "What do you want to build, Sir?"
   well:
     name: Well
     names:
@@ -179,42 +178,42 @@ buildings:
   farming:
     name: Farming
     names:
-      - farming
-      - farmery
+    - farming
+    - farmery
   chopping:
     name: Lumbering
     names:
-      - lumbering
-      - chopping
-      - harvesting
-      - timber harvest
+    - lumbering
+    - chopping
+    - harvesting
+    - timber harvest
   baking:
     name: Baking
     names:
-      - baking
-      - panification
+    - baking
+    - panification
   mining:
     name: Mining
     names:
-      - digging
-      - mining
-      - minecraft
-      - output
-      - crop
+    - digging
+    - mining
+    - minecraft
+    - output
+    - crop
   building:
     name: Building
     names:
-      - building
-      - construnction
+    - building
+    - construnction
   smithing:
     name: Smithcraft
     names:
-      - smithcraft
-      - smithery
-      - smithing
-      - blacksmithing
-      - metallurgy
-      - metal industry
+    - smithcraft
+    - smithery
+    - smithing
+    - blacksmithing
+    - metallurgy
+    - metal industry
 resources:
   no_resource: "We don't have it"
   no_culture: "We can't grow it"
@@ -231,7 +230,7 @@ resources:
     - rock
     - stone
     - pebble
-    - granite    
+    - granite
     miss: "Недостаточно камня, сэр"
   iron:
     name: Iron
@@ -253,7 +252,7 @@ resources:
     names:
     - grain
     - crops
-    - corn 
+    - corn
     - cereals
     - buckwheat
     - wheat

@@ -37,6 +37,11 @@ namespace YesSir.Telegram {
 					ApiManager.Start(id);
 					break;
 
+				case "/ru":
+				case "/en":
+					ApiManager.SetLanguage(id, txt.Substring(1));
+					break;
+
 				default:
 					ApiManager.Message(id, txt);
 					break;

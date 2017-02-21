@@ -41,7 +41,7 @@ namespace YesSir.Backend {
 
 				return HttpStatusCode.OK;
 			});
-			Get("/setllang/{userType}/{userId}/{lang}", args => {
+			Get("/setlang/{userType}/{userId}/{lang}", args => {
 				Console.WriteLine(DateTime.Now.ToString() + " " + Request.Method + " " + Request.Path);
 				
 				UserInfo ui = new UserInfo() {
