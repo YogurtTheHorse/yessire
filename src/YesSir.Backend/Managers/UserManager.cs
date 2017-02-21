@@ -139,6 +139,14 @@ namespace YesSir.Backend.Managers {
 		}
 #endif
 
+		public static void SetLanguage(MessageInfo message) {
+			UpdateUserInfo(message.UserInfo);
+			message.UserInfo.Language = message.Text;
+
+			DatabaseManager.Users.ReplaceOneAsync(ui => message.UserInfo.Equals(ui), message.UserInfo);
+			KingdomsManager.FindKingdom(message.UserInfo).Language = message.Text;
+		}
+
 		public static MessageCallback OnMessage(MessageInfo message) {
 			UpdateUserInfo(message.UserInfo);
 			Kingdom kingdom = KingdomsManager.FindKingdom(message.UserInfo);
@@ -225,7 +233,7 @@ namespace YesSir.Backend.Managers {
 				DatabaseManager.Users.UpdateMany(u => u.ThirdPartyId == ui.ThirdPartyId && u.Type == ui.Type, update);
 
 				ui.Id = cursor.First().Id;
-				//ui.Language = cursor.First().Language;
+				ui.Language = cursor.First().Language;
 
 				return false;
 			}
