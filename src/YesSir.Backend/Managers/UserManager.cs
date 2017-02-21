@@ -142,27 +142,50 @@ namespace YesSir.Backend.Managers {
 		public static MessageCallback OnMessage(MessageInfo message) {
 			UpdateUserInfo(message.UserInfo);
 			Kingdom kingdom = KingdomsManager.FindKingdom(message.UserInfo);
-			ExecutionResult? exec = null;
-			bool cont = true;
+			List<ExecutionResult> exec = new List<ExecutionResult>();
+			bool cont = true, succ = false;
 			string text = message.Text;
 
-			while (cont) {
+			while (cont && (exec.Count == 0 || exec.Last().Successful)) {
 				cont = false;
 				foreach (Command c in Commands) {
-					ExecutionResult res = c.CheckAndExecute(text, kingdom);
+					ExecutionResult res = c.Check(text, kingdom);
 					if (res.Applied) {
 						KingdomsManager.SaveKingdom(kingdom);
+						res.Text = text.Substring(0, res.CommandLength).ToLower();
 						text = text.Substring(res.CommandLength);
-						cont = res.Successful;
-						exec = res;
+						succ |= (cont = res.Successful);
+						exec.Add(res);
 						break;
 					}
 				}
 			}
-			if (!exec.HasValue) {
+			if (succ) {
+				Human selected = null;
+				for (int i = 0; i < exec.Count; ++i) {
+					foreach (Human h in kingdom.Humans) {
+						// TODO: Do something with that
+						if (exec[i].Text.Contains(h.Name.Split(' ')[0].ToLower()) || exec[i].Text.Contains(h.Name.Split(' ')[1].ToLower())) {
+							selected = h;
+							break;
+						}
+					}
+					if (selected != null) {
+						exec[i].Parsed["human"] = selected;
+					}
+					exec[i] = exec[i].Execute(kingdom);
+					if (!exec[i].Successful) {
+						return exec[i].Message;
+					} else if (selected != null && exec[i].HumanBusy) {
+						selected = null;
+					}
+				}
+			}
+
+			if (exec.Count == 0) {
 				return new MessageCallback("nyet.", ECharacter.Knight);
 			} else {
-				return exec.Value.Message;
+				return exec.Last().Message;
 			}
 		}
 

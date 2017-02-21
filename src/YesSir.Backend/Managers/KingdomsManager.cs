@@ -17,13 +17,7 @@ namespace YesSir.Backend.Managers {
 		}
 
 		public static Kingdom FindKingdom(UserInfo userinfo) {
-			var cursor = DatabaseManager.Kingdoms.Find(k => k.UserId == userinfo.Id);
-
-			if (cursor.Count() > 0) {
-				return cursor.First<Kingdom>();
-			} else {
-				return new Kingdom(userinfo);
-			}
+			return Kingdoms.Find(k => k.UserId == userinfo.Id) ?? new Kingdom(userinfo);
 		}
 
 		public static void SaveKingdom(Kingdom kingdom) {
