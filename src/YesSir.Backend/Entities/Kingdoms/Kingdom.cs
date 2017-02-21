@@ -215,7 +215,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 				}
 			}
 
-			Human h = dict.Get("human", FindBySkill(r.Skill, false)) as Human;
+			Human h = dict.Get("human") as Human ?? FindBySkill(r.Skill);
 			HumanTask t = new HumanTask() {
 				Destination = r.Name,
 				TaskType = ETask.Creating
@@ -257,7 +257,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 				}
 			}
 
-			Human h = dict.Get("human", FindBySkill(r.Skill, false)) as Human;
+			Human h = dict.Get("human") as Human ?? FindBySkill(r.Skill);
 			HumanTask t = new HumanTask() {
 				Destination = r.Name,
 				TaskType = ETask.Extracting,
@@ -321,7 +321,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 					return new ExecutionResult(false, res.Item2);
 				}
 			}
-			Human h = dict.Get("human", FindBySkill(j.SkillName, false)) as Human;
+			Human h = dict.Get("human") as Human ?? FindBySkill(j.SkillName, false);
 			HumanTask task = new HumanTask() {
 				Destination = j.SkillName,
 				TaskType = ETask.Training
@@ -370,7 +370,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 				}
 			}
 
-			Human h = dict.Get("human", FindBySkill("building", false)) as Human;
+			Human h = dict.Get("human") as Human ?? FindBySkill("building");
 
 			HumanTask t = new HumanTask();
 			t.Destination = b.Name;
