@@ -30,10 +30,19 @@ namespace YesSir.CLI {
 			while (running) {
 				Console.Write("> ");
 				string message = Console.ReadLine();
-				if (message == "start") {
-					ApiManager.Start(ui.ThirdPartyId);
-				} else {
-					ApiManager.Message(ui.ThirdPartyId, message);
+				switch (message) {
+					case "start":
+						ApiManager.Start(ui.ThirdPartyId);
+						break;
+
+					case "ru":
+					case "en":
+						ApiManager.SetLanguage(ui.ThirdPartyId, message);
+						break;
+
+					default:
+						ApiManager.Message(ui.ThirdPartyId, message);
+						break;
 				}
 			}
 			Console.ReadLine();

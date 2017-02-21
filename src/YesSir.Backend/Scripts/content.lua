@@ -50,7 +50,7 @@ cm.RegisterResource ("millet", 1, nil, {
 })
 cm.RegisterGrain ("grain", "millet")
 
-cm.RegisterResource ("flour", 2, "milling", nil, {
+cm.RegisterResource ("flour", 2, "farming", nil, {
 	building_dep ("mill", true),
 	item_dep ("millet", 2)
 })

@@ -16,7 +16,7 @@ namespace YesSir.Backend.Managers {
 	public static class UsersManager {
 		private static List<Command> Commands;
 
-		static UsersManager() {
+		public static void Init() {
 			Commands = new List<Command>();
 
 			List<Tuple<string, object>> jobTuples = new List<Tuple<string, object>>();
@@ -40,6 +40,14 @@ namespace YesSir.Backend.Managers {
 					}
 				), (k, dict) => k.Hire(dict)
 			));
+
+			List<Tuple<string, object>> skills = new List<Tuple<string, object>>();
+			foreach (string sk in ContentManager.GetSkills()) {
+				foreach(string lsk in Locale.GetArray("skills." + sk + ".names")) {
+					skills.Add(new Tuple<string, object>(lsk, sk));
+				}
+			}
+			CommandPart skillPart = new CommandPart("skill", skills.ToArray());
 			Commands.Add(new Command(
 				new IDependency[] { new HumanDependency() },
 				new CommandPart(Locale.GetArray("commands.train.list"),
@@ -47,8 +55,8 @@ namespace YesSir.Backend.Managers {
 						new CommandPart("count",
 							CommandsStandartFunctions.CheckInt,
 							CommandsStandartFunctions.ParseInt,
-							new CommandPart[] { jobPart }),
-						jobPart,
+							new CommandPart[] { skillPart }),
+						skillPart,
 						new CommandPart()
 					}
 				), (k, dict) => k.Train(dict)
@@ -139,6 +147,14 @@ namespace YesSir.Backend.Managers {
 		}
 #endif
 
+		public static void SetLanguage(MessageInfo message) {
+			UpdateUserInfo(message.UserInfo);
+			message.UserInfo.Language = message.Text;
+
+			DatabaseManager.Users.ReplaceOneAsync(ui => message.UserInfo.Equals(ui), message.UserInfo);
+			KingdomsManager.FindKingdom(message.UserInfo).Language = message.Text;
+		}
+
 		public static MessageCallback OnMessage(MessageInfo message) {
 			UpdateUserInfo(message.UserInfo);
 			Kingdom kingdom = KingdomsManager.FindKingdom(message.UserInfo);
@@ -225,7 +241,7 @@ namespace YesSir.Backend.Managers {
 				DatabaseManager.Users.UpdateMany(u => u.ThirdPartyId == ui.ThirdPartyId && u.Type == ui.Type, update);
 
 				ui.Id = cursor.First().Id;
-				//ui.Language = cursor.First().Language;
+				ui.Language = cursor.First().Language;
 
 				return false;
 			}
