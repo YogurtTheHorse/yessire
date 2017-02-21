@@ -1,7 +1,7 @@
 ﻿start_messages:
   revolution: "Произошла революция и вот ты тут, Король"
-  legacy: "Ты унаследовал колоевство, Король"
-  self_proclaimed: "Ты свалил из ${kingdom_name} и сделал собственную с детьми, женой и друзьями"
+  legacy: "Ты унаследовал королевство, Король"
+  self_proclaimed: "Ты свалил из ${kingdom_name} и создал собственное с детьми, женой и друзьями"
 commands:
   hire:
     list:
@@ -68,12 +68,12 @@ jobs:
   builder:
     name: "Строитель"
     names:
-    - "строител"
+    - "строитель"
     miss: "Нужен строитель"
   baker:
     name: "Пекарь"
     names:
-    - "пекар"
+    - "пекарь"
   woodcutter:
     name: "Лесоруб"
     names:
@@ -95,7 +95,7 @@ buildings:
   forge:
     name: "Кузница"
     names:
-    - "кузниц"
+    - "кузница"
     miss: "Нужно построить кузницу"
   farm:
     name: "Ферма"
@@ -190,7 +190,7 @@ resources:
   wood:
     name: "Дерево"
     names:
-    - "девушку"
+    - "деревушку"
     - "дерево"
     - "деревья"
     miss: "Нехватка дерева"
@@ -203,7 +203,7 @@ resources:
   millet:
     name: "Пшено"
     names:
-    - "пшен"
+    - "пшено"
     miss: "Нужно пшено"
   bucket:
     name: "Ведро"
@@ -213,8 +213,8 @@ resources:
   water_bucket:
     name: "Ведро воды"
     names:
-    - "ведро вод"
-    - "ведро с вод"
+    - "ведро воды"
+    - "ведро с водой"
     miss: "Нужна вода"
   fish:
     name: "Рыба"
@@ -247,7 +247,7 @@ answers:
 problems:
   no_people: "Все заняты, Милорд"
   dont_work: "{0} отказался работать."
-  starving: "Люди голадают"
+  starving: "Люди голодают"
   drawing: "Набирает {0}"
   died: "{0} пал жертвой голодания"
 notifications:
