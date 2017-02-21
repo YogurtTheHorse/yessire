@@ -13,7 +13,8 @@ namespace YesSir.Telegram {
 
 			var me = Bot.GetMeAsync().Result;
 
-			Console.Title = me.Username;
+			Console.WriteLine(me.Username);
+			//Console.Title = me.Username;
 			ApiManager.UserType = "telegram";
 			ApiManager.OnMessage += ApiMessage;
 			ApiManager.StartPoll();
