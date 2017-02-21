@@ -33,7 +33,8 @@ namespace YesSir.Backend.Managers {
 			Kingdom kingdom = ScriptManager.DoFile("Scripts/new_kingdom.lua").ToObject() as Kingdom;
 			kingdom.UserId = ui.Id;
 			kingdom.Language = ui.Language;
-			
+
+			Kingdoms.RemoveAll(k => k.UserId == ui.Id);
 			Kingdoms.Add(kingdom);
 			SaveKingdom(kingdom);
 
