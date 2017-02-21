@@ -119,7 +119,7 @@ namespace YesSir.Backend {
 			Console.WriteLine("Starting Nancy on http://localhost:9797");
 			host.Start();
 
-			int updatetime = 10, deltatime = 0;
+			int updatetime = 100 / 3, deltatime = 0;
 			Stopwatch sw = Stopwatch.StartNew();
 			while (true) {
 				UpdateQueue();
