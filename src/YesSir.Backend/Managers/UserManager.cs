@@ -139,17 +139,31 @@ namespace YesSir.Backend.Managers {
 		}
 #endif
 
-		public static MessageCallback OnMessage(MessageInfo message) {
+		public static MessageCallback[] OnMessage(MessageInfo message) {
 			UpdateUserInfo(message.UserInfo);
 			Kingdom kingdom = KingdomsManager.FindKingdom(message.UserInfo);
-			foreach (Command c in Commands) {
-				Tuple<bool, MessageCallback> res = c.CheckAndExecute(message.Text, kingdom);
-				if (res.Item1) {
-					KingdomsManager.SaveKingdom(kingdom);
-					return res.Item2;
+			List<MessageCallback> msgs = new List<MessageCallback>();
+			bool cont = true;
+			string text = message.Text;
+
+			while (cont) {
+				cont = false;
+				foreach (Command c in Commands) {
+					Tuple<int, MessageCallback> res = c.CheckAndExecute(text, kingdom);
+					if (res.Item1 >= 0) {
+						KingdomsManager.SaveKingdom(kingdom);
+						msgs.Add(res.Item2);
+						text = text.Substring(res.Item1);
+						cont = true;
+						break;
+					}
 				}
 			}
-			return new MessageCallback("nyet.", ECharacter.Knight);
+			if (msgs.Count == 0) {
+				return new MessageCallback[] { new MessageCallback("nyet.", ECharacter.Knight) };
+			} else {
+				return msgs.ToArray();
+			}
 		}
 
 		public static MessageCallback Start(UserInfo ui) {

@@ -66,7 +66,7 @@ namespace YesSir.Backend.Commands.Parts {
 			this.NextCommands = nextCommands;
 		}
 
-		public bool ParseCommand(string arg, ref Dictionary<string, object> parsed) {
+		public int ParseCommand(string arg, ref Dictionary<string, object> parsed) {
 			if (parsed == null) {
 				parsed = new Dictionary<string, object>();
 			}
@@ -84,8 +84,9 @@ namespace YesSir.Backend.Commands.Parts {
 
 				if (NextCommands != null && NextCommands.Length > 0) {
 					foreach (CommandPart cp in NextCommands) {
-						if (cp.ParseCommand(sub, ref parsed)) {
-							return true;
+						int len = cp.ParseCommand(sub, ref parsed);
+						if (len >= 0) {
+							return len + res.Item2;
 						}
 					}
 
@@ -93,13 +94,13 @@ namespace YesSir.Backend.Commands.Parts {
 						parsed.Remove(ValueName);
 					}
 
-					return false;
+					return -1;
 				} else {
-					return true;
+					return res.Item2;
 				}
 			} else {
-				return false;
-			}
+				return -1;
+			}	
 		}
 	}
 

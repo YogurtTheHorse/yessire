@@ -17,19 +17,19 @@ namespace YesSir.Backend.Commands {
 			this.Execute = func;
 		}
 
-		public Tuple<bool, MessageCallback> CheckAndExecute(string s, Kingdom kingdom) {
+		public Tuple<int, MessageCallback> CheckAndExecute(string s, Kingdom kingdom) {
 			Dictionary<string, object> parsed = null;
-			
-			if (Parser.ParseCommand(s, ref parsed)) {
+			int parsed_len = Parser.ParseCommand(s, ref parsed);
+			if (parsed_len >= 0) {
 				foreach (IDependency dep in Dependencies) {
 					Tuple<bool, MessageCallback> res = dep.CheckKingdom(kingdom);
 					if (!res.Item1) {
-						return new Tuple<bool, MessageCallback>(true, res.Item2);
+						return new Tuple<int, MessageCallback>(0, res.Item2);
 					}
 				}
-				return new Tuple<bool, MessageCallback>(true, Execute(kingdom, parsed));
+				return new Tuple<int, MessageCallback>(parsed_len, Execute(kingdom, parsed));
 			} else {
-				return new Tuple<bool, MessageCallback>(false, new MessageCallback());
+				return new Tuple<int, MessageCallback>(-1, new MessageCallback());
 			}
 		}
 	}

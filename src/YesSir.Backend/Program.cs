@@ -140,21 +140,20 @@ namespace YesSir.Backend {
 			Incoming inc = QueueManager.GetNextIncoming();
 
 			while (inc != null) {
-				Outgoing o = new Outgoing();
 				switch (inc.Method) {
 					case "message":
-						o.Message = UsersManager.OnMessage(inc.Message);
+						foreach(MessageCallback msg in UsersManager.OnMessage(inc.Message)) {
+							QueueManager.Push(msg, inc.UserInfo);
+						}
 						break;
 
 					case "start":
-						o.Message = UsersManager.Start(inc.UserInfo);
+						QueueManager.Push(UsersManager.Start(inc.UserInfo), inc.UserInfo);
 						break;
 
 					default:
 						continue;
 				}
-				o.UserInfo = inc.UserInfo;
-				QueueManager.Push(o);
 				inc = QueueManager.GetNextIncoming();
 			}
 		}
