@@ -397,7 +397,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			var selected = Humans.Where((h) => h.TasksToDo.Count == mn_cnt);
 
 			Human res = null;
-			float mx = -1;
+			float mx = maximal ? -1 : 2;
 
 			foreach (var h in selected) {
 				float p = h.GetSkill(skillname);
