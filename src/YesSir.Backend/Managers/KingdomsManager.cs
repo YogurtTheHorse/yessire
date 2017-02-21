@@ -39,8 +39,9 @@ namespace YesSir.Backend.Managers {
 			Kingdom kingdom = ScriptManager.DoFile("Scripts/new_kingdom.lua").ToObject() as Kingdom;
 			kingdom.UserId = ui.Id;
 			kingdom.Language = ui.Language;
+			
+			Kingdoms.Add(kingdom);
 			SaveKingdom(kingdom);
-			kingdom = FindKingdom(ui);
 
 			int res = RandomManager.Next(0, 3);
 
