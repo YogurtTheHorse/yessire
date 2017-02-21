@@ -41,6 +41,22 @@ namespace YesSir.Backend {
 
 				return HttpStatusCode.OK;
 			});
+			Get("/setllang/{userType}/{userId}/{lang}", args => {
+				Console.WriteLine(DateTime.Now.ToString() + " " + Request.Method + " " + Request.Path);
+				
+				UserInfo ui = new UserInfo() {
+					Type = args.userType,
+					ThirdPartyId = args.userId
+				};
+				QueueManager.Push(new Incoming() {
+					UserInfo = ui,
+					Method = "lang",
+					IsWaiting = true,
+					Message = new MessageInfo() { Text = args.lang, UserInfo = ui }
+				});
+
+				return HttpStatusCode.OK;
+			});
 			Post("/message/{userType}/{userId}/", args => {
 				Console.WriteLine(DateTime.Now.ToString() + " " + Request.Method + " " + Request.Path);
 				var body = this.Request.Body;
@@ -148,6 +164,10 @@ namespace YesSir.Backend {
 
 					case "start":
 						QueueManager.Push(UsersManager.Start(inc.UserInfo), inc.UserInfo);
+						break;
+
+					case "lang":
+						UsersManager.SetLanguage(inc.Message);
 						break;
 
 					default:

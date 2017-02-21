@@ -91,6 +91,10 @@ namespace YesSir.Shared {
 			await Method(string.Format("/message/{0}/{1}/{2}", UserType, userId, msg));
 		}
 
+		public static async void SetLanguage(string userId, string lang) {
+			await Method(string.Format("/setlang/{0}/{1}/{2}", UserType, userId, lang));
+		}
+
 		public static Outgoing[] GetMessages(string userId = "all") {
 			var m = Method(string.Format("/get/{0}/{1}", UserType, userId));
 			string resp = m.GetAwaiter().GetResult();
