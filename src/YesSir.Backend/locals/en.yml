@@ -176,6 +176,45 @@ buildings:
     names:
     - mill
     miss: "Нужна мельница"
+  farming:
+    name: Farming
+    names:
+      - farming
+      - farmery
+  chopping:
+    name: Lumbering
+    names:
+      - lumbering
+      - chopping
+      - harvesting
+      - timber harvest
+  baking:
+    name: Baking
+    names:
+      - baking
+      - panification
+  mining:
+    name: Mining
+    names:
+      - digging
+      - mining
+      - minecraft
+      - output
+      - crop
+  building:
+    name: Building
+    names:
+      - building
+      - construnction
+  smithing:
+    name: Smithcraft
+    names:
+      - smithcraft
+      - smithery
+      - smithing
+      - blacksmithing
+      - metallurgy
+      - metal industry
 resources:
   no_resource: "We don't have it"
   no_culture: "We can't grow it"
