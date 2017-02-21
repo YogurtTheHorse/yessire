@@ -16,7 +16,7 @@ namespace YesSir.Backend.Managers {
 	public static class UsersManager {
 		private static List<Command> Commands;
 
-		static UsersManager() {
+		public static void Init() {
 			Commands = new List<Command>();
 
 			List<Tuple<string, object>> jobTuples = new List<Tuple<string, object>>();
@@ -40,6 +40,14 @@ namespace YesSir.Backend.Managers {
 					}
 				), (k, dict) => k.Hire(dict)
 			));
+
+			List<Tuple<string, object>> skills = new List<Tuple<string, object>>();
+			foreach (string sk in ContentManager.GetSkills()) {
+				foreach(string lsk in Locale.GetArray("skills." + sk + ".names")) {
+					skills.Add(new Tuple<string, object>(lsk, sk));
+				}
+			}
+			CommandPart skillPart = new CommandPart("skill", skills.ToArray());
 			Commands.Add(new Command(
 				new IDependency[] { new HumanDependency() },
 				new CommandPart(Locale.GetArray("commands.train.list"),
@@ -47,8 +55,8 @@ namespace YesSir.Backend.Managers {
 						new CommandPart("count",
 							CommandsStandartFunctions.CheckInt,
 							CommandsStandartFunctions.ParseInt,
-							new CommandPart[] { jobPart }),
-						jobPart,
+							new CommandPart[] { skillPart }),
+						skillPart,
 						new CommandPart()
 					}
 				), (k, dict) => k.Train(dict)

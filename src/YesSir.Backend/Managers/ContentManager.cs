@@ -7,7 +7,6 @@ using MoonSharp.Interpreter;
 using YesSir.Backend.Entities.Dependencies;
 using YesSir.Backend.Descriptions;
 using YesSir.Backend.Entities;
-using YesSir.Backend.Entities.Items;
 
 namespace YesSir.Backend.Managers {
 	[MoonSharpUserData]
@@ -27,13 +26,16 @@ namespace YesSir.Backend.Managers {
 			Skills.AddRange(new string[] {
 				"farming",
 				"mining",
-				"chopping",
-				"milling"
+				"chopping"
 			});
 		}
 
 		public static string GetJobBySkill(string skill, string language) {
-			return Jobs.Find(j => j.SkillName == skill).GetName(language);
+			return GetJobDescriptionBySkill(skill).GetName(language);
+		}
+
+		public static JobDescription GetJobDescriptionBySkill(string skill) {
+			return Jobs.Find(j => j.SkillName == skill);
 		}
 
 		public static ItemDescription[] GetResources() {

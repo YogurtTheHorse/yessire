@@ -308,11 +308,12 @@ namespace YesSir.Backend.Entities.Kingdoms {
 		public ExecutionResult Train(Dictionary<string, object> dict) {
 			int count = 1;
 			if (dict.ContainsKey("count")) { count = (int)dict["count"]; }
-			if (!dict.ContainsKey("job")) {
+			if (!dict.ContainsKey("skill")) {
 				return new ExecutionResult(false, new MessageCallback(Locale.Get("jobs.no_job", this.Language), ECharacter.Knight));
 			}
-			JobDescription j = (JobDescription)dict["job"];
-			List<IDependency> deps = new List<IDependency>(j.TrainDepence);
+			string sk = (string)dict["skill"];
+			JobDescription jb = ContentManager.GetJobDescriptionBySkill(sk);
+			List<IDependency> deps = new List<IDependency>(jb.TrainDepence);
 			deps.Add(new HumanDependency());
 
 			foreach (IDependency dep in deps) {
@@ -321,14 +322,11 @@ namespace YesSir.Backend.Entities.Kingdoms {
 					return new ExecutionResult(false, res.Item2);
 				}
 			}
-			Human h = dict.Get("human") as Human ?? FindBySkill(j.SkillName, false);
+			Human h = dict.Get("human") as Human ?? FindBySkill(sk, false);
 			HumanTask task = new HumanTask() {
-				Destination = j.SkillName,
+				Destination = sk,
 				TaskType = ETask.Training
 			};
-			foreach (IDependency dep in j.HireDepence) {
-				task.Use(dep.Use(this));
-			}
 
 			task.CalculateTaskTime(h);
 			if (!h.AddTask(task)) {

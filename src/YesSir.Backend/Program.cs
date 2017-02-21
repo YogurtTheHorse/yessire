@@ -115,6 +115,7 @@ namespace YesSir.Backend {
 			DatabaseManager.Init();
 			ScriptManager.Init();
 			ContentManager.Init();
+			UsersManager.Init();
 				
 			Console.WriteLine("Starting Nancy on http://localhost:9797");
 			host.Start();
