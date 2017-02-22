@@ -1,7 +1,7 @@
 ﻿start_messages:
   revolution: "My Sir, there has been a revolution. You are the King now."
-  legacy: You inherited this kingdom from your father.
-  self_proclaimed: You left ${kingdom_name} and created your own kingdom with friends, wife and children.
+  legacy: "You inherited this kingdom from your father."
+  self_proclaimed: "You left ${kingdom_name} and created your own kingdom with friends, wife and children."
 commands:
   hire:
     list:
@@ -66,7 +66,7 @@ commands:
     - Raise
     - risen
 jobs:
-  no_job: Who do you want to hire?
+  no_job: "Who do you want to hire?"
   peasant:
     name: Peasant
     names:
@@ -77,7 +77,7 @@ jobs:
     - worker
     - working man
     - manual
-    miss: You need a peasant
+    miss: "You need a peasant"
   builder:
     name: Builder
     names:
@@ -85,7 +85,7 @@ jobs:
     - constructor
     - housebuilder
     - construction person
-    miss: You need a builder
+    miss: "You need a builder"
   smith:
     name: smith
     names:
@@ -93,7 +93,7 @@ jobs:
     - blacksmith
     - forger
     - farrier
-  miss: You need a smith
+  miss: "You need a smith"
   miner:
     name: Miner
     names:
@@ -102,12 +102,12 @@ jobs:
     - pit man
     - digger
     - mine-digger
-    miss: You need a miner
+    miss: "You need a miner"
   baker:
     name: Baker
     names:
     - baker
-    miss: You need a baker
+    miss: "You need a baker"
   woodcutter:
     name: Woodcutter
     names:
@@ -116,13 +116,13 @@ jobs:
     - wood chopper
     - logger
     - lumberer
-    miss: You need a woodcutter
+    miss: "You need a woodcutter"
   fisher:
     name: Fisher
     names:
     - fisher
     - fisherman
-    miss: You need a fisher
+    miss: "You need a fisher"
 buildings:
   no_building: "What do you want to build, Sir?"
   well:
