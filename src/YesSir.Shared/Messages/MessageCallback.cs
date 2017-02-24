@@ -1,9 +1,12 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System;
 
 namespace YesSir.Shared.Messages {
 	public class MessageCallback {
-		public string Text;
+		[JsonConverter(typeof(StringEnumConverter))]
 		public ECharacter From;
+		public string Text;
 
 		public MessageCallback(string text) : this(text, ECharacter.Knight) {  }
 
