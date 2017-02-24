@@ -1,10 +1,14 @@
 from flask import Flask
 from flask_socketio import SocketIO
+from pymongo import MongoClient
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 app.config['SERVER_NAME'] = 'yessirgame.ru:80'
 socketio = SocketIO(app)
+
+mongo = MongoClient()
+db_web = mongo['yes_sir']['web']
 
 from views import main_page
 from views import play
