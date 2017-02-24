@@ -10,6 +10,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 	[MoonSharp.Interpreter.MoonSharpUserData]
 	public class Human {
 		public Guid HumanId;
+		public Guid KingdomId;
 		public float DepressionLevel = 0;
 		public float Mood = 0.7f;
 		public float Satiety = 0.9f;

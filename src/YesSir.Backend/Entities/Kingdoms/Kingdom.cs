@@ -11,15 +11,21 @@ using YesSir.Shared.Messages;
 using YesSir.Shared.Users;
 using YesSir.Backend.Entities.Items;
 using YesSir.Backend.Commands;
+using System.Collections;
 
 namespace YesSir.Backend.Entities.Kingdoms {
 	public class Kingdom {
 		public Guid UserId;
-		public string Language;
+		public string Language, Name;
 		public List<Human> Humans;
 		public List<Building> Buildings;
 		public Dictionary<string, List<Item>> Resources;
 		public bool Starving = false;
+		private IEnumerable<string> select;
+		public object Temp;
+		public Point Coordinate {
+			get { return UserId.ToPoint(); }
+		}
 
 		public Kingdom() {
 			Humans = new List<Human>();
@@ -30,6 +36,22 @@ namespace YesSir.Backend.Entities.Kingdoms {
 		public Kingdom(UserInfo userinfo) : this() {
 			this.UserId = userinfo.Id;
 			this.Language = userinfo.Language;
+
+			GenerateName();
+		}
+
+		public void GenerateName() {
+			object _variants;
+
+			if (!Locale.TryGet(Language + ".kingdom_names", "names", out _variants)) { return; }
+
+			IEnumerable chosed_seq = (_variants as IEnumerable<object>).RandomChoice() as IEnumerable;
+
+			List<string> names = new List<string>();
+			foreach (object obj in chosed_seq) {
+				names.Add((obj as IEnumerable<object>).RandomChoice() as string);
+			}
+			Name = string.Join(" ", names);
 		}
 
 		public int GetResourcesCount(string resorce) {
@@ -159,6 +181,10 @@ namespace YesSir.Backend.Entities.Kingdoms {
 						case ETask.Extracting:
 						case ETask.Creating:
 							AddResource(t.Destination, 1, h.GetSkill(t.Skill));
+							break;
+
+						case ETask.SendingMessage:
+							KingdomsManager.SendMessage(h, Guid.Parse(t.Destination), t.Context as string);
 							break;
 					}
 					t = h.TasksToDo.FirstOrDefault();
@@ -342,6 +368,8 @@ namespace YesSir.Backend.Entities.Kingdoms {
 		private void CreateHumanWithSkills(Tuple<string, float>[] tuples) {
 			Human h = new Human(GenerateName(this.Language), RandomManager.Select<ESex>(), 32);
 			h.HumanId = (Guid)CombGuidGenerator.Instance.GenerateId(this, h);
+			h.KingdomId = UserId;
+
 			foreach (string skill in ContentManager.GetSkills()) {
 				h.SetSkill(skill, RandomManager.NextDefaultSkill());
 			}
@@ -390,7 +418,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			}
 		}
 
-		private Human FindBySkill(string skillname, bool maximal = true) {
+		public Human FindBySkill(string skillname, bool maximal = true) {
 			int mn_cnt = Humans.Min((h) => h.TasksToDo.Count);
 			var selected = Humans.Where((h) => h.TasksToDo.Count == mn_cnt);
 

@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace YesSir.Backend.Commands.Parts {
 	public class CommandPart {
@@ -25,7 +22,7 @@ namespace YesSir.Backend.Commands.Parts {
 			this.Check = (s) => {
 				foreach (string n in names) {
 					if (s.Contains(n.ToLower())) {
-						return new Tuple<bool, int>(true, n.Length + s.IndexOf(n));
+						return new Tuple<bool, int>(true, n.Length + s.IndexOf(n.ToLower()));
 					}
 				}
 
@@ -41,7 +38,7 @@ namespace YesSir.Backend.Commands.Parts {
 			this.Check = (s) => {
 				foreach (Tuple<string, object> t in pairs) {
 					if (s.Contains(t.Item1.ToLower())) {
-						return new Tuple<bool, int>(true, s.IndexOf(t.Item1) + t.Item1.Length);
+						return new Tuple<bool, int>(true, s.IndexOf(t.Item1.ToLower()) + t.Item1.Length);
 					}
 				}
 

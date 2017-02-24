@@ -1,7 +1,4 @@
-﻿using System.Net;
-using System.IO;
-using System.Collections.Specialized;
-using System.Text;
+﻿using System.Text;
 using System.Collections.Generic;
 using YesSir.Shared.Queues;
 using Newtonsoft.Json;
@@ -10,7 +7,6 @@ using System.Diagnostics;
 using System.Threading;
 using System;
 using System.Net.Http;
-using Nancy.Helpers;
 
 namespace YesSir.Shared {
 	public static class ApiManager {
@@ -22,14 +18,8 @@ namespace YesSir.Shared {
 		private static volatile int _isPolling = 0;
 		private static bool IsPolling
 		{
-			get
-			{
-				return _isPolling != 0;
-			}
-			set
-			{
-				Interlocked.Exchange(ref _isPolling, value ? 1 : 0);
-			}
+			get { return _isPolling != 0; }
+			set { Interlocked.Exchange(ref _isPolling, value ? 1 : 0); }
 		}
 
 		private static async Task<string> Method(string path, Dictionary<string, string> d = null) {

@@ -6,6 +6,7 @@ cm.RegisterJob ("baker", "baking", 20)
 cm.RegisterJob ("miner", "mining", 50)
 cm.RegisterJob ("builder", "building", 100)
 cm.RegisterJob ("smith", "smithing", 100)
+cm.RegisterJob ("ambassador", "diplomacy", 300)
 
 
 -- 

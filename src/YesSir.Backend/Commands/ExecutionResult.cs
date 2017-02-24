@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using YesSir.Backend.Entities.Kingdoms;
 using YesSir.Shared.Messages;
+using YesSir.Shared.Users;
 
 namespace YesSir.Backend.Commands {
 	public class ExecutionResult {
@@ -14,6 +15,8 @@ namespace YesSir.Backend.Commands {
 		public Dictionary<string, object> Parsed;
 		public Func<Kingdom, Dictionary<string, object>, ExecutionResult> ExecuteFunc;
 		public bool HumanBusy = false;
+		public EState? NewState = null;
+		public bool LastCommand = true;
 
 		public ExecutionResult() { }
 

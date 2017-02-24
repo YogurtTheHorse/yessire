@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using Nancy.Helpers;
 using MoonSharp.Interpreter;
 using System.Reflection;
+using YesSir.Backend.Entities;
 
 namespace YesSir.Backend {
 	public class Startup {
@@ -132,7 +133,8 @@ namespace YesSir.Backend {
 			ScriptManager.Init();
 			ContentManager.Init();
 			UsersManager.Init();
-				
+			KingdomsManager.Init();
+
 			Console.WriteLine("Starting Nancy on http://localhost:9797");
 			host.Start();
 

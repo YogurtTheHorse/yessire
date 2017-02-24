@@ -19,9 +19,9 @@ namespace YesSir.CLI {
 			ui.Type = "cli";
 			Console.OutputEncoding = Encoding.Unicode;
 			Console.InputEncoding = Encoding.Unicode;
-
-			Console.WriteLine("Your id: 1");
-			ui.ThirdPartyId = "1";
+			
+			ui.ThirdPartyId = Console.ReadLine();
+			Console.WriteLine($"Your id: {ui.ThirdPartyId}");
 
 			bool running = true;
 			ApiManager.OnMessage += (o) => Print(o.Message);

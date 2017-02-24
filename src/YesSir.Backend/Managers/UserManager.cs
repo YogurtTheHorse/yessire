@@ -10,6 +10,9 @@ using YesSir.Shared.Messages;
 using YesSir.Shared.Users;
 using YesSir.Shared.Queues;
 using System.Linq;
+using YesSir.Backend.Helpers;
+using MongoDB.Bson;
+using YesSir.Backend.Entities;
 
 namespace YesSir.Backend.Managers {
 	[MoonSharp.Interpreter.MoonSharpUserData]
@@ -43,7 +46,7 @@ namespace YesSir.Backend.Managers {
 
 			List<Tuple<string, object>> skills = new List<Tuple<string, object>>();
 			foreach (string sk in ContentManager.GetSkills()) {
-				foreach(string lsk in Locale.GetArray("skills." + sk + ".names")) {
+				foreach (string lsk in Locale.GetArray("skills." + sk + ".names")) {
 					skills.Add(new Tuple<string, object>(lsk, sk));
 				}
 			}
@@ -107,13 +110,20 @@ namespace YesSir.Backend.Managers {
 				}
 			}
 			CommandPart buildingPart = new CommandPart("building", buildingsTuples.ToArray());
-			Command b_cmd = new Command(
+			Commands.Add(new Command(
 				new IDependency[] { },
 				new CommandPart(Locale.GetArray("commands.build.list"),
 					new CommandPart[] { buildingPart, new CommandPart() }
-				), (k, dict) => k.Build(dict));
-			Commands.Add(b_cmd);
+				), (k, dict) => k.Build(dict)
+			));
 
+			CommandPart kingdomPart = new CommandPart("kingdom", CommandsStandartFunctions.CheckKingdom, CommandsStandartFunctions.ParseKingomd);
+			Commands.Add(new Command(
+				new IDependency[] { new HumanDependency() },
+				new CommandPart(Locale.GetArray("commands.send.list"),
+					new CommandPart[] { kingdomPart, new CommandPart() }
+				), (k, dict) => SendMessage(k, dict)
+			));
 #if DEBUG
 			LoadDebugCommands();
 #endif
@@ -157,6 +167,17 @@ namespace YesSir.Backend.Managers {
 
 		public static MessageCallback OnMessage(MessageInfo message) {
 			UpdateUserInfo(message.UserInfo);
+			switch (message.UserInfo.State) {
+				case EState.Main:
+					return OnCommand(message);
+				case EState.Dictates:
+					return OnDictates(message);
+			}
+
+			return null;
+		}
+
+		private static MessageCallback OnCommand(MessageInfo message) {
 			Kingdom kingdom = KingdomsManager.FindKingdom(message.UserInfo);
 			List<ExecutionResult> exec = new List<ExecutionResult>();
 			bool cont = true, succ = false;
@@ -190,7 +211,12 @@ namespace YesSir.Backend.Managers {
 						exec[i].Parsed["human"] = selected;
 					}
 					exec[i] = exec[i].Execute(kingdom);
-					if (!exec[i].Successful) {
+
+					if (exec[i].NewState.HasValue) {
+						UpdateState(message.UserInfo, exec[i].NewState.Value);
+					}
+
+					if (!exec[i].Successful || exec[i].LastCommand) {
 						return exec[i].Message;
 					} else if (selected != null && exec[i].HumanBusy) {
 						selected = null;
@@ -205,8 +231,72 @@ namespace YesSir.Backend.Managers {
 			}
 		}
 
+		private static ExecutionResult SendMessage(Kingdom k, Dictionary<string, object> dict) {
+			if (!dict.ContainsKey("kingdom")) {
+				return new ExecutionResult(false, new MessageCallback(Locale.Get("commands.build.no_kingdom", k.Language), ECharacter.Knight));
+			}
+
+			Guid hid = (dict.Get("human") as Human ?? k.FindBySkill("dyplomacy")).HumanId;
+			string dest = dict["kingdom"] as string;
+
+			int index;
+			for (index = 0; index < k.Humans.Count && k.Humans[index].HumanId != hid; ++index) ;
+
+			if (k.Humans[index].AddTask(new HumanTask() { Destination = dest, Skill = "dyplomacy", TaskType = ETask.ListeningKing })) {
+				k.Humans[index].TasksToDo.Last().CalculateTaskTime(k.Humans[index]);
+				k.Temp = k.Humans[index].HumanId.ToString();
+
+				return new ExecutionResult(new MessageCallback("answers.write_message")) {
+					NewState = EState.Dictates
+				};
+			} else {
+				return new ExecutionResult(false, new MessageCallback(
+					Locale.Get(string.Format("problems.dont_work", k.Humans[index].GetName(k.Language)), k.Language),
+					ECharacter.Knight
+				));
+			}
+		}
+
+		private static MessageCallback OnDictates(MessageInfo message) {
+			Kingdom kingdom = KingdomsManager.FindKingdom(message.UserInfo);
+			Guid hid = Guid.Parse(kingdom.Temp as string);
+
+			Human h = null;
+			foreach (Human hh in kingdom.Humans) {
+				if (hh.HumanId == hid) {
+					h = hh;
+					break;
+				}
+			}
+			
+			if (h == null) { }
+
+			int i;
+			for (i = 0; i < h.TasksToDo.Count; ++i) {
+				if (h.TasksToDo[i].TaskType == ETask.ListeningKing) {
+					break;
+				}
+			}
+
+			h.TasksToDo[i].TaskType = ETask.SendingMessage;
+			h.TasksToDo[i].Context = message.Text;
+			h.TasksToDo[i].CalculateTaskTime(h);
+
+			return new MessageCallback(Locale.Get("answers.yes", kingdom.Language));
+		}
+
+		public static void UpdateState(UserInfo ui, EState state) {
+			ui.State = state;
+
+			var filter = Builders<UserInfo>.Filter.Eq("Id", ui.Id);
+			var update = Builders<UserInfo>.Update.Set("State", state);
+			DatabaseManager.Users.UpdateOne(filter, update);
+		}
+
 		public static MessageCallback Start(UserInfo ui) {
 			UpdateUserInfo(ui);
+			UpdateState(ui, EState.Main);
+
 			string plot = KingdomsManager.CreateKingdom(ui);
 
 			return new MessageCallback(Locale.Get("start_messages." + plot, ui.Language), ECharacter.Knight);
@@ -239,9 +329,11 @@ namespace YesSir.Backend.Managers {
 			} else {
 				var update = Builders<UserInfo>.Update.Set("Name", ui.Name);
 				DatabaseManager.Users.UpdateMany(u => u.ThirdPartyId == ui.ThirdPartyId && u.Type == ui.Type, update);
+				var new_ui = cursor.First();
 
-				ui.Id = cursor.First().Id;
-				ui.Language = cursor.First().Language;
+				ui.Id = new_ui.Id;
+				ui.Language = new_ui.Language;
+				ui.State = new_ui.State;
 
 				return false;
 			}

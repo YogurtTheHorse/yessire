@@ -4,20 +4,26 @@ using System;
 using YesSir.Shared.Users;
 using YesSir.Shared.Messages;
 using System.Collections.Generic;
+using YesSir.Backend.Entities;
 
 namespace YesSir.Backend.Managers {
 	public static class KingdomsManager {
 		private static List<Kingdom> Kingdoms;
 		private static float TimeToSave;
 		private const float TIME_TO_SAVE = 30;
+		private static Tuple<string, Guid> select;
 
-		static KingdomsManager() {
+		public static void Init() {
 			Kingdoms = DatabaseManager.Kingdoms.Find(_ => true).ToList();
 			TimeToSave = TIME_TO_SAVE;
 		}
 
 		public static Kingdom FindKingdom(UserInfo userinfo) {
-			return Kingdoms.Find(k => k.UserId == userinfo.Id) ?? new Kingdom(userinfo);
+			return FindKingdom(userinfo.Id) ?? new Kingdom(userinfo);
+		}
+
+		public static Kingdom FindKingdom(Guid userid) {
+			return Kingdoms.Find(k => k.UserId == userid);
 		}
 
 		public static void SaveKingdom(Kingdom kingdom) {
@@ -29,10 +35,30 @@ namespace YesSir.Backend.Managers {
 			}
 		}
 
+		public static Tuple<string, Guid>[] GetKingdomsNames() {
+			List<Tuple<string, Guid>> res = new List<Tuple<string, Guid>>(Kingdoms.Count);
+
+			foreach (Kingdom k in Kingdoms) {
+				if (k.Name != null) {
+					res.Add(new Tuple<string, Guid>(k.Name, k.UserId));
+				}
+			}
+
+			return res.ToArray();
+		}
+
+		public static float Distance(Guid kingdomId, Guid to) {
+			var first = FindKingdom(kingdomId);
+			var second = FindKingdom(to);
+
+			return first.Coordinate.Distance(second.Coordinate);
+		}
+
 		public static string CreateKingdom(UserInfo ui) {
 			Kingdom kingdom = ScriptManager.DoFile("Scripts/new_kingdom.lua").ToObject() as Kingdom;
 			kingdom.UserId = ui.Id;
 			kingdom.Language = ui.Language;
+			kingdom.GenerateName();
 
 			Kingdoms.RemoveAll(k => k.UserId == ui.Id);
 			Kingdoms.Add(kingdom);
@@ -66,6 +92,12 @@ namespace YesSir.Backend.Managers {
 					SaveKingdom(k);
 				}
 			}
+		 }
+
+		public static void SendMessage(Human ambassador, Guid destination, string msg) {
+			Kingdom k = FindKingdom(destination);
+			msg = string.Format(Locale.Get("commands.send.recieved", k.Language), ambassador.GetName(k.Language), k.Name, msg);
+			UsersManager.Send(destination, new MessageCallback(msg));
 		}
 	}
 }

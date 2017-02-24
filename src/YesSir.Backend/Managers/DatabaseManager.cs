@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.IdGenerators;
 using MongoDB.Driver;
+using YesSir.Backend.Entities;
 using YesSir.Backend.Entities.Items;
 using YesSir.Backend.Entities.Kingdoms;
 using YesSir.Shared.Messages;
@@ -30,6 +31,11 @@ namespace YesSir.Backend.Managers {
 			});
 			BsonClassMap.RegisterClassMap<MessageInfo>(cm => {
 				cm.AutoMap();
+				cm.SetIgnoreExtraElements(true);
+			});
+			BsonClassMap.RegisterClassMap<Point>(cm => {
+				cm.AutoMap();
+				cm.SetDiscriminator("point");
 				cm.SetIgnoreExtraElements(true);
 			});
 			BsonClassMap.RegisterClassMap<Kingdom>(cm => {
