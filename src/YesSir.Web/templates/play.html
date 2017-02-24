@@ -83,6 +83,13 @@
                 addNewLineToTextarea(from + ': ' + messages[i].Message.Text);
             }
         });
+
+        document.getElementById('messageEdit').onkeydown = function(ev) {
+            // 13 -- enter
+            if (ev.keyCode == 13) {
+                sendMessage();
+            }
+        }
     </script>
 </body>
 </html>
