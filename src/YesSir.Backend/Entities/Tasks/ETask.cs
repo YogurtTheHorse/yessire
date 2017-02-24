@@ -3,7 +3,7 @@
 		Training,
 		Building,
 		Learning,
-		Extraction,
-		Creation
+		Extracting,
+		Creating
 	}
 }

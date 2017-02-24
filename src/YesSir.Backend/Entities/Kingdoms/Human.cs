@@ -7,6 +7,7 @@ using YesSir.Backend.Managers;
 using YesSir.Shared.Messages;
 
 namespace YesSir.Backend.Entities.Kingdoms {
+	[MoonSharp.Interpreter.MoonSharpUserData]
 	public class Human {
 		public Guid HumanId;
 		public float DepressionLevel = 0;
@@ -19,8 +20,10 @@ namespace YesSir.Backend.Entities.Kingdoms {
 		public float Age = 0;
 		public List<HumanTask> TasksToDo;
 		public Dictionary<string, float> Skills;
+		public bool Died = false;
 
 		public bool IsInDepression = false;
+
 
 		public Human() {
 			Skills = new Dictionary<string, float>();
@@ -72,8 +75,8 @@ namespace YesSir.Backend.Entities.Kingdoms {
 					case ETask.Building:
 						return string.Format(Locale.Get("status.building", language), Locale.Get("buildings." + TasksToDo[0].Destination + ".name", language));
 
-					case ETask.Creation:
-					case ETask.Extraction:
+					case ETask.Creating:
+					case ETask.Extracting:
 						var tsk = TasksToDo[0].TaskType.ToString().ToLower();
 						return string.Format(Locale.Get("status." + tsk, language), Locale.Get("resources." + TasksToDo[0].Destination + ".name", language));
 
@@ -90,8 +93,8 @@ namespace YesSir.Backend.Entities.Kingdoms {
 
 		public bool Eat(Kingdom kingdom) {
 			foreach (string food in ContentManager.GetFood()) {
-				if (kingdom.GetResourcesCount(food) > 0) {
-					kingdom.TakeResource(food, 1);
+				if (kingdom.TakeResource(food, 1)) {
+					Satiety += 0.05f;
 
 					return true;
 				}

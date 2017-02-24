@@ -1,6 +1,9 @@
 ﻿using MongoDB.Driver;
 using System.Collections.Generic;
 using YesSir.Shared.Queues;
+using System;
+using YesSir.Shared.Messages;
+using YesSir.Shared.Users;
 
 namespace YesSir.Backend.Managers {
 	public static class QueueManager {
@@ -10,6 +13,13 @@ namespace YesSir.Backend.Managers {
 		
 		public static void Push(Outgoing outg) {
 			DatabaseManager.OutgoingQueue.InsertOneAsync(outg);
+		}
+
+		public static void Push(MessageCallback msg, UserInfo userInfo) {
+			Push(new Outgoing() {
+				Message = msg,
+				UserInfo = userInfo
+			});
 		}
 
 		public static List<Outgoing> GetOutgoing(string userType, string userId="all") {
@@ -29,7 +39,7 @@ namespace YesSir.Backend.Managers {
 		}
 
 		public static Incoming GetNextIncoming() {
-			return DatabaseManager.IncomingQueue.FindOneAndDelete(i => i.IsWaiting);
+				return DatabaseManager.IncomingQueue.FindOneAndDelete(i => i.IsWaiting);
 		}
 	}
 }

@@ -14,8 +14,8 @@ namespace YesSir.Backend.Managers {
 		private static List<BuildingDescription> Buildings = new List<BuildingDescription>();
 		private static List<JobDescription> Jobs = new List<JobDescription>();
 		private static List<string> Skills = new List<string>();
-		private static List<ResourceDescription> StandartResources = new List<ResourceDescription>();
-
+		private static List<ItemDescription> StandartResources = new List<ItemDescription>();
+		
 		public static void Init() {
 			ScriptManager.DoFile("Scripts/content.lua");
 
@@ -31,10 +31,14 @@ namespace YesSir.Backend.Managers {
 		}
 
 		public static string GetJobBySkill(string skill, string language) {
-			return Jobs.Find(j => j.SkillName == skill).GetName(language);
+			return GetJobDescriptionBySkill(skill).GetName(language);
 		}
 
-		public static ResourceDescription[] GetResources() {
+		public static JobDescription GetJobDescriptionBySkill(string skill) {
+			return Jobs.Find(j => j.SkillName == skill);
+		}
+
+		public static ItemDescription[] GetResources() {
 			return StandartResources.ToArray();
 		}
 
@@ -50,8 +54,16 @@ namespace YesSir.Backend.Managers {
 			return Jobs.ToArray();
 		}
 
+		public static void RegisterGrain(string grain, params string[] args) {
+			foreach (ItemDescription id in StandartResources) {
+				if (args.Contains(id.Name)) {
+					id.Culture = grain;
+				}
+			}
+		}
+
 		public static void RegisterResource(string name, float difficulty, string skill = "mining", IDependency[] deps = null, IDependency[] cdeps = null) {
-			StandartResources.Add(new ResourceDescription() {
+			StandartResources.Add(new ItemDescription() {
 				Name = name,
 				Difficulty = difficulty,
 				Skill = skill,
@@ -89,7 +101,7 @@ namespace YesSir.Backend.Managers {
 			}
 
 			List<IDependency> FullDeps = new List<IDependency>(deps);
-			FullDeps.Add(new ResourceDependency("money", money));
+			FullDeps.Add(new ItemDependency("money", money));
 
 			Jobs.Add(new JobDescription() {
 				Name = name,
@@ -105,7 +117,7 @@ namespace YesSir.Backend.Managers {
 			deps.Add(new HumanDependency());
 
 			foreach (KeyValuePair<string, int> p in resources) {
-				deps.Add(new ResourceDependency(p.Key, p.Value));
+				deps.Add(new ItemDependency(p.Key, p.Value));
 			}
 
 			if (addition != null) {
@@ -118,6 +130,11 @@ namespace YesSir.Backend.Managers {
 				Name = name,
 				Dependencies = deps.ToArray()
 			});
+		}
+
+		public static string GetBuildingName(string building, string language) {
+			var buildingd = Buildings.Find((b) => b.Name == building);
+			return buildingd != null ? buildingd.GetName(language) : "";
 		}
 	}
 }

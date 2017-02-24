@@ -4,7 +4,6 @@ from pymongo import MongoClient
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
-app.config['SERVER_NAME'] = 'yessirgame.ru:80'
 socketio = SocketIO(app)
 
 mongo = MongoClient()

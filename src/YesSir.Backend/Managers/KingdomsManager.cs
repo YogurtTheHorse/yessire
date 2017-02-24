@@ -3,17 +3,21 @@ using MongoDB.Driver;
 using System;
 using YesSir.Shared.Users;
 using YesSir.Shared.Messages;
+using System.Collections.Generic;
 
 namespace YesSir.Backend.Managers {
 	public static class KingdomsManager {
-		public static Kingdom FindKingdom(UserInfo userinfo) {
-			var cursor = DatabaseManager.Kingdoms.Find(k => k.UserId == userinfo.Id);
+		private static List<Kingdom> Kingdoms;
+		private static float TimeToSave;
+		private const float TIME_TO_SAVE = 30;
 
-			if (cursor.Count() > 0) {
-				return cursor.First<Kingdom>();
-			} else {
-				return new Kingdom(userinfo);
-			}
+		static KingdomsManager() {
+			Kingdoms = DatabaseManager.Kingdoms.Find(_ => true).ToList();
+			TimeToSave = TIME_TO_SAVE;
+		}
+
+		public static Kingdom FindKingdom(UserInfo userinfo) {
+			return Kingdoms.Find(k => k.UserId == userinfo.Id) ?? new Kingdom(userinfo);
 		}
 
 		public static void SaveKingdom(Kingdom kingdom) {
@@ -26,7 +30,12 @@ namespace YesSir.Backend.Managers {
 		}
 
 		public static string CreateKingdom(UserInfo ui) {
-			Kingdom kingdom = new Kingdom(ui);
+			Kingdom kingdom = ScriptManager.DoFile("Scripts/new_kingdom.lua").ToObject() as Kingdom;
+			kingdom.UserId = ui.Id;
+			kingdom.Language = ui.Language;
+
+			Kingdoms.RemoveAll(k => k.UserId == ui.Id);
+			Kingdoms.Add(kingdom);
 			SaveKingdom(kingdom);
 
 			int res = RandomManager.Next(0, 3);
@@ -44,12 +53,18 @@ namespace YesSir.Backend.Managers {
 		}
 
 		public static void UpdateKingdoms(int deltatime) {
-			foreach (Kingdom k in DatabaseManager.Kingdoms.Find(_ => true).ToList()) {
+			foreach (Kingdom k in Kingdoms) {
 				MessageCallback[] msgs = k.Update((deltatime / 1000f) / k.GetDayTime());
 				foreach (MessageCallback msg in msgs) {
 					UsersManager.Send(k.UserId, msg);
 				}
-				SaveKingdom(k);
+			}
+			TimeToSave -= deltatime / 1000f;
+			if (TimeToSave < 0) {
+				TimeToSave = TIME_TO_SAVE;
+				foreach (Kingdom k in Kingdoms) {
+					SaveKingdom(k);
+				}
 			}
 		}
 	}

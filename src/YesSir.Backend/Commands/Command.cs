@@ -8,28 +8,44 @@ using YesSir.Shared.Messages;
 namespace YesSir.Backend.Commands {
 	public class Command {
 		private IDependency[] Dependencies;
-		private Func<Kingdom, Dictionary<string, object>, MessageCallback> Execute;
+		private Func<Kingdom, Dictionary<string, object>, ExecutionResult> ExecuteFunc;
 		private CommandPart Parser;
 
-		public Command(IDependency[] dependecies, CommandPart parser, Func<Kingdom, Dictionary<string, object>, MessageCallback> func) {
+		public Command(IDependency[] dependecies, CommandPart parser, Func<Kingdom, Dictionary<string, object>, ExecutionResult> func) {
 			this.Dependencies = dependecies;
 			this.Parser = parser;
-			this.Execute = func;
+			this.ExecuteFunc = func;
 		}
 
-		public Tuple<bool, MessageCallback> CheckAndExecute(string s, Kingdom kingdom) {
+		public ExecutionResult Check(string s, Kingdom kingdom) {
 			Dictionary<string, object> parsed = null;
-			
-			if (Parser.ParseCommand(s, ref parsed)) {
+			int parsed_len = Parser.ParseCommand(s, ref parsed);
+			if (parsed_len >= 0) {
 				foreach (IDependency dep in Dependencies) {
 					Tuple<bool, MessageCallback> res = dep.CheckKingdom(kingdom);
 					if (!res.Item1) {
-						return new Tuple<bool, MessageCallback>(true, res.Item2);
+						return new ExecutionResult() {
+							Successful = false,
+							Applied = true,
+							CommandLength = parsed_len,
+							Message = res.Item2
+						};
 					}
 				}
-				return new Tuple<bool, MessageCallback>(true, Execute(kingdom, parsed));
+				return new ExecutionResult() {
+					Applied = true,
+					Successful = true,
+					CommandLength = parsed_len,
+					Parsed = parsed,
+					ExecuteFunc = ExecuteFunc
+				};	
 			} else {
-				return new Tuple<bool, MessageCallback>(false, new MessageCallback());
+				return new ExecutionResult() {
+					Successful = false,
+					Applied = false,
+					CommandLength = 0,
+					Message = new MessageCallback()
+				};
 			}
 		}
 	}

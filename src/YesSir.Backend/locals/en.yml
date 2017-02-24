@@ -1,58 +1,319 @@
 ﻿start_messages:
-  revolution: It was revolution, my sir, now you are the boss
-  legacy: You took this kingfom in legacy from father of your brother
-  self_proclaimed: You came from ${kingdom_name} and created your own kingdom with friends
-  
+  revolution: "My Sir, there has been a revolution. You are the King now."
+  legacy: "You inherited this kingdom from your father."
+  self_proclaimed: "You left ${kingdom_name} and created your own kingdom with friends, wife and children."
 commands:
   hire:
     list:
-      - Hire
+    - Hire
+    - Employ
+    - Sign on
   train:
     list:
-      - Train
-      - Instruct
+    - Train
+    - Instruct
+    - Teach
+    - Educate
+    - Learn
+    - Coach
+    - learnt
+    - studied
+    - trained
+  extract:
+    list:
+    - Mine
+    - Obtain
+    - Get
+    - Gain
+    - Dig
+    - mined
+    - digged
+    - got
+    - obtained
   build:
     list:
-      - Build
-      - Construct
-
+    - Build
+    - Construct
+    - Develop
+    - Set
+    - built
+    - constructed
+    - Make
+    - made
+    - developed
+  create:
+    list:
+    - Create
+    - created
+    - Make
+    - made
+    - Start
+    - started
+    - Set
+    - Construct
+    - Build
+    - built
+    - Do
+    - done
+    - Bake
+    - baken
+    - Roast
+    - roasted
+  grow:
+    list:
+    - Grow
+    - grew
+    - Raise
+    - risen
 jobs:
-  no_job: Who..?
+  no_job: "Who do you want to hire?"
   peasant:
+    name: Peasant
     names:
-      - peasant
-      - rusticman
-    miss: You must have a peasant in your kingdom
-
+    - peasant
+    - rusticman
+    - farmer
+    - villager
+    - worker
+    - working man
+    - manual
+    miss: "You need a peasant"
   builder:
+    name: Builder
     names:
-      - builder
-    miss: You need a builder
-
+    - builder
+    - constructor
+    - housebuilder
+    - construction person
+    miss: "You need a builder"
   smith:
+    name: smith
     names:
-      - smith
-      - forger
-      - farrier
-
+    - smith
+    - blacksmith
+    - forger
+    - farrier
+  miss: "You need a smith"
+  miner:
+    name: Miner
+    names:
+    - miner
+    - mine worker
+    - pit man
+    - digger
+    - mine-digger
+    miss: "You need a miner"
+  baker:
+    name: Baker
+    names:
+    - baker
+    miss: "You need a baker"
+  woodcutter:
+    name: Woodcutter
+    names:
+    - woodcutter
+    - lumberman
+    - wood chopper
+    - logger
+    - lumberer
+    miss: "You need a woodcutter"
+  fisher:
+    name: Fisher
+    names:
+    - fisher
+    - fisherman
+    miss: "You need a fisher"
 buildings:
-  no_building: What to build, sir?
-  forge:
+  no_building: "What do you want to build, Sir?"
+  well:
+    name: Well
     names:
-      - forge
-      - smithy
-    miss: Build forge first
-
+    - well
+    - shaft
+    - pit
+    - basin
+    miss: "Постройте колодец"
+  forge:
+    name: Forge
+    names:
+    - forge
+    - smithery
+    - smithy
+    - marten
+    - blacksmith shop
+    - hammer mill
+    miss: "Нужно построить кузницу"
+  farm:
+    name: Farm
+    names:
+    - farm
+    - ranch
+    miss: "Нужно построить ферму"
+  field:
+    name: Field
+    names:
+    - field
+    - land
+    miss: "Нужно обустроить поле"
+  bakery:
+    name: Bakery
+    names:
+    - bakery
+    - pastry
+    - boulangerie
+    - baker shop
+    - cake shop
+    miss: "Нужна пекарня"
+  fishery:
+    name: Fishing hut
+    names:
+    - fishing hut
+    - house of the fisher
+    - fisherman house
+  mill:
+    name: Mill
+    names:
+    - mill
+    miss: "Нужна мельница"
+  farming:
+    name: Farming
+    names:
+    - farming
+    - farmery
+  chopping:
+    name: Lumbering
+    names:
+    - lumbering
+    - chopping
+    - harvesting
+    - timber harvest
+  baking:
+    name: Baking
+    names:
+    - baking
+    - panification
+  mining:
+    name: Mining
+    names:
+    - digging
+    - mining
+    - minecraft
+    - output
+    - crop
+  building:
+    name: Building
+    names:
+    - building
+    - construnction
+  smithing:
+    name: Smithcraft
+    names:
+    - smithcraft
+    - smithery
+    - smithing
+    - blacksmithing
+    - metallurgy
+    - metal industry
 resources:
-  gold: 
+  no_resource: "We don't have it"
+  no_culture: "We can't grow it"
+  gold:
     name: Gold
-    miss: We don't have so much money
-  rock: 
+    names:
+    - gold
+    - gold ore
+    - aurum
+    miss: "Слишком мало золота, милорд"
+  rock:
     name: Rock
-    miss: We don't have so much rock
-  iron: 
+    names:
+    - rock
+    - stone
+    - pebble
+    - granite
+    miss: "Недостаточно камня, сэр"
+  iron:
     name: Iron
-    miss: We don't have so much iron
-
+    names:
+    - iron
+    - ferrum
+    - ore
+    miss: "Недостаточно железа, всевышний"
+  wood:
+    name: Wood
+    names:
+    - wood
+    - trees
+    - lumber
+    - timber
+    miss: "Нехватка дерева"
+  grain:
+    name: Grain
+    names:
+    - grain
+    - crops
+    - corn
+    - cereals
+    - buckwheat
+    - wheat
+    miss: "Нет зерна"
+  millet:
+    name: "Millet"
+    names:
+    - millet
+    miss: "Нужно пшено"
+  bucket:
+    name: Bucket
+    names:
+    - bucket
+    - tub
+    - pail
+    miss: "Нужно ведро"
+  water_bucket:
+    name: Water bucket
+    names:
+    - water bucket
+    - bucket full of water
+    - bucket with water
+    - pail of water
+    miss: "Нужна вода"
+  fish:
+    name: Fish
+    names:
+    - fish
+    miss: "Нет рыбы"
+  flour:
+    name: Flour
+    names:
+    - flour
+    - cornmeal
+    - breadstuff
+    - oatmeal
+    miss: "Нет муки"
+  bread:
+    name: Bread
+    names:
+    - bread
+    - loaf
+    - roll
+    - bun
+    - scone
+    - loaf
+    - pastry
+    - bakery
+    miss: "Нет хлеба"
+status:
+  idle: "Idle"
+  building: "Is building {0}"
+  creating: "Is constructing {0}"
+  extracting: "Is mining {0}"
 answers:
   yes: "Yes, Sir"
+problems:
+  no_people: "Everyone is busy, Milord"
+  dont_work: "{0} refuses to work."
+  starving: "People are starving"
+  drawing: "Collects {0}"
+  died: "{0} has starved to death"
+notifications:
+  builded: "Building is constructed: {0}"

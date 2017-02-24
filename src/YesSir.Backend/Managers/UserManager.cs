@@ -16,7 +16,7 @@ namespace YesSir.Backend.Managers {
 	public static class UsersManager {
 		private static List<Command> Commands;
 
-		static UsersManager() {
+		public static void Init() {
 			Commands = new List<Command>();
 
 			List<Tuple<string, object>> jobTuples = new List<Tuple<string, object>>();
@@ -40,6 +40,14 @@ namespace YesSir.Backend.Managers {
 					}
 				), (k, dict) => k.Hire(dict)
 			));
+
+			List<Tuple<string, object>> skills = new List<Tuple<string, object>>();
+			foreach (string sk in ContentManager.GetSkills()) {
+				foreach(string lsk in Locale.GetArray("skills." + sk + ".names")) {
+					skills.Add(new Tuple<string, object>(lsk, sk));
+				}
+			}
+			CommandPart skillPart = new CommandPart("skill", skills.ToArray());
 			Commands.Add(new Command(
 				new IDependency[] { new HumanDependency() },
 				new CommandPart(Locale.GetArray("commands.train.list"),
@@ -47,21 +55,21 @@ namespace YesSir.Backend.Managers {
 						new CommandPart("count",
 							CommandsStandartFunctions.CheckInt,
 							CommandsStandartFunctions.ParseInt,
-							new CommandPart[] { jobPart }),
-						jobPart,
+							new CommandPart[] { skillPart }),
+						skillPart,
 						new CommandPart()
 					}
 				), (k, dict) => k.Train(dict)
 			));
 
 			List<Tuple<string, object>> resourceTuples = new List<Tuple<string, object>>();
-			foreach (ResourceDescription r in ContentManager.GetResources()) {
+			foreach (ItemDescription r in ContentManager.GetResources()) {
 				foreach (string s in r.GetAcceptableNames()) {
 					resourceTuples.Add(new Tuple<string, object>(s, r));
 				}
 			}
 			CommandPart extractable = new CommandPart("resource", resourceTuples.FindAll(t => {
-				return (t.Item2 as ResourceDescription).Extractable;
+				return (t.Item2 as ItemDescription).Extractable;
 			}).ToArray());
 			Commands.Add(new Command(
 				new IDependency[] { new HumanDependency() },
@@ -72,7 +80,7 @@ namespace YesSir.Backend.Managers {
 				(k, dict) => k.Extract(dict)
 			));
 			CommandPart creatable = new CommandPart("resource", resourceTuples.FindAll(t => {
-				return (t.Item2 as ResourceDescription).Creatable;
+				return (t.Item2 as ItemDescription).Creatable;
 			}).ToArray());
 			Commands.Add(new Command(
 				new IDependency[] { new HumanDependency() },
@@ -81,6 +89,15 @@ namespace YesSir.Backend.Managers {
 					new CommandPart[] { creatable, new CommandPart() }
 				),
 				(k, dict) => k.Create(dict)
+			));
+			CommandPart growable = new CommandPart("resource", resourceTuples.ToArray());
+			Commands.Add(new Command(
+				new IDependency[] { new HumanDependency(), new BuildingDependency("field", true) },
+				new CommandPart(
+					Locale.GetArray("commands.grow.list"),
+					new CommandPart[] { growable, new CommandPart() }
+				),
+				(k, dict) => k.Grow(dict)
 			));
 
 			List<Tuple<string, object>> buildingsTuples = new List<Tuple<string, object>>();
@@ -114,27 +131,78 @@ namespace YesSir.Backend.Managers {
 		private static void LoadDebugCommands() {
 			Commands.Add(new Command(new IDependency[] { }, new CommandPart(new string[] { "deb" }), (k, d) => {
 				string msg = ObjectDumper.Dump(k);
-				return new MessageCallback(msg, ECharacter.Admin);
+				return new ExecutionResult(true, new MessageCallback(msg, ECharacter.Admin));
+			}));
+
+			Commands.Add(new Command(new IDependency[] { }, new CommandPart(new string[] { "res" }), (k, d) => {
+				string msg = string.Join("\n", k.Resources.Select(r => r.Key + ": " + r.Value.Count));
+
+				return new ExecutionResult(new MessageCallback(msg, ECharacter.Admin));
 			}));
 
 			Commands.Add(new Command(new IDependency[] { }, new CommandPart(new string[] { "tas" }), (k, d) => {
 				string msg = string.Join("\n", k.Humans.Select(h => h.GetName(k.Language) + ": " + h.GetStatus(k.Language)));
-				return new MessageCallback(msg, ECharacter.Admin);
+				return new ExecutionResult(new MessageCallback(msg, ECharacter.Admin));
 			}));
 		}
 #endif
 
+		public static void SetLanguage(MessageInfo message) {
+			UpdateUserInfo(message.UserInfo);
+			message.UserInfo.Language = message.Text;
+
+			DatabaseManager.Users.ReplaceOneAsync(ui => message.UserInfo.Equals(ui), message.UserInfo);
+			KingdomsManager.FindKingdom(message.UserInfo).Language = message.Text;
+		}
+
 		public static MessageCallback OnMessage(MessageInfo message) {
 			UpdateUserInfo(message.UserInfo);
 			Kingdom kingdom = KingdomsManager.FindKingdom(message.UserInfo);
-			foreach (Command c in Commands) {
-				Tuple<bool, MessageCallback> res = c.CheckAndExecute(message.Text, kingdom);
-				if (res.Item1) {
-					KingdomsManager.SaveKingdom(kingdom);
-					return res.Item2;
+			List<ExecutionResult> exec = new List<ExecutionResult>();
+			bool cont = true, succ = false;
+			string text = message.Text;
+
+			while (cont && (exec.Count == 0 || exec.Last().Successful)) {
+				cont = false;
+				foreach (Command c in Commands) {
+					ExecutionResult res = c.Check(text, kingdom);
+					if (res.Applied) {
+						KingdomsManager.SaveKingdom(kingdom);
+						res.Text = text.Substring(0, res.CommandLength).ToLower();
+						text = text.Substring(res.CommandLength);
+						succ |= (cont = res.Successful);
+						exec.Add(res);
+						break;
+					}
 				}
 			}
-			return new MessageCallback("nyet.", ECharacter.Knight);
+			if (succ) {
+				Human selected = null;
+				for (int i = 0; i < exec.Count; ++i) {
+					foreach (Human h in kingdom.Humans) {
+						// TODO: Do something with that
+						if (exec[i].Text.Contains(h.Name.Split(' ')[0].ToLower()) || exec[i].Text.Contains(h.Name.Split(' ')[1].ToLower())) {
+							selected = h;
+							break;
+						}
+					}
+					if (selected != null) {
+						exec[i].Parsed["human"] = selected;
+					}
+					exec[i] = exec[i].Execute(kingdom);
+					if (!exec[i].Successful) {
+						return exec[i].Message;
+					} else if (selected != null && exec[i].HumanBusy) {
+						selected = null;
+					}
+				}
+			}
+
+			if (exec.Count == 0) {
+				return new MessageCallback("nyet.", ECharacter.Knight);
+			} else {
+				return exec.Last().Message;
+			}
 		}
 
 		public static MessageCallback Start(UserInfo ui) {
@@ -173,7 +241,7 @@ namespace YesSir.Backend.Managers {
 				DatabaseManager.Users.UpdateMany(u => u.ThirdPartyId == ui.ThirdPartyId && u.Type == ui.Type, update);
 
 				ui.Id = cursor.First().Id;
-				//ui.Language = cursor.First().Language;
+				ui.Language = cursor.First().Language;
 
 				return false;
 			}

@@ -16,7 +16,7 @@ namespace YesSir.Backend.Managers {
 		public static IMongoCollection<Incoming> IncomingQueue;
 		public static IMongoCollection<Outgoing> OutgoingQueue;
 
-		static DatabaseManager() {
+		public static  void Init() {
 			MongoClient client = new MongoClient();
 
 			Database = client.GetDatabase("yes_sir");
@@ -34,21 +34,31 @@ namespace YesSir.Backend.Managers {
 			});
 			BsonClassMap.RegisterClassMap<Kingdom>(cm => {
 				cm.AutoMap();
+				cm.SetDiscriminator("kingdom");
 				cm.SetIgnoreExtraElements(true);
 			});
 			BsonClassMap.RegisterClassMap<Human>(cm => {
 				cm.AutoMap();
+				cm.SetDiscriminator("human");
 				cm.MapMember(c => c.HumanId).SetElementName("_id").SetIdGenerator(CombGuidGenerator.Instance);
+				cm.SetIgnoreExtraElements(true);
+			});
+			BsonClassMap.RegisterClassMap<Field>(cm => {
+				cm.AutoMap();
+				cm.SetDiscriminator("field");
+				cm.UnmapMember(c => c.IsBusy);
 				cm.SetIgnoreExtraElements(true);
 			});
 			BsonClassMap.RegisterClassMap<Building>(cm => {
 				cm.AutoMap();
+				cm.SetDiscriminator("building");
+				cm.UnmapMember(c => c.IsBusy);
 				cm.MapMember(c => c.Id).SetElementName("_id").SetIdGenerator(CombGuidGenerator.Instance);
 				cm.SetIgnoreExtraElements(true);
 			});
 			BsonClassMap.RegisterClassMap<Item>(cm => {
 				cm.AutoMap();
-				cm.MapMember(c => c.Id).SetElementName("_id").SetIdGenerator(CombGuidGenerator.Instance);
+				cm.SetDiscriminator("item");
 				cm.SetIgnoreExtraElements(true);
 			});
 			BsonClassMap.RegisterClassMap<Incoming>(cm => {

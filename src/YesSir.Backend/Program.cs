@@ -41,10 +41,26 @@ namespace YesSir.Backend {
 
 				return HttpStatusCode.OK;
 			});
+			Get("/setlang/{userType}/{userId}/{lang}", args => {
+				Console.WriteLine(DateTime.Now.ToString() + " " + Request.Method + " " + Request.Path);
+				
+				UserInfo ui = new UserInfo() {
+					Type = args.userType,
+					ThirdPartyId = args.userId
+				};
+				QueueManager.Push(new Incoming() {
+					UserInfo = ui,
+					Method = "lang",
+					IsWaiting = true,
+					Message = new MessageInfo() { Text = args.lang, UserInfo = ui }
+				});
+
+				return HttpStatusCode.OK;
+			});
 			Post("/message/{userType}/{userId}/", args => {
 				Console.WriteLine(DateTime.Now.ToString() + " " + Request.Method + " " + Request.Path);
 				var body = this.Request.Body;
-				int length = (int)body.Length; // this is a dynamic variable
+				int length = (int)body.Length;
 				byte[] data = new byte[length];
 				body.Read(data, 0, length);
 				string encoded = Encoding.UTF8.GetString(data);
@@ -112,13 +128,15 @@ namespace YesSir.Backend {
 			Console.OutputEncoding = Encoding.UTF8;
 			Console.InputEncoding = Encoding.UTF8;
 
+			DatabaseManager.Init();
 			ScriptManager.Init();
 			ContentManager.Init();
+			UsersManager.Init();
 				
 			Console.WriteLine("Starting Nancy on http://localhost:9797");
 			host.Start();
 
-			int updatetime = 10, deltatime = 0;
+			int updatetime = 100 / 3, deltatime = 0;
 			Stopwatch sw = Stopwatch.StartNew();
 			while (true) {
 				UpdateQueue();
@@ -139,21 +157,22 @@ namespace YesSir.Backend {
 			Incoming inc = QueueManager.GetNextIncoming();
 
 			while (inc != null) {
-				Outgoing o = new Outgoing();
 				switch (inc.Method) {
 					case "message":
-						o.Message = UsersManager.OnMessage(inc.Message);
+						QueueManager.Push(UsersManager.OnMessage(inc.Message), inc.UserInfo);
 						break;
 
 					case "start":
-						o.Message = UsersManager.Start(inc.UserInfo);
+						QueueManager.Push(UsersManager.Start(inc.UserInfo), inc.UserInfo);
+						break;
+
+					case "lang":
+						UsersManager.SetLanguage(inc.Message);
 						break;
 
 					default:
 						continue;
 				}
-				o.UserInfo = inc.UserInfo;
-				QueueManager.Push(o);
 				inc = QueueManager.GetNextIncoming();
 			}
 		}
