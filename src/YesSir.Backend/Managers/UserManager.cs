@@ -242,11 +242,11 @@ namespace YesSir.Backend.Managers {
 			int index;
 			for (index = 0; index < k.Humans.Count && k.Humans[index].HumanId != hid; ++index) ;
 
-			if (k.Humans[index].AddTask(new HumanTask() { Destination = dest, Skill = "dyplomacy", TaskType = ETask.ListeningKing })) {
-				k.Humans[index].TasksToDo.Last().CalculateTaskTime(k.Humans[index]);
+			if (k.Humans[index].AddTask(new HumanTask() { Destination = dest, TaskType = ETask.ListeningKing })) {
+				k.Humans[index].TasksToDo.Last().CalculateTaskTime(k.Humans[index], 1, "dyplomacy");
 				k.Temp = k.Humans[index].HumanId.ToString();
 
-				return new ExecutionResult(new MessageCallback("answers.write_message")) {
+				return new ExecutionResult(new MessageCallback(Locale.Get("answers.write_message", k.Language))) {
 					NewState = EState.Dictates
 				};
 			} else {
