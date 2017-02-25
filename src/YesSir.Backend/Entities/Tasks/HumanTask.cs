@@ -43,7 +43,7 @@ namespace YesSir.Backend.Entities {
 
 				case ETask.SendingMessage:
 					float dist = KingdomsManager.Distance(h.KingdomId, Guid.Parse(Destination));
-					TimeLeft = dist / 10;
+					TimeLeft = dist / (60 * 24);
 					break;
 
 				default:

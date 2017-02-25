@@ -256,6 +256,7 @@ status:
   building: "Строит {0}"
   creating: "Создает {0}"
   extracting: "Добывает {0}"
+  sendingmessage: "Отправляет сообщение"
 answers:
   yes: "Да, Сир"
 problems:

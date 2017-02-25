@@ -81,6 +81,10 @@ namespace YesSir.Backend.Entities.Kingdoms {
 						var tsk = TasksToDo[0].TaskType.ToString().ToLower();
 						return string.Format(Locale.Get("status." + tsk, language), Locale.Get("resources." + TasksToDo[0].Destination + ".name", language));
 
+					case ETask.SendingMessage:
+						string kingdom_name = KingdomsManager.FindKingdom(Guid.Parse(TasksToDo[0].Destination)).Name;
+						return string.Format(Locale.Get("status.sennding_message", language), kingdom_name);
+
 					default:
 						return "-";
 				}
