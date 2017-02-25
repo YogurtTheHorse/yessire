@@ -8,7 +8,7 @@ app.config['SERVER_NAME'] = 'yessirgame.ru'
 socketio = SocketIO(app)
 
 mongo = MongoClient()
-db_web = mongo['yes_sir_web']
+db_web = mongo['yes_sir_web']['messages']
 
 from views import main_page
 from views import play
