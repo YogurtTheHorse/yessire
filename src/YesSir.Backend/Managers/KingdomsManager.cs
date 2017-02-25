@@ -47,6 +47,10 @@ namespace YesSir.Backend.Managers {
 			return res.ToArray();
 		}
 
+		public static List<Kingdom> GetKingdoms() {
+			return new List<Kingdom>(Kingdoms);
+		}
+
 		public static float Distance(Guid kingdomId, Guid to) {
 			var first = FindKingdom(kingdomId);
 			var second = FindKingdom(to);

@@ -13,10 +13,9 @@ using Microsoft.AspNetCore.Builder;
 using Nancy.Owin;
 using System.Text;
 using System.Collections.Generic;
-using Nancy.Helpers;
-using MoonSharp.Interpreter;
-using System.Reflection;
+using YesSir.Backend.Entities.Kingdoms;
 using YesSir.Backend.Entities;
+using System.Linq;
 
 namespace YesSir.Backend {
 	public class Startup {
@@ -42,9 +41,19 @@ namespace YesSir.Backend {
 
 				return HttpStatusCode.OK;
 			});
+			Get("/map", args => {
+				var list = new[] { new { Name = "", Position = new Point() } }.ToList();
+				list.Clear();
+
+				foreach (Kingdom k in KingdomsManager.GetKingdoms()) {
+					list.Add(new { Name = k.Name, Position = k.Coordinate });
+				}
+
+				return JsonConvert.SerializeObject(list);
+			});
 			Get("/setlang/{userType}/{userId}/{lang}", args => {
 				Console.WriteLine(DateTime.Now.ToString() + " " + Request.Method + " " + Request.Path);
-				
+
 				UserInfo ui = new UserInfo() {
 					Type = args.userType,
 					ThirdPartyId = args.userId
@@ -95,7 +104,7 @@ namespace YesSir.Backend {
 			});
 			Get("/message/{userType}/{userId}/{message? }", args => {
 				Console.WriteLine(DateTime.Now.ToString() + " " + Request.Method + " " + Request.Path);
-				
+
 				MessageInfo msg = new MessageInfo() {
 					UserInfo = new UserInfo() {
 						Type = args.userType,
@@ -125,7 +134,7 @@ namespace YesSir.Backend {
 						.UseStartup<Startup>()
 						.UseUrls("http://localhost:9797")
 						.Build();
-			
+
 			Console.OutputEncoding = Encoding.UTF8;
 			Console.InputEncoding = Encoding.UTF8;
 
