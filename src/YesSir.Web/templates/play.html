@@ -1,17 +1,19 @@
 <html>
 <body>
     <div>
-        <input type="text" value="Говорите сюда" id="message" />
+        <input type="text" value="Говорите сюда" id="messageEdit" />
         <button onclick="sendMessage();">Возглас</button>
+        <button onclick="startGame();">Новая игра</button>
     </div>
     <div>
-        <textarea id="history" cols="80" rows="20" readonly>11</textarea>
+        <textarea id="history" cols="80" rows="20" readonly></textarea>
     </div>
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
     <script>
         var socket = io.connect('http://' + document.domain + ':' + location.port);
         var userID = getParameterByName('username');
+        var receiveSendTimeout = 100;
 
         function getParameterByName(name) {
             // get params from URL/Address-line
@@ -25,14 +27,28 @@
                 return decodeURIComponent(results[1].replace(/\+/g, " "));
         }
 
+        function startGame() {
+            socket.emit('startGame', userID);
+        }
+
         function sendMessage() {
-            message = document.getElementById('message').value;
+            message = document.getElementById('messageEdit').value;
             socket.emit('sendMessage', {'id': userID, 'msg': message});
             addNewLineToTextarea('Вы: ' + message);
+
+            document.getElementById('messageEdit').value = '';
         }
 
         function getMessages() {
             socket.emit('getMessages', userID);
+        }
+
+        function getMessageHistory() {
+            socket.emit('getMessageHistory', userID);
+        }
+
+        function getMessagesWithTimeout() {
+            setTimeout(getMessages, receiveSendTimeout);
         }
 
         function addNewLineToTextarea(text) {
@@ -41,28 +57,39 @@
         }
 
         socket.on('connect', function () {
-            socket.emit('startGame', userID);
+            console.log('Connected to SocketIO server');
+            getMessageHistory();
         });
 
         socket.on('startGame', function () {
-            getMessages();
+            document.getElementById('history').value = '';
+            getMessagesWithTimeout();
         });
 
         socket.on('sendMessage', function () {
-            setTimeout(getMessages, 20);
-        })
+            getMessagesWithTimeout();
+        });
 
         socket.on('getMessages', function (data) {
             console.log(data);
             messages = JSON.parse(data);
+            if (!messages) return;
+
             for (var i = 0; i < messages.length; i++) {
                 var from = messages[i].Message.From;
-                if (from === '1')
-                    from = 'Советник';
+                if (from == userID)
+                    from = 'Вы';
 
-                addNewLineToTextarea(messages[i].Message.From + ': ' + messages[i].Message.Text);
+                addNewLineToTextarea(from + ': ' + messages[i].Message.Text);
             }
         });
+
+        document.getElementById('messageEdit').onkeydown = function(ev) {
+            // 13 -- enter
+            if (ev.keyCode == 13) {
+                sendMessage();
+            }
+        }
     </script>
 </body>
 </html>
