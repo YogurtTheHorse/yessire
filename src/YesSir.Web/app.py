@@ -7,7 +7,7 @@ app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 
 mongo = MongoClient()
-db_web = mongo['yes_sir']['web']
+db_web = mongo['yes_sir_web']
 
 from views import main_page
 from views import play
