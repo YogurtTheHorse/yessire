@@ -282,6 +282,8 @@ namespace YesSir.Backend.Managers {
 			h.TasksToDo[i].Context = message.Text;
 			h.TasksToDo[i].CalculateTaskTime(h);
 
+			UpdateState(message.UserInfo, EState.Main);
+
 			return new MessageCallback(Locale.Get("answers.yes", kingdom.Language));
 		}
 

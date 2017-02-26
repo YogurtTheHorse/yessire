@@ -29,6 +29,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			Humans = new List<Human>();
 			Buildings = new List<Building>();
 			Resources = new Dictionary<string, List<Item>>();
+			Coordinate = RandomManager.GenerateKingdomPoint();
 		}
 
 		public Kingdom(UserInfo userinfo) : this() {
@@ -36,7 +37,6 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			this.Language = userinfo.Language;
 
 			GenerateName();
-			Coordinate = RandomManager.GenerateKingdomPoint();
 		}
 
 		public void GenerateName() {
