@@ -2,7 +2,7 @@
 	<head>
 		<link rel="stylesheet" type="text/css" href="static/main.css">
 		<style type="text/css">
-			#textbox {
+			input, select, textarea {
 				color: #987359;
 			}
 
@@ -14,23 +14,28 @@
 	<body>
 		<div class="background" id="left-bg"></div>
 		<div class="background" id="right-bg"></div>
-		<div id="login-form" class="form">
-			<img style='vertical-align:middle;' src="static/imgs/crown-icn.png" class="icon">
-			<div style='vertical-align:middle;' class="simple-textbox">
-				<input id="login" />
+		
+
+		<form action="" method="POST" name="form">
+			<div id="login-form" class="form">
+				{{ form.hidden_tag() }}
+				<img style='vertical-align:middle;' src="static/imgs/crown-icn.png" class="icon">
+				<div style='vertical-align:middle;' class="simple-textbox">
+					{{ form.username }}
+				</div>
+				<br/>
+				<img style='vertical-align:middle;' src="static/imgs/key-icn.png" class="icon">
+				<div style='vertical-align:middle;' class="simple-textbox">
+					{{ form.password }}
+				</div>
+				<br/>
+				<br/>
+				<div style="text-align: center;">
+					<button type="submit" id="login" >
+						<img src="static/imgs/login-btn.png" alt="" />
+					</button>
+				</div>
 			</div>
-			<br/>
-			<img style='vertical-align:middle;' src="static/imgs/key-icn.png" class="icon">
-			<div style='vertical-align:middle;' class="simple-textbox">
-				<input id="password" />
-			</div>
-			<br/>
-			<br/>
-			<div style="text-align: center;">
-				<button type="button" id="login" onclick="login();">
-					<img src="static/imgs/login-btn.png" alt="" />
-				</button>
-			</div>
-		</div>
+		</form>
 	</body>
 </html>

@@ -1,45 +1,69 @@
 from app import app, socketio, db_web
-from flask import render_template
+from flask import render_template, redirect, url_for
+
 from flask_socketio import emit
+
+from flask_login import current_user, login_required
+import functools
+
 from requests import get
 from urllib.parse import quote
 import json
 
 MESSAGE_HISTORY_SIZE = 100
 
+
+def authenticated_only(f):
+    @functools.wraps(f)
+    def wrapped(*args, **kwargs):
+        if not current_user.is_authenticated:
+            disconnect()
+        else:
+            return f(*args, **kwargs)
+    return wrapped
+
+
 @app.route('/play')
-@app.route('/', subdomain='play')
 def play_page():
-    return render_template('play.html')
+    if current_user.is_authenticated:
+        return render_template('play.html')
+    else:
+        return redirect(url_for('login'))
 
 @socketio.on('connect')
 def on_connect():
     print('User connected')
 
 @socketio.on('startGame')
-def handle_start(user_id):
-    chat_history_clear(user_id)
-    return emit('startGame', method('/start/web/%s' % user_id))
+@authenticated_only
+def handle_start():
+    user_id = current_user.name
+    chat_history_clear(current_user.username)
+    return emit('startGame', method('/start/web/%s' % current_user.username))
 
 @socketio.on('sendMessage')
+@authenticated_only
 def handle_send_message(message):
-    chat_history_add({"Message": {"From": message['id'], "Text": message['msg']}}, message['id'])
-    return emit('sendMessage', method('/message/web/%s/%s' % (message['id'], message['msg'])))
+    chat_history_add({"Message": {"From": current_user.username, "Text": message['msg']}}, current_user.username)
+    return emit('sendMessage', method('/message/web/%s/%s' % (current_user.username, message['msg'])))
 
 @socketio.on('getMessages')
-def handle_get_messages(user_id):
-    method_result = method('/get/web/%s' % user_id)
+@authenticated_only
+def handle_get_messages():
+    method_result = method('/get/web/%s' % current_user.username)
     for message in json.loads(method_result):
         print(message)
-        chat_history_add(message, user_id)
+        chat_history_add(message, current_user.username)
 
     return emit('getMessages', method_result)
 
 @socketio.on('getMessageHistory')
-def handle_get_chat_history(user_id):
-    return emit('getMessages', chat_history_get(user_id))
+@authenticated_only
+def handle_get_chat_history():
+    return emit('getMessages', chat_history_get(current_user.username))
 
 @socketio.on('message')
+@authenticated_only
 def test(message):
     print(message)
     return

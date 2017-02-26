@@ -28,23 +28,23 @@
         }
 
         function startGame() {
-            socket.emit('startGame', userID);
+            socket.emit('startGame');
         }
 
         function sendMessage() {
             message = document.getElementById('messageEdit').value;
-            socket.emit('sendMessage', {'id': userID, 'msg': message});
+            socket.emit('sendMessage', {'msg': message});
             addNewLineToTextarea('Вы: ' + message);
 
             document.getElementById('messageEdit').value = '';
         }
 
         function getMessages() {
-            socket.emit('getMessages', userID);
+            socket.emit('getMessages');
         }
 
         function getMessageHistory() {
-            socket.emit('getMessageHistory', userID);
+            socket.emit('getMessageHistory');
         }
 
         function getMessagesWithTimeout() {
@@ -77,7 +77,7 @@
 
             for (var i = 0; i < messages.length; i++) {
                 var from = messages[i].Message.From;
-                if (from == userID)
+                if (from == '{{current_user.username}}')
                     from = 'Вы';
 
                 addNewLineToTextarea(from + ': ' + messages[i].Message.Text);
