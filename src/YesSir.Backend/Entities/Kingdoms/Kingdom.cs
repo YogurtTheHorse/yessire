@@ -23,14 +23,13 @@ namespace YesSir.Backend.Entities.Kingdoms {
 		public bool Starving = false;
 		private IEnumerable<string> select;
 		public object Temp;
-		public Point Coordinate {
-			get { return UserId.ToPoint(); }
-		}
+		public Point Coordinate;
 
 		public Kingdom() {
 			Humans = new List<Human>();
 			Buildings = new List<Building>();
 			Resources = new Dictionary<string, List<Item>>();
+			Coordinate = RandomManager.GenerateKingdomPoint();
 		}
 
 		public Kingdom(UserInfo userinfo) : this() {

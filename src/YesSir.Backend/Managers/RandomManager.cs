@@ -44,11 +44,10 @@ namespace YesSir.Backend.Managers {
 			return arr[Instance.Next(arr.Length)];
 		}
 
-		public static Point ToPoint(this Guid guid) {
-			byte[] bytes = guid.ToByteArray();
-			int chunk_seed = 0,//BitConverter.ToInt32(bytes, 0),
-				x = BitConverter.ToInt32(bytes, 8),
-			    y = BitConverter.ToInt32(bytes, 12);
+		public static Point GenerateKingdomPoint() {
+			int chunk_seed = 0,
+				x = Instance.Next(int.MinValue, int.MaxValue),
+			    y = Instance.Next(int.MinValue, int.MaxValue);
 
 			int chunk_x = (chunk_seed % 5) * ((chunk_seed / 25) % 2 == 0 ? -1 : 1),
 				chunk_y = ((chunk_seed / 5) % 5) * ((chunk_seed / 250) % 2 == 0 ? -1 : 1);
