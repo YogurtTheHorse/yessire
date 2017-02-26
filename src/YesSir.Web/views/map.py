@@ -1,7 +1,13 @@
+import matplotlib as mpl
+mpl.use('Agg')
+
+from flask import Flask, send_file
 import matplotlib.pyplot as plt
 from requests import get
 from app import app
 import json
+
+from io import BytesIO
 
 @app.route('/map')
 def map():
@@ -21,6 +27,7 @@ def map():
 
     plt.plot(x, y, 'ro')
     plt.grid()
+    img = BytesIO()
     plt.savefig(img, dpi=100)
     img.seek(0)
     return send_file(img, mimetype='image/png')
