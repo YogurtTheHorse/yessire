@@ -1,0 +1,96 @@
+@font-face {
+	font-family: 'basis';
+	src: url('fonts/basis33.ttf');
+}
+
+.form {
+	border-style: solid;
+	border-width: 72px 72px 72px 72px;
+	-moz-border-image: url(imgs/form.png) 72 72 72 72 repeat;
+	-webkit-border-image: url(imgs/form.png) 72 72 72 72 repeat;
+	-o-border-image: url(imgs/form.png) 72 72 72 72 repeat;
+	border-image: url(imgs/form.png) 72 72 72 72 fill repeat;
+	display: inline-block;
+}
+
+#icon {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+#login-form {
+	display: table;
+	height: 226px;
+	width: 320px;
+
+	position: absolute;
+	top:0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	display: inline-block;
+
+	margin: auto;
+}
+
+.textbox {
+	display: inline-block;
+	position: relative;
+	border-style: solid;
+	border-width: 20px 20px 20px 20px;
+	-moz-border-image: url(imgs/textbox.png) 20 20 20 20 round repeat;
+	-webkit-border-image: url(imgs/textbox.png) 20 20 20 20 round repeat;
+	-o-border-image: url(imgs/textbox.png) 20 20 20 20 round repeat;
+	border-image: url(imgs/textbox.png) 20 20 20 20 fill round repeat;
+	display: inline-block;
+}
+
+.simple-textbox {
+	border-style: solid;
+	border-width: 8px 8px 8px 8px;
+	-moz-border-image: url(imgs/simple-textbox.png) 8 8 8 8 repeat;
+	-webkit-border-image: url(imgs/simple-textbox.png) 8 8 8 8 repeat;
+	-o-border-image: url(imgs/simple-textbox.png) 8 8 8 8 repeat;
+	border-image: url(imgs/simple-textbox.png) 8 8 8 8 fill repeat;
+	display: inline-block;
+}
+
+#login {
+	position: relative;
+	background: none;
+	border: none;
+	cursor: pointer;
+	position: relative;
+	display: inline-block;
+	margin: auto;
+}
+
+input {
+	border: 0;
+	background: transparent;
+}
+
+* {
+	font-smooth: never;
+	font-family: "basis";
+	font-size: 26px;
+}
+
+.background {
+	height: 100%;
+	left: 0;
+	position: absolute;
+    background-position: center; 
+	top: 0;
+    margin: auto;
+	width: 100%;
+	z-index: -1;
+}
+
+#left-bg{
+    background: url(imgs/left-bg.png) no-repeat 100% center;
+}
+
+#right-bg{
+    background: url(imgs/right-bg.png) no-repeat 0 center;
+}
