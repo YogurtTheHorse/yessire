@@ -23,9 +23,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 		public bool Starving = false;
 		private IEnumerable<string> select;
 		public object Temp;
-		public Point Coordinate {
-			get { return UserId.ToPoint(); }
-		}
+		public Point Coordinate;
 
 		public Kingdom() {
 			Humans = new List<Human>();
@@ -38,6 +36,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			this.Language = userinfo.Language;
 
 			GenerateName();
+			Coordinate = RandomManager.GenerateKingdomPoint();
 		}
 
 		public void GenerateName() {
