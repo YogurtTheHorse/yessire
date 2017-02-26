@@ -12,6 +12,7 @@ db_web = mongo['yes_sir_web']['messages']
 
 from views import main_page
 from views import play
+from views import map
 
 if __name__ == '__main__':
     print('Starting Flask server...')
