@@ -5,308 +5,333 @@
 commands:
   hire:
     list:
-    - Hire
-    - Employ
-    - Sign on
+    - "Hire"
+    - "Employ"
+    - "Sign on"
   train:
     list:
-    - Train
-    - Instruct
-    - Teach
-    - Educate
-    - Learn
-    - Coach
-    - learnt
-    - studied
-    - trained
+    - "Train"
+    - "Instruct"
+    - "Teach"
+    - "Educate"
+    - "Learn"
+    - "Coach"
+    - "learnt"
+    - "studied"
+    - "trained"
   extract:
     list:
-    - Mine
-    - Obtain
-    - Get
-    - Gain
-    - Dig
-    - mined
-    - digged
-    - got
-    - obtained
+    - "Mine"
+    - "Obtain"
+    - "Get"
+    - "Gain"
+    - "Dig"
+    - "mined"
+    - "digged"
+    - "got"
+    - "obtained"
   build:
     list:
-    - Build
-    - Construct
-    - Develop
-    - Set
-    - built
-    - constructed
-    - Make
-    - made
-    - developed
+    - "Build"
+    - "Construct"
+    - "Develop"
+    - "Set"
+    - "built"
+    - "constructed"
+    - "Make"
+    - "made"
+    - "developed"
+  send:
+    list:
+    - "send"
+    - "sent"
+    - "post"
+    - "push"
+    - "forward"
+    - "submit"
+    - "mail"
+    - "transmit"
+    - "dispatch"
+    - "go"
+    - "enter"
+    - "push"
+    - "fly"
+    no_kingdom: "We don't know such a kingdom"
+    recieved: "{0} from {1} Kingdom sends you a message:\n{2}"
   create:
     list:
-    - Create
-    - created
-    - Make
-    - made
-    - Start
-    - started
-    - Set
-    - Construct
-    - Build
-    - built
-    - Do
-    - done
-    - Bake
-    - baken
-    - Roast
-    - roasted
+    - "Create"
+    - "created"
+    - "Make"
+    - "made"
+    - "Start"
+    - "started"
+    - "Set"
+    - "Construct"
+    - "Build"
+    - "built"
+    - "Do"
+    - "done"
+    - "Bake"
+    - "baken"
+    - "Roast"
+    - "roasted"
   grow:
     list:
-    - Grow
-    - grew
-    - Raise
-    - risen
+    - "Grow"
+    - "grew"
+    - "Raise"
+    - "risen"
 jobs:
   no_job: "Who do you want to hire?"
   peasant:
-    name: Peasant
+    name: "Peasant"
     names:
-    - peasant
-    - rusticman
-    - farmer
-    - villager
-    - worker
-    - working man
-    - manual
+    - "peasant"
+    - "rusticman"
+    - "farmer"
+    - "villager"
+    - "worker"
+    - "working man"
+    - "manual"
     miss: "You need a peasant"
   builder:
-    name: Builder
+    name: "Builder"
     names:
-    - builder
-    - constructor
-    - housebuilder
-    - construction person
+    - "builder"
+    - "constructor"
+    - "housebuilder"
+    - "construction person"
     miss: "You need a builder"
-  smith:
-    name: smith
+  ambassador:
+    name: "Ambassador"
     names:
-    - smith
-    - blacksmith
-    - forger
-    - farrier
+    - "ambassador"
+    - "embassador"
+    - "diplomat"
+    - "atache"
+  smith:
+    name: "Smith"
+    names:
+    - "smith"
+    - "blacksmith"
+    - "forger"
+    - "farrier"
   miss: "You need a smith"
   miner:
-    name: Miner
+    name: "Miner"
     names:
-    - miner
-    - mine worker
-    - pit man
-    - digger
-    - mine-digger
+    - "miner"
+    - "mine worker"
+    - "pit man"
+    - "digger"
+    - "mine-digger"
     miss: "You need a miner"
   baker:
-    name: Baker
+    name: "Baker"
     names:
-    - baker
+    - "baker"
     miss: "You need a baker"
   woodcutter:
-    name: Woodcutter
+    name: "Woodcutter"
     names:
-    - woodcutter
-    - lumberman
-    - wood chopper
-    - logger
-    - lumberer
+    - "woodcutter"
+    - "lumberman"
+    - "wood chopper"
+    - "logger"
+    - "lumberer"
     miss: "You need a woodcutter"
   fisher:
-    name: Fisher
+    name: "Fisher"
     names:
-    - fisher
-    - fisherman
+    - "fisher"
+    - "fisherman"
     miss: "You need a fisher"
 buildings:
   no_building: "What do you want to build, Sir?"
   well:
-    name: Well
+    name: "Well"
     names:
-    - well
-    - shaft
-    - pit
-    - basin
+    - "well"
+    - "shaft"
+    - "pit"
+    - "basin"
     miss: "Постройте колодец"
   forge:
-    name: Forge
+    name: "Forge"
     names:
-    - forge
-    - smithery
-    - smithy
-    - marten
-    - blacksmith shop
-    - hammer mill
+    - "forge"
+    - "smithery"
+    - "smithy"
+    - "marten"
+    - "blacksmith shop"
+    - "hammer mill"
     miss: "Нужно построить кузницу"
   farm:
-    name: Farm
+    name: "Farm"
     names:
-    - farm
-    - ranch
+    - "farm"
+    - "ranch"
     miss: "Нужно построить ферму"
   field:
-    name: Field
+    name: "Field"
     names:
-    - field
-    - land
+    - "field"
+    - "land"
     miss: "Нужно обустроить поле"
   bakery:
-    name: Bakery
+    name: "Bakery"
     names:
-    - bakery
-    - pastry
-    - boulangerie
-    - baker shop
-    - cake shop
+    - "bakery"
+    - "pastry"
+    - "boulangerie"
+    - "baker shop"
+    - "cake shop"
     miss: "Нужна пекарня"
   fishery:
-    name: Fishing hut
+    name: "Fishing hut"
     names:
-    - fishing hut
-    - house of the fisher
-    - fisherman house
+    - "fishing hut"
+    - "house of the fisher"
+    - "fisherman house"
   mill:
-    name: Mill
+    name: "Mill"
     names:
-    - mill
+    - "mill"
     miss: "Нужна мельница"
   farming:
-    name: Farming
+    name: "Farming"
     names:
-    - farming
-    - farmery
+    - "farming"
+    - "farmery"
   chopping:
-    name: Lumbering
+    name: "Lumbering"
     names:
-    - lumbering
-    - chopping
-    - harvesting
-    - timber harvest
+    - "lumbering"
+    - "chopping"
+    - "harvesting"
+    - "timber harvest"
   baking:
-    name: Baking
+    name: "Baking"
     names:
-    - baking
-    - panification
+    - "baking"
+    - "panification"
   mining:
-    name: Mining
+    name: "Mining"
     names:
-    - digging
-    - mining
-    - minecraft
-    - output
-    - crop
+    - "digging"
+    - "mining"
+    - "minecraft"
+    - "output"
+    - "crop"
   building:
-    name: Building
+    name: "Building"
     names:
-    - building
-    - construnction
+    - "building"
+    - "construnction"
   smithing:
-    name: Smithcraft
+    name: "Smithcraft"
     names:
-    - smithcraft
-    - smithery
-    - smithing
-    - blacksmithing
-    - metallurgy
-    - metal industry
+    - "smithcraft"
+    - "smithery"
+    - "smithing"
+    - "blacksmithing"
+    - "metallurgy"
+    - "metal industry"
 resources:
   no_resource: "We don't have it"
   no_culture: "We can't grow it"
   gold:
-    name: Gold
+    name: "Gold"
     names:
-    - gold
-    - gold ore
-    - aurum
+    - "gold"
+    - "gold ore"
+    - "aurum"
     miss: "Слишком мало золота, милорд"
   rock:
-    name: Rock
+    name: "Rock"
     names:
-    - rock
-    - stone
-    - pebble
-    - granite
+    - "rock"
+    - "stone"
+    - "pebble"
+    - "granite"
     miss: "Недостаточно камня, сэр"
   iron:
-    name: Iron
+    name: "Iron"
     names:
-    - iron
-    - ferrum
-    - ore
+    - "iron"
+    - "ferrum"
+    - "ore"
     miss: "Недостаточно железа, всевышний"
   wood:
-    name: Wood
+    name: "Wood"
     names:
-    - wood
-    - trees
-    - lumber
-    - timber
+    - "wood"
+    - "trees"
+    - "lumber"
+    - "timber"
     miss: "Нехватка дерева"
   grain:
-    name: Grain
+    name: "Grain"
     names:
-    - grain
-    - crops
-    - corn
-    - cereals
-    - buckwheat
-    - wheat
+    - "grain"
+    - "crops"
+    - "corn"
+    - "cereals"
+    - "buckwheat"
+    - "wheat"
     miss: "Нет зерна"
   millet:
     name: "Millet"
     names:
-    - millet
+    - "millet"
     miss: "Нужно пшено"
   bucket:
-    name: Bucket
+    name: "Bucket"
     names:
-    - bucket
-    - tub
-    - pail
+    - "bucket"
+    - "tub"
+    - "pail"
     miss: "Нужно ведро"
   water_bucket:
-    name: Water bucket
+    name: "Water bucket"
     names:
-    - water bucket
-    - bucket full of water
-    - bucket with water
-    - pail of water
+    - "water bucket"
+    - "bucket full of water"
+    - "bucket with water"
+    - "pail of water"
     miss: "Нужна вода"
   fish:
-    name: Fish
+    name: "Fish"
     names:
-    - fish
+    - "fish"
     miss: "Нет рыбы"
   flour:
-    name: Flour
+    name: "Flour"
     names:
-    - flour
-    - cornmeal
-    - breadstuff
-    - oatmeal
+    - "flour"
+    - "cornmeal"
+    - "breadstuff"
+    - "oatmeal"
     miss: "Нет муки"
   bread:
-    name: Bread
+    name: "Bread"
     names:
-    - bread
-    - loaf
-    - roll
-    - bun
-    - scone
-    - loaf
-    - pastry
-    - bakery
+    - "bread"
+    - "loaf"
+    - "roll"
+    - "bun"
+    - "scone"
+    - "loaf"
+    - "pastry"
+    - "bakery"
     miss: "Нет хлеба"
 status:
   idle: "Idle"
   building: "Is building {0}"
   creating: "Is constructing {0}"
   extracting: "Is mining {0}"
+  sendingmessage: "Is sending a message"
 answers:
   yes: "Yes, Sir"
 problems:
@@ -317,3 +342,4 @@ problems:
   died: "{0} has starved to death"
 notifications:
   builded: "Building is constructed: {0}"
+  write_message: "I'm listening, Sir"
