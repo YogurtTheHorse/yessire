@@ -37,7 +37,7 @@ def on_connect():
 @socketio.on('startGame')
 @authenticated_only
 def handle_start():
-    user_id = current_user.name
+    user_id = current_user.username
     chat_history_clear(current_user.username)
     return emit('startGame', method('/start/web/%s' % current_user.username))
 
