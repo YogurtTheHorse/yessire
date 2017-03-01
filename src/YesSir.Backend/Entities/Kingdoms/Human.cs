@@ -83,10 +83,10 @@ namespace YesSir.Backend.Entities.Kingdoms {
 
 					case ETask.SendingMessage:
 						string kingdom_name = KingdomsManager.FindKingdom(Guid.Parse(TasksToDo[0].Destination)).Name;
-						return string.Format(Locale.Get("status.sennding_message", language), kingdom_name);
+						return string.Format(Locale.Get("status.sending_message", language), kingdom_name);
 
 					default:
-						return "-";
+						return Locale.Get("status." + TasksToDo[0].ToString().ToLower(), language);
 				}
 			}
 		}

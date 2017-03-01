@@ -38,7 +38,8 @@ commands:
     - "отправь"
     - "отошли"
     no_kingdom: "Мы таких королевств не знаем"
-    recieved: "{0} из Королевства {1} прислал вам сообщение:\n{2}"
+    recieved: "{0} из {1} прислал вам сообщение:\n{2}"
+    empty_answer: "Ответа не пооследовало, Сир"
   create:
     list:
     - "Создай"
@@ -256,9 +257,11 @@ status:
   building: "Строит {0}"
   creating: "Создает {0}"
   extracting: "Добывает {0}"
-  sendingmessage: "Отправляет сообщение"
+  sendingmessage: "Отправляет сообщение в {0}"
+  waiting: "Ожидает"
 answers:
   yes: "Да, Сир"
+  write_message: "Что писать, Сир?"
 problems:
   no_people: "Все заняты, Милорд"
   dont_work: "{0} отказался работать."

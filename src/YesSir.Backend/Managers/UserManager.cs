@@ -268,8 +268,6 @@ namespace YesSir.Backend.Managers {
 					break;
 				}
 			}
-			
-			if (h == null) { }
 
 			int i;
 			for (i = 0; i < h.TasksToDo.Count; ++i) {
@@ -283,6 +281,7 @@ namespace YesSir.Backend.Managers {
 			h.TasksToDo[i].CalculateTaskTime(h);
 
 			UpdateState(message.UserInfo, EState.Main);
+			KingdomsManager.OnJorney(h, kingdom);
 
 			return new MessageCallback(Locale.Get("answers.yes", kingdom.Language));
 		}

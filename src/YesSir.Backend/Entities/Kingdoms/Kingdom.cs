@@ -147,7 +147,9 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			List<MessageCallback> res = new List<MessageCallback>();
 			HumanTask t = h.TasksToDo.FirstOrDefault();
 			while (t != null) {
-				t.TimeLeft -= delta;
+				if (t.TaskType != ETask.ListeningKing) {
+					t.TimeLeft -= delta;
+				}
 
 				h.Worked(delta, t.Difficulty);
 				if (t.TimeLeft <= 0) {
@@ -180,10 +182,6 @@ namespace YesSir.Backend.Entities.Kingdoms {
 						case ETask.Extracting:
 						case ETask.Creating:
 							AddResource(t.Destination, 1, h.GetSkill(t.Skill));
-							break;
-
-						case ETask.SendingMessage:
-							KingdomsManager.SendMessage(h, Guid.Parse(t.Destination), t.Context as string);
 							break;
 					}
 					t = h.TasksToDo.FirstOrDefault();

@@ -42,13 +42,14 @@ namespace YesSir.Backend.Entities {
 					break;
 
 				case ETask.SendingMessage:
+					Skill = skill ?? "diplomacy";
 					float dist = KingdomsManager.Distance(h.KingdomId, Guid.Parse(Destination));
-					TimeLeft = dist / (60 * 24);
+					TimeLeft = dist / 60;
 					break;
 
 				default:
 					Skill = skill;
-					TimeLeft = 3;
+					TimeLeft = 1;
 					break;
 			}
 

@@ -16,6 +16,7 @@ namespace YesSir.Backend.Managers {
 		public static IMongoCollection<Kingdom> Kingdoms;
 		public static IMongoCollection<Incoming> IncomingQueue;
 		public static IMongoCollection<Outgoing> OutgoingQueue;
+		public static IMongoCollection<Human> HumansOnJourney;
 
 		public static  void Init() {
 			MongoClient client = new MongoClient();
@@ -78,6 +79,7 @@ namespace YesSir.Backend.Managers {
 
 			Users = Database.GetCollection<UserInfo>("users");
 			Kingdoms = Database.GetCollection<Kingdom>("kingdoms");
+			HumansOnJourney = Database.GetCollection<Human>("humans");
 			IncomingQueue = Database.GetCollection<Incoming>("incoming");
 			OutgoingQueue = Database.GetCollection<Outgoing>("outgoing");
 		}
