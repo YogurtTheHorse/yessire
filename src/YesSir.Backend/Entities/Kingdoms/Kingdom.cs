@@ -1,20 +1,15 @@
 ﻿using MongoDB.Bson.Serialization.IdGenerators;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
-using YesSir.Backend.Entities.Dependencies;
-using YesSir.Backend.Descriptions;
-using YesSir.Backend.Helpers;
 using YesSir.Backend.Managers;
 using YesSir.Shared.Messages;
 using YesSir.Shared.Users;
 using YesSir.Backend.Entities.Items;
-using YesSir.Backend.Commands;
 using System.Collections;
 
 namespace YesSir.Backend.Entities.Kingdoms {
-	public class Kingdom {
+	public partial class Kingdom {
 		public Guid UserId;
 		public string Language, Name;
 		public List<Human> Humans;
@@ -92,10 +87,20 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			}
 
 			foreach (Human h in died) {
-				Humans.Remove(h);
+				Killed(h);
+				
 			}
 
 			return res.ToArray();
+		}
+
+		private void Killed(Human h) {
+			for (int i = 0; i < Humans.Count; i++) {
+				if (Humans[i].HumanId == h.HumanId) continue;
+				Humans[i].Mood = (float)Math.Pow(Humans[i].Mood, Math.Pow(4, Humans[i].GetFriendShip(h)));
+			}
+
+			Humans.Remove(h);
 		}
 
 		private MessageCallback[] UpdateLife(Human h, float delta) {
@@ -193,172 +198,11 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			return res.ToArray();
 		}
 
-		public ExecutionResult Grow(Dictionary<string, object> dict) {
-			if (!dict.ContainsKey("resource")) {
-				return new ExecutionResult(false, new MessageCallback(Locale.Get("resources.no_resource", this.Language), ECharacter.Knight));
-			}
-
-			ItemDescription r = (ItemDescription)dict["resource"];
-
-			if (r.Culture == null) {
-				return new ExecutionResult(false, new MessageCallback(Locale.Get("resources.no_culture", this.Language), ECharacter.Farmer));
-			}
-
-			IDependency dep = new ItemDependency("water_bucket", 2);
-			Tuple<bool, MessageCallback> res = dep.CheckKingdom(this);
-			if (!res.Item1) {
-				return new ExecutionResult(res.Item2);
-			}
-
-			dep.Use(this);
-			foreach (Building b in Buildings) {
-				if (b is Field) {
-					(b as Field).Count = 50;
-					(b as Field).Culture = r.Culture;
-					(b as Field).IsWorking = true;
-					(b as Field).TimeLeft = 3f;
-					break;
-				}
-			}
-
-			return new ExecutionResult(new MessageCallback(Locale.Get("answers.yes", this.Language)));
-		}
-
-		public ExecutionResult Create(Dictionary<string, object> dict) {
-			if (!dict.ContainsKey("resource")) {
-				return new ExecutionResult(false, new MessageCallback(Locale.Get("resources.no_resource", this.Language), ECharacter.Knight));
-			}
-
-			ItemDescription r = (ItemDescription)dict["resource"];
-
-			foreach (IDependency dep in r.CreationDependencies) {
-				Tuple<bool, MessageCallback> res = dep.CheckKingdom(this);
-				if (!res.Item1) {
-					return new ExecutionResult(false, res.Item2);
-				}
-			}
-
-			Human h = dict.Get("human") as Human ?? FindBySkill(r.Skill);
-			HumanTask t = new HumanTask() {
-				Destination = r.Name,
-				TaskType = ETask.Creating
-			};
-			t.CalculateTaskTime(h, r.Difficulty, r.Skill);
-			foreach (IDependency dep in r.ExtractionDependencies) {
-				t.Use(dep.Use(this));
-			}
-
-			if (!h.AddTask(t)) {
-				return new ExecutionResult(false, new MessageCallback(
-					Locale.Get(string.Format("problems.dont_work", h.GetName(Language)), Language),
-					ECharacter.Knight
-				));
-			} else {
-				return new ExecutionResult(new MessageCallback(Locale.Get("answers.yes", this.Language)));
-			}
-		}
-
 		public void AddResource(string r, int cnt, float quality = 0.5f) {
 			if (Resources.ContainsKey(r)) {
 				Resources[r].AddRange(Item.GenerateItems(cnt, r, quality));
 			} else {
 				Resources[r] = Item.GenerateItems(cnt, r, quality);
-			}
-		}
-
-		public ExecutionResult Extract(Dictionary<string, object> dict) {
-			if (!dict.ContainsKey("resource")) {
-				return new ExecutionResult(false, new MessageCallback(Locale.Get("resources.no_resource", this.Language), ECharacter.Knight));
-			}
-
-			ItemDescription r = (ItemDescription)dict["resource"];
-
-			foreach (IDependency dep in r.ExtractionDependencies) {
-				Tuple<bool, MessageCallback> res = dep.CheckKingdom(this);
-				if (!res.Item1) {
-					return new ExecutionResult(false, res.Item2);
-				}
-			}
-
-			Human h = dict.Get("human") as Human ?? FindBySkill(r.Skill);
-			HumanTask t = new HumanTask() {
-				Destination = r.Name,
-				TaskType = ETask.Extracting,
-				Repeating = true
-			};
-			t.CalculateTaskTime(h, r.Difficulty, r.Skill);
-			foreach (IDependency dep in r.ExtractionDependencies) {
-				t.Use(dep.Use(this));
-			}
-
-			if (!h.AddTask(t)) {
-				return new ExecutionResult(false, new MessageCallback(
-					Locale.Get(string.Format("problems.dont_work", h.GetName(Language)), Language),
-					ECharacter.Knight
-				));
-			} else {
-				return new ExecutionResult(new MessageCallback(Locale.Get("answers.yes", this.Language)));
-			}
-		}
-
-		public ExecutionResult Hire(Dictionary<string, object> dict) {
-			int count = (int)(dict.Get("count") ?? 1);
-			if (!dict.ContainsKey("job")) {
-				return new ExecutionResult(false, new MessageCallback(Locale.Get("jobs.no_job", this.Language), ECharacter.Knight));
-			}
-
-			JobDescription j = (JobDescription)dict["job"];
-			List<IDependency> deps = new List<IDependency>(j.HireDepence);
-
-			for (int i = 0; i < count; ++i) {
-				foreach (IDependency dep in deps) {
-					Tuple<bool, MessageCallback> res = dep.CheckKingdom(this);
-					if (!res.Item1) {
-						return new ExecutionResult(false, res.Item2);
-					}
-				}
-				foreach (IDependency dep in j.HireDepence) {
-					dep.Use(this);
-				}
-				CreateHumanWithSkills(new Tuple<string, float>[] {
-					new Tuple<string, float>(j.SkillName, RandomManager.NextGoodSkill())
-				});
-			}
-
-			return new ExecutionResult(new MessageCallback(Locale.Get("answers.yes", this.Language), ECharacter.Knight));
-		}
-
-		public ExecutionResult Train(Dictionary<string, object> dict) {
-			int count = 1;
-			if (dict.ContainsKey("count")) { count = (int)dict["count"]; }
-			if (!dict.ContainsKey("skill")) {
-				return new ExecutionResult(false, new MessageCallback(Locale.Get("jobs.no_job", this.Language), ECharacter.Knight));
-			}
-			string sk = (string)dict["skill"];
-			JobDescription jb = ContentManager.GetJobDescriptionBySkill(sk);
-			List<IDependency> deps = new List<IDependency>(jb.TrainDepence);
-			deps.Add(new HumanDependency());
-
-			foreach (IDependency dep in deps) {
-				Tuple<bool, MessageCallback> res = dep.CheckKingdom(this);
-				if (!res.Item1) {
-					return new ExecutionResult(false, res.Item2);
-				}
-			}
-			Human h = dict.Get("human") as Human ?? FindBySkill(sk, false);
-			HumanTask task = new HumanTask() {
-				Destination = sk,
-				TaskType = ETask.Training
-			};
-
-			task.CalculateTaskTime(h);
-			if (!h.AddTask(task)) {
-				return new ExecutionResult(false, new MessageCallback(
-					Locale.Get(string.Format("problems.dont_work", h.GetName(Language)), Language),
-					ECharacter.Knight
-				));
-			} else {
-				return new ExecutionResult(new MessageCallback(Locale.Get("answers.yes", this.Language)));
 			}
 		}
 
@@ -378,41 +222,6 @@ namespace YesSir.Backend.Entities.Kingdoms {
 
 		private string GenerateName(string lang) {
 			return Locale.GetArray(lang + ".firstnames", "names").RandomChoice() + " " + Locale.GetArray(lang + ".lastnames", "names").RandomChoice();
-		}
-
-		public ExecutionResult Build(Dictionary<string, object> dict) {
-			if (!dict.ContainsKey("building")) {
-				return new ExecutionResult(false, new MessageCallback(Locale.Get("buildings.no_building", this.Language), ECharacter.Knight));
-			}
-			BuildingDescription b = (BuildingDescription)dict["building"];
-
-			foreach (IDependency dep in b.Dependencies) {
-				Tuple<bool, MessageCallback> res = dep.CheckKingdom(this);
-				if (!res.Item1) {
-					return new ExecutionResult(false, res.Item2);
-				}
-			}
-
-			Human h = dict.Get("human") as Human ?? FindBySkill("building");
-
-			HumanTask t = new HumanTask();
-			t.Destination = b.Name;
-			t.TaskType = ETask.Building;
-
-			foreach (IDependency dep in b.Dependencies) {
-				t.Use(dep.Use(this));
-			}
-
-			t.CalculateTaskTime(h);
-
-			if (!h.AddTask(t)) {
-				return new ExecutionResult(false, new MessageCallback(
-					Locale.Get(string.Format("problems.dont_work", h.GetName(Language)), Language),
-					ECharacter.Knight
-				));
-			} else {
-				return new ExecutionResult(new MessageCallback(Locale.Get("answers.yes", this.Language)));
-			}
 		}
 
 		public Human FindBySkill(string skillname, bool maximal = true) {

@@ -23,15 +23,19 @@ namespace YesSir.Backend.Entities.Kingdoms {
 		public Dictionary<string, float> Skills;
 		public bool Died = false;
 
+		public Dictionary<Guid, float> FriendShips;
+
 		public bool IsInDepression = false;
 
 
 		public Human() {
 			Skills = new Dictionary<string, float>();
+			FriendShips = new Dictionary<Guid, float>();
+			TasksToDo = new List<HumanTask>();
+
 		}
 
 		public Human(string name, ESex sex, float age) : this() {
-			TasksToDo = new List<HumanTask>();
 			Name = name;
 			Sex = sex;
 			Age = age;
@@ -89,6 +93,26 @@ namespace YesSir.Backend.Entities.Kingdoms {
 						return Locale.Get("status." + TasksToDo[0].ToString().ToLower(), language);
 				}
 			}
+		}
+
+		public float GetDefaultFriendhsip() {
+			if (FriendShips.Count > 0) {
+				float s = 0;
+				{
+					var ar = FriendShips.ToArray();
+					for (int i = 0; i < ar.Length; i++) {
+						s += ar[i].Value;
+					}
+
+					return s / ar.Length;
+				}
+			} else {
+				return 0.1f;
+			}
+		}
+
+		public float GetFriendShip(Human h) {
+			return FriendShips.ContainsKey(h.HumanId) ? FriendShips[h.HumanId] : GetDefaultFriendhsip();
 		}
 
 		private string GetJobName(string language) {

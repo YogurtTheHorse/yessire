@@ -124,6 +124,13 @@ namespace YesSir.Backend.Managers {
 					new CommandPart[] { kingdomPart, new CommandPart() }
 				), (k, dict) => SendMessage(k, dict)
 			));
+
+			Commands.Add(new Command(
+				new IDependency[] { new HumanDependency() },
+				new CommandPart(Locale.GetArray("commands.execute.list"),
+					new CommandPart[] { CommandsStandartFunctions.Fill }
+				), (k, dict) => k.Kill(k, dict)
+			));
 #if DEBUG
 			LoadDebugCommands();
 #endif
