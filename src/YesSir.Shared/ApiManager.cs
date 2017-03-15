@@ -15,6 +15,13 @@ namespace YesSir.Shared {
 		public static event OnMessageDelegate OnMessage;
 		public static string UserType = "cli";
 
+		private static volatile int _connected = 0;
+		public static bool Connected
+		{
+			get { return _connected != 0; }
+			private set { Interlocked.Exchange(ref _connected, value ? 1 : 0); }
+		}
+
 		private static volatile int _isPolling = 0;
 		private static bool IsPolling
 		{
@@ -42,6 +49,10 @@ namespace YesSir.Shared {
 			}
 		}
 
+		public static void WaitForConnect() {
+			while (!Connected) { Thread.Sleep(10); }
+		}
+
 		public static void StopPoll() {
 			IsPolling = false;
 		}
@@ -54,6 +65,8 @@ namespace YesSir.Shared {
 					foreach (Outgoing o in GetMessages(userId)) {
 						OnMessage(o);
 					}
+
+					Connected = true;
 					if (sw.ElapsedMilliseconds < pollInterval) {
 						long delta = pollInterval - sw.ElapsedMilliseconds;
 						await Task.Delay((int)delta);

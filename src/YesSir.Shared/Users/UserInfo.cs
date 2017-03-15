@@ -6,7 +6,7 @@ namespace YesSir.Shared.Users {
 		public string Name;
 		public string Type;
 		public EState State = EState.Main;
-		public string ThirdPartyId;
+		public string ThirdPartyId = "";
 		public string Language = "ru";
 
 		public bool Equals(UserInfo ui) {

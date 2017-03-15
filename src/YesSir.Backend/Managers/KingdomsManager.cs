@@ -13,7 +13,6 @@ namespace YesSir.Backend.Managers {
 		private static List<Human> HumansOnJourney;
 		private static float TimeToSave;
 		private const float TIME_TO_SAVE = 30;
-		private static Tuple<string, Guid> select;
 
 		public static void Init() {
 			Saved = new HashSet<Guid>();
@@ -66,10 +65,7 @@ namespace YesSir.Backend.Managers {
 		}
 
 		public static string CreateKingdom(UserInfo ui) {
-			Kingdom kingdom = ScriptManager.DoFile("Scripts/new_kingdom.lua").ToObject() as Kingdom;
-			kingdom.UserId = ui.Id;
-			kingdom.Language = ui.Language;
-			kingdom.GenerateName();
+			Kingdom kingdom = ScriptManager.DoFile("Scripts/new_kingdom.lua", new Kingdom(ui)).ToObject() as Kingdom;
 
 			// TODO: Optimize
 			Kingdoms.RemoveAll(k => k.UserId == ui.Id);
@@ -146,7 +142,7 @@ namespace YesSir.Backend.Managers {
 		public static void MessageSent(Human ambassador, Guid destination, string msg) {
 			Kingdom k = FindKingdom(destination);
 
-			HumanTask gettingBackTask = new HumanTask() {
+			HumanTask gettingBackTask = new HumanTask(ambassador) {
 				TaskType = ETask.SendingMessage,
 				Destination = k.UserId.ToString(),
 				Context = Locale.Get("commands.send.empty_answer", k.Language)
@@ -154,7 +150,7 @@ namespace YesSir.Backend.Managers {
 			gettingBackTask.CalculateTaskTime(ambassador);
 
 			ambassador.TasksToDo.AddRange(new[] {
-				new HumanTask() {
+				new HumanTask(ambassador) {
 					TaskType = ETask.Waiting,
 					TimeLeft = 3
 				},

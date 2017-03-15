@@ -16,7 +16,6 @@ namespace YesSir.Backend.Entities.Kingdoms {
 		public List<Building> Buildings;
 		public Dictionary<string, List<Item>> Resources;
 		public bool Starving = false;
-		private IEnumerable<string> select;
 		public object Temp;
 		public Point Coordinate;
 
@@ -140,12 +139,12 @@ namespace YesSir.Backend.Entities.Kingdoms {
 		}
 
 		public void AddBuilding(string name, float quality = 0.5f) {
-			Building b = new Building();
+			Building b = ContentManager.NewBuilding(name);
 			b.Id = (Guid)CombGuidGenerator.Instance.GenerateId(this, b);
-			b.KingdomId = this.UserId;
-			b.Name = name;
+			b.KingdomId = UserId;
 			b.Quality = quality;
-			Buildings.Add(name == "field" ? new Field(b) : b);
+			
+			Buildings.Add(b);
 		}
 
 		private MessageCallback[] WorkTasks(Human h, float delta) {
@@ -156,7 +155,17 @@ namespace YesSir.Backend.Entities.Kingdoms {
 					t.TimeLeft -= delta;
 				}
 
-				h.Worked(delta, t.Difficulty);
+
+				int k = h.Worked(delta, t.Difficulty) ? 1 : -1;
+
+				var soworkers = new List<Human>();
+				for (int i = 0; i < t.InUse.Count; ++i) {
+					Guid[] owners_ids = t.InUse[i].GetOwners();
+					for (int j = 0; j < owners_ids.Length; ++j) {
+						h.UpdateFriendship(owners_ids[j], k*delta);
+					}
+				}
+
 				if (t.TimeLeft <= 0) {
 					if (t.Skill != null) {
 						h.UpgradeSkill(t.Skill, 0.999f);
@@ -198,6 +207,14 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			return res.ToArray();
 		}
 
+		private Human FindHuman(Guid s) {
+			for (int i = 0; i < Humans.Count; i++) {
+				if (s == Humans[i].HumanId) { return Humans[i]; }
+			}
+			
+			return null;
+		}
+
 		public void AddResource(string r, int cnt, float quality = 0.5f) {
 			if (Resources.ContainsKey(r)) {
 				Resources[r].AddRange(Item.GenerateItems(cnt, r, quality));
@@ -206,7 +223,24 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			}
 		}
 
-		private void CreateHumanWithSkills(Tuple<string, float>[] tuples) {
+		public void CreateHumanWithSkills(string name) {
+			CreateHumanWithSkills(name, RandomManager.NextGoodSkill());
+		}
+
+		public void CreateHumanWithSkills(string name, float skill_lev) {
+			Human h = new Human(GenerateName(this.Language), RandomManager.Select<ESex>(), 32);
+			h.HumanId = (Guid)CombGuidGenerator.Instance.GenerateId(this, h);
+			h.KingdomId = UserId;
+
+			foreach (string skill in ContentManager.GetSkills()) {
+				h.SetSkill(skill, RandomManager.NextDefaultSkill());
+			}
+			h.SetSkill(name, skill_lev);
+			
+			Humans.Add(h);
+		}
+
+		public void CreateHumanWithSkills(Tuple<string, float>[] tuples) {
 			Human h = new Human(GenerateName(this.Language), RandomManager.Select<ESex>(), 32);
 			h.HumanId = (Guid)CombGuidGenerator.Instance.GenerateId(this, h);
 			h.KingdomId = UserId;

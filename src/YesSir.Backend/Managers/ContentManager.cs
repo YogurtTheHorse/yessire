@@ -7,6 +7,7 @@ using MoonSharp.Interpreter;
 using YesSir.Backend.Entities.Dependencies;
 using YesSir.Backend.Descriptions;
 using YesSir.Backend.Entities;
+using YesSir.Backend.Entities.Kingdoms;
 
 namespace YesSir.Backend.Managers {
 	[MoonSharpUserData]
@@ -15,7 +16,8 @@ namespace YesSir.Backend.Managers {
 		private static List<JobDescription> Jobs = new List<JobDescription>();
 		private static List<string> Skills = new List<string>();
 		private static List<ItemDescription> StandartResources = new List<ItemDescription>();
-		
+		private static List<string> Grains = new List<string>();
+
 		public static void Init() {
 			ScriptManager.DoFile("Scripts/content.lua");
 
@@ -55,6 +57,7 @@ namespace YesSir.Backend.Managers {
 		}
 
 		public static void RegisterGrain(string grain, params string[] args) {
+
 			foreach (ItemDescription id in StandartResources) {
 				if (args.Contains(id.Name)) {
 					id.Culture = grain;
@@ -112,7 +115,7 @@ namespace YesSir.Backend.Managers {
 			});
 		}
 
-		public static void RegisterBuilding(string name, Dictionary<string, int> resources, IDependency[] addition = null) {
+		public static void RegisterBuilding(string name, Dictionary<string, int> resources, IDependency[] addition = null, int size=1) {
 			List<IDependency> deps = new List<IDependency>();
 			deps.Add(new HumanDependency());
 
@@ -128,8 +131,25 @@ namespace YesSir.Backend.Managers {
 
 			Buildings.Add(new BuildingDescription() {
 				Name = name,
-				Dependencies = deps.ToArray()
+				Dependencies = deps.ToArray(),
+				Size = size
 			});
+		}
+
+		public static Building NewBuilding(string name) {
+			for (int i = 0; i < Buildings.Count; i++) {
+				if (Buildings[i].Name == name) {
+					var b = new Building() {
+						Name = Buildings[i].Name,
+						Quality = 0.5f,
+						AvaibalePlace = Buildings[i].Size
+					};
+
+					return name == "field" ? new Field(b) : b;
+				}
+			}
+
+			return null;
 		}
 
 		public static string GetBuildingName(string building, string language) {

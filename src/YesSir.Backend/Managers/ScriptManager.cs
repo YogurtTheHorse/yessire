@@ -25,6 +25,7 @@ namespace YesSir.Backend.Managers {
 			Script.Globals["new_kingdom"] = (Func<DynValue>)(() => UserData.Create(new Kingdom()));
 
 			Script.Globals["contentmanager"] = typeof(ContentManager);
+			Script.Globals["rand"] = typeof(RandomManager);
 			//Script.Globals["usersmanager"] = typeof(UsersManager);
 			Script.Globals["locale"] = typeof(Locale);
 		}

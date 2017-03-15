@@ -34,25 +34,35 @@ namespace YesSir.Backend.Entities.Kingdoms {
 				return new ExecutionResult(false, new MessageCallback(Locale.Get("resources.no_culture", this.Language), ECharacter.Farmer));
 			}
 
-			IDependency dep = new ItemDependency("water_bucket", 2);
-			Tuple<bool, MessageCallback> res = dep.CheckKingdom(this);
-			if (!res.Item1) {
-				return new ExecutionResult(res.Item2);
-			}
+			var deps = new[] {
+				new ItemDependency("water_bucket", 2),
+				new ItemDependency(r.Culture, 50 )
+			};
 
-			dep.Use(this);
-			foreach (Building b in Buildings) {
-				Field f = b as Field;
-				if (f != null) {
-					f.Count = 50;
-					f.Culture = r.Culture;
-					f.IsWorking = true;
-					f.TimeLeft = 3f;
-					break;
+			foreach (IDependency dep in deps) {
+				Tuple<bool, MessageCallback> res = dep.CheckKingdom(this);
+				if (!res.Item1) {
+					return new ExecutionResult(res.Item2);
 				}
 			}
 
-			return new ExecutionResult(new MessageCallback(Locale.Get("answers.yes", this.Language)));
+			foreach (IDependency dep in deps) {
+				dep.Use(this);
+			}
+
+			foreach (Building b in Buildings) {
+				Field f = b as Field;
+				if (f != null && !f.IsWorking) {
+					f.Count = 50;
+					f.Goal = r.Name;
+					f.IsWorking = true;
+					f.TimeLeft = 3f;
+
+					return new ExecutionResult(new MessageCallback(Locale.Get("answers.yes", this.Language)));
+				}
+			}
+
+			return new ExecutionResult(new MessageCallback(Locale.Get("commands.grow.no_field", this.Language)));
 		}
 
 		public ExecutionResult Create(Dictionary<string, object> dict) {
@@ -70,7 +80,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			}
 
 			Human h = dict.Get("human") as Human ?? FindBySkill(r.Skill);
-			HumanTask t = new HumanTask() {
+			HumanTask t = new HumanTask(h) {
 				Destination = r.Name,
 				TaskType = ETask.Creating
 			};
@@ -104,7 +114,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			}
 
 			Human h = dict.Get("human") as Human ?? FindBySkill(r.Skill);
-			HumanTask t = new HumanTask() {
+			HumanTask t = new HumanTask(h) {
 				Destination = r.Name,
 				TaskType = ETask.Extracting,
 				Repeating = true
@@ -169,7 +179,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 				}
 			}
 			Human h = dict.Get("human") as Human ?? FindBySkill(sk, false);
-			HumanTask task = new HumanTask() {
+			HumanTask task = new HumanTask(h) {
 				Destination = sk,
 				TaskType = ETask.Training
 			};
@@ -200,7 +210,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 
 			Human h = dict.Get("human") as Human ?? FindBySkill("building");
 
-			HumanTask t = new HumanTask();
+			HumanTask t = new HumanTask(h);
 			t.Destination = b.Name;
 			t.TaskType = ETask.Building;
 

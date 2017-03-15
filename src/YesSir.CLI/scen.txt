@@ -1,0 +1,13 @@
+# Standart debugging model for cool admins
+!yegorf1
+start
+deb
+
+
+Нанять строителя
+Нанять рабочего
+Построить поле
+%7500
+Выращивай пшено
+tas
+deb

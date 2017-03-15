@@ -32,7 +32,6 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			Skills = new Dictionary<string, float>();
 			FriendShips = new Dictionary<Guid, float>();
 			TasksToDo = new List<HumanTask>();
-
 		}
 
 		public Human(string name, ESex sex, float age) : this() {
@@ -64,8 +63,10 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			Skills[name] = skill;
 		}
 
-		public void Worked(float delta, float difficulty) {
+		public bool Worked(float delta, float difficulty) {
 			Satiety -= delta * difficulty / 10f;
+
+			return true;
 		}
 
 		public string GetName(string language) {
@@ -130,6 +131,13 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			}
 
 			return false;
+		}
+
+		public void UpdateFriendship(Guid h, float k=1) {
+			float f = FriendShips[h] + k / 100;
+			if (f > 0 && f < 1) {
+				FriendShips[h] = f;
+			}
 		}
 	}
 
