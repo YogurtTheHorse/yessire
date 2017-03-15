@@ -12,6 +12,8 @@ namespace YesSir.Backend.Managers {
 		private static List<Kingdom> Kingdoms;
 		private static List<Human> HumansOnJourney;
 		private static float TimeToSave;
+		private static long Time;
+
 		private const float TIME_TO_SAVE = 30;
 
 		public static void Init() {
@@ -22,6 +24,9 @@ namespace YesSir.Backend.Managers {
 
 			Kingdoms.ForEach(k => Saved.Add(k.UserId));
 			HumansOnJourney.ForEach(h => Saved.Add(h.HumanId));
+
+
+//			Time = 
 		}
 
 		public static Kingdom FindKingdom(UserInfo userinfo) {

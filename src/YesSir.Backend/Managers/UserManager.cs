@@ -152,7 +152,11 @@ namespace YesSir.Backend.Managers {
 			}));
 
 			Commands.Add(new Command(new IDependency[] { }, new CommandPart(new string[] { "res" }), (k, d) => {
-				string msg = string.Join("\n", k.Resources.Select(r => r.Key + ": " + r.Value.Count));
+				Dictionary<string, int> calc = new Dictionary<string, int>();
+				foreach (var kv in k.Resources) {
+					calc[kv.Key] = k.GetResourcesCount(kv.Key);
+				}
+				string msg = string.Join("\n", calc.Select(r => r.Key + ": " + (r.Value)));
 
 				return new ExecutionResult(new MessageCallback(msg, ECharacter.Admin));
 			}));

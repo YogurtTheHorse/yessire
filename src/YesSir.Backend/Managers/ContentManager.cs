@@ -115,6 +115,16 @@ namespace YesSir.Backend.Managers {
 			});
 		}
 
+		public static bool IsJobSkill(string s) {
+			foreach (var j in Jobs) {
+				if (j.SkillName == s) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+
 		public static void RegisterBuilding(string name, Dictionary<string, int> resources, IDependency[] addition = null, int size=1) {
 			List<IDependency> deps = new List<IDependency>();
 			deps.Add(new HumanDependency());

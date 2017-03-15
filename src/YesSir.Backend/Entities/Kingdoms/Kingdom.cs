@@ -7,6 +7,7 @@ using YesSir.Shared.Messages;
 using YesSir.Shared.Users;
 using YesSir.Backend.Entities.Items;
 using System.Collections;
+using YesSir.Backend.Helpers;
 
 namespace YesSir.Backend.Entities.Kingdoms {
 	public partial class Kingdom {
@@ -15,6 +16,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 		public List<Human> Humans;
 		public List<Building> Buildings;
 		public Dictionary<string, List<Item>> Resources;
+		public List<Item> Deposits;
 		public bool Starving = false;
 		public object Temp;
 		public Point Coordinate;
@@ -22,6 +24,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 		public Kingdom() {
 			Humans = new List<Human>();
 			Buildings = new List<Building>();
+			Deposits = new List<Item>();
 			Resources = new Dictionary<string, List<Item>>();
 			Coordinate = RandomManager.GenerateKingdomPoint();
 		}
@@ -49,7 +52,11 @@ namespace YesSir.Backend.Entities.Kingdoms {
 
 		public int GetResourcesCount(string resorce) {
 			if (Resources.ContainsKey(resorce)) {
-				return Resources[resorce].Count;
+				int sum = 0;
+				for (int i = 0; i < Resources[resorce].Count; i++) {
+					sum += Resources[resorce][i].Count;
+				}
+				return sum;
 			} else {
 				return 0;
 			}
@@ -57,7 +64,25 @@ namespace YesSir.Backend.Entities.Kingdoms {
 
 		public bool TakeResource(string resource, int count) {
 			if (GetResourcesCount(resource) >= count) {
-				Resources[resource].RemoveRange(0, count);
+				int cnt = count,
+				i = 0;
+
+				while (cnt > 0 && i < Resources[resource].Count) {
+					var n_res = Resources[resource][i];
+					if (cnt > n_res.Count) {
+						Resources[resource].RemoveAt(i);
+						cnt -= n_res.Count;
+					} else if (n_res.Count == cnt) {
+						Resources[resource].RemoveAt(i);
+
+						cnt = 0;
+					} else {
+						n_res.Count -= cnt;
+						cnt = 0;
+					}
+					i++;
+				}
+
 				return true;
 			} else {
 				return false;
@@ -217,10 +242,15 @@ namespace YesSir.Backend.Entities.Kingdoms {
 
 		public void AddResource(string r, int cnt, float quality = 0.5f) {
 			if (Resources.ContainsKey(r)) {
-				Resources[r].AddRange(Item.GenerateItems(cnt, r, quality));
-			} else {
-				Resources[r] = Item.GenerateItems(cnt, r, quality);
-			}
+				for (int i = 0; i < Resources[r].Count; i++) {
+					if (Resources[r][i].Quality.NearlyEqual(quality)) {
+						Resources[r][i].Count += cnt;
+						return;
+					}
+				}
+			} 
+
+			Resources[r] = new List<Item>(new [] { new Item(cnt, r, quality) });
 		}
 
 		public void CreateHumanWithSkills(string name) {

@@ -117,8 +117,9 @@ namespace YesSir.Backend.Entities.Kingdoms {
 		}
 
 		private string GetJobName(string language) {
-			string bestat = Skills.Aggregate((first, second) => first.Value > second.Value ? first : second).Key;
-			return ContentManager.GetJobBySkill(bestat, language);
+			var skills = Skills.OrderBy(p => p.Value);
+
+			return ContentManager.GetJobBySkill(skills.First(s => ContentManager.IsJobSkill(s.Key)).Key, language);
 		}
 
 		public bool Eat(Kingdom kingdom) {

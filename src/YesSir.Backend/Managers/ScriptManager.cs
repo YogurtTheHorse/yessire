@@ -20,7 +20,7 @@ namespace YesSir.Backend.Managers {
 			Script.Globals["item_dep"] = (Func<string, int, ItemDependency>)((s, r) => new ItemDependency(s, r)); ;
 			Script.Globals["human_dep"] = (Func<HumanDependency>)(() => new HumanDependency());
 			
-			Script.Globals["gen_items"] = (Func<int, string, float, float, List<Item>>)((cnt, name, quality, diff) => Item.GenerateItems(cnt, name, quality, diff));
+			Script.Globals["gen_items"] = (Func<int, string, float, Item>)((cnt, name, quality) => new Item(cnt, name, quality));
 
 			Script.Globals["new_kingdom"] = (Func<DynValue>)(() => UserData.Create(new Kingdom()));
 

@@ -1,6 +1,8 @@
-﻿using MongoDB.Bson.Serialization;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.IdGenerators;
 using MongoDB.Driver;
+using System.Collections;
 using YesSir.Backend.Entities;
 using YesSir.Backend.Entities.Items;
 using YesSir.Backend.Entities.Kingdoms;
@@ -17,8 +19,15 @@ namespace YesSir.Backend.Managers {
 		public static IMongoCollection<Incoming> IncomingQueue;
 		public static IMongoCollection<Outgoing> OutgoingQueue;
 		public static IMongoCollection<Human> HumansOnJourney;
+		private static IMongoCollection<Variable> Variables;
 
-		public static  void Init() {
+		private class Variable {
+			public ObjectId Id;
+			public string Name;
+			public object Value;
+		}
+
+		public static void Init() {
 			MongoClient client = new MongoClient();
 
 			Database = client.GetDatabase("yes_sir");
@@ -68,6 +77,11 @@ namespace YesSir.Backend.Managers {
 				cm.SetDiscriminator("item");
 				cm.SetIgnoreExtraElements(true);
 			});
+			BsonClassMap.RegisterClassMap<Variable>(cm => {
+				cm.AutoMap();
+				cm.SetDiscriminator("variable");
+				cm.MapMember(c => c.Id).SetElementName("_id").SetIdGenerator(CombGuidGenerator.Instance);
+			});
 			BsonClassMap.RegisterClassMap<Incoming>(cm => {
 				cm.AutoMap();
 				cm.MapMember(c => c.Id).SetElementName("_id").SetIdGenerator(CombGuidGenerator.Instance);
@@ -82,6 +96,25 @@ namespace YesSir.Backend.Managers {
 			HumansOnJourney = Database.GetCollection<Human>("humans");
 			IncomingQueue = Database.GetCollection<Incoming>("incoming");
 			OutgoingQueue = Database.GetCollection<Outgoing>("outgoing");
+			Variables = Database.GetCollection<Variable>("vars");
+		}
+
+		public static object GetVariable(string name) {
+			return GetVariable(name);
+		}
+
+		public static T GetVariable<T>(string name, T def = null) where T : class {
+			var res = Variables.Find((d) => d.Name == name);
+			return res.Count() > 0 
+					? (res.Single()?.Value as T) ?? def
+					: def;
+		}
+
+		public static void SetVariable(string name, object val) {
+			var opts = new FindOneAndUpdateOptions<Variable, Variable>() { IsUpsert = true };
+			var fnd = Builders<Variable>.Filter.Eq(v => v.Name, name);
+
+			Variables.FindOneAndUpdateAsync(fnd, Builders<Variable>.Update.Set(v => v.Value, val), opts);
 		}
 	}
 }

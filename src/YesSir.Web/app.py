@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask
 from flask_socketio import SocketIO
 from pymongo import MongoClient
@@ -5,7 +7,7 @@ from flask.ext.login import LoginManager
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
-app.config['SERVER_NAME'] = 'yessirgame.ru'
+app.config['SERVER_NAME'] = os.getenv('SERVER_NAME', None)
 
 socketio = SocketIO(app)
 
