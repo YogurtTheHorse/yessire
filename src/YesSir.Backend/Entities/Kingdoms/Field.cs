@@ -44,7 +44,7 @@ namespace YesSir.Backend.Entities.Kingdoms {
 				if (TimeLeft < 0) {
 					IsWorking = false;
 
-					res.Add(new MessageCallback(Locale.Get($"items.{Goal}.growed", k.Language), ECharacter.Farmer));
+					res.Add(new MessageCallback(Locale.Get($"resources.{Goal}.growed", k.Language), ECharacter.Farmer));
 					k.AddResource(Goal, (int)(Count * Quality), Quality);
 				}
 			}
