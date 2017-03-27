@@ -116,8 +116,8 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			return FriendShips.ContainsKey(h.HumanId) ? FriendShips[h.HumanId] : GetDefaultFriendhsip();
 		}
 
-		private string GetJobName(string language) {
-			var skills = Skills.OrderBy(p => p.Value);
+		public string GetJobName(string language) {
+			var skills = Skills.OrderBy(p => -p.Value);
 
 			return ContentManager.GetJobBySkill(skills.First(s => ContentManager.IsJobSkill(s.Key)).Key, language);
 		}

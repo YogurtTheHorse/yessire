@@ -21,7 +21,7 @@ namespace YesSir.Shared.Messages {
 			foreach (string s in Text.Split('\n')) {
 				res += " - " + s + "\n";
 			}
-			return res;
+			return res.Substring(0, res.Length-1); // To remove last \n symbol
 		}
 	}
 

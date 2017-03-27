@@ -9,9 +9,14 @@ using YesSir.Shared.Users;
 namespace YesSir.CLI {
 	public class Program {
 		private static UserInfo ui;
+		private static bool ReadingScenario;
 
 		public static void Print(MessageCallback msg) {
-			Console.Write("\r{0}> ", msg.Format());
+			Print(msg.Format());
+		}
+
+		public static void Print(string msg) {
+			Console.Write("\r{0}\n> ", msg);
 		}
 
 		static void Main(string[] args) {
@@ -43,16 +48,16 @@ namespace YesSir.CLI {
 								continue;
 							} else if (s.StartsWith("!")) {
 								ui.ThirdPartyId = s.Substring(1).Trim();
-								Console.WriteLine($"Your id: {ui.ThirdPartyId}");
+								Print($"Your id: {ui.ThirdPartyId}");
 							} else if (s.StartsWith("%")) {
 								int tm = int.Parse(s.Substring(1));
-								Console.WriteLine($"Waiting {tm}ms...");
+								Print($"Waiting {tm}ms...");
 								Thread.Sleep(tm);
-								Console.WriteLine("Done");
+								Print("Done");
 							} else if (s.StartsWith("#")) {
-								Console.WriteLine(s);
+								Print(s);
 							} else { 
-								Console.WriteLine("> " + s);
+								Print("> " + s);
 								OnMessage(s);
 							}
 							Thread.Sleep(1000);

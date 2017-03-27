@@ -10,15 +10,25 @@ local f = function (kingdom)
 	kingdom:add_resource ("grain", 1000, 0.5, 0.05)
 	kingdom:add_resource ("grain", 1000, 0.5, 0.05)
 
-	kingdom:create_human_with_skills ("building", rand.next_good_skill ())
 	kingdom:add_building ("mill")
 	kingdom:add_building ("field")
 	kingdom:add_building ("field")
 
-	kingdom:create_human_with_skills ("mining")
-	kingdom:create_human_with_skills ("mining")
-	kingdom:create_human_with_skills ("farming")
-	kingdom:create_human_with_skills ("dyplomacy")
+	profs = {
+		{ "building", 1 },
+		{ "mining", 2 },
+		{ "farming", 2 },
+		{ "dyplomacy", 1 }
+	}
+
+	for _, des in pairs (profs) do
+		name = des[0]
+		count = des[1]
+
+		for i=1, count do
+			kingdom:create_human_with_skills (name)
+		end
+	end
 
 	return kingdom
 end
