@@ -3,6 +3,32 @@
 	src: url('fonts/basis33.ttf');
 }
 
+.outer {
+	display: table;
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	right: 0;
+}
+
+.content-holder {
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.content {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.centered {
+	margin: auto;
+	display: table;
+}
+
 .form {
 	border-style: solid;
 	border-width: 72px 72px 72px 72px;
@@ -10,7 +36,29 @@
 	-webkit-border-image: url(imgs/form.png) 72 72 72 72 repeat;
 	-o-border-image: url(imgs/form.png) 72 72 72 72 repeat;
 	border-image: url(imgs/form.png) 72 72 72 72 fill repeat;
-	display: inline-block;
+	overflow: hidden;
+  white-space: nowrap;
+}
+
+.scroll {
+	border-style: solid;
+	border-width: 34px 24px 52px 48px;
+	-moz-border-image: url(imgs/scroll-x4.png) 34 24 52 48 stretch;
+	-webkit-border-image: url(imgs/scroll-x4.png) 34 24 52 48 stretch;
+	-o-border-image: url(imgs/scroll-x4.png) 34 24 52 48 stretch;
+	border-image: url(imgs/scroll-x4.png) 34 24 52 48 fill stretch;
+}
+
+body {
+	background-color: #040917;
+}
+
+a {
+	color: #B51927;
+}
+
+a:visited {
+	color: #360701;
 }
 
 #icon {
@@ -20,17 +68,6 @@
 
 #login-form {
 	display: table;
-	height: 226px;
-	width: 320px;
-
-	position: absolute;
-	top:0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	display: inline-block;
-
-	margin: auto;
 }
 
 .textbox {
@@ -80,17 +117,21 @@ input {
 	height: 100%;
 	left: 0;
 	position: absolute;
-    background-position: center; 
+	background-position: center;
 	top: 0;
-    margin: auto;
+	margin: auto;
 	width: 100%;
 	z-index: -1;
 }
 
-#left-bg{
-    background: url(imgs/left-bg.png) no-repeat 100% center;
+#left-bg {
+	background: url(imgs/left-bg.png) no-repeat 0 center;
 }
 
-#right-bg{
-    background: url(imgs/right-bg.png) no-repeat 0 center;
+#right-bg {
+	background: url(imgs/right-bg.png) no-repeat 100% center;
+}
+
+#spider {
+	background: url(imgs/spider.png) no-repeat 100% 0;
 }

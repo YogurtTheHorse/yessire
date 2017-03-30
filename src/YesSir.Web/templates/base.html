@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  {% block head %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+  <title>{% block title %}{% endblock %} - Yes, Sire</title>
+  {% endblock %}
+  <script>
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      {% for message in messages %}
+        console.log("{{ message }}");
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+  </script>
+</head>
+
+<body>
+  {% block body %}
+  <div class="background" id="left-bg"></div>
+  <div class="background" id="right-bg"></div>
+  <div class="background" id="spider"></div>
+
+  <div class="outer">
+    <div class="content-holder">
+      <div class="content">
+        {% block content %}{% endblock %}
+      </div>
+    </div>
+  </div>
+  {% endblock %}
+</body>
+
+</html>

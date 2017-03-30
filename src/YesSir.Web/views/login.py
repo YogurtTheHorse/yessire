@@ -1,9 +1,7 @@
 from app import app, lm
-from flask import render_template
-from flask_api import status
 from app import app
 from flask import request, redirect, render_template, url_for, flash
-from flask.ext.login import login_user, logout_user, login_required
+from flask_login import login_user, logout_user, login_required
 from forms import LoginForm
 from entities.user import User
 
@@ -11,6 +9,7 @@ from entities.user import User
 @lm.unauthorized_handler
 def login():
     form = LoginForm()
+    error = None
     if request.method == 'POST' and form.validate_on_submit():
         user = app.config['USERS_COLLECTION'].find_one({"_id": form.username.data})
         if user and User.validate_login(user['password'], form.password.data):
@@ -19,9 +18,9 @@ def login():
             flash("Logged in successfully", category='success')
 
             return redirect(request.args.get("next") or url_for("play_page"))
-        flash("Wrong username or password", category='error')
+        error = "Wrong username or password"
 
-    return render_template('login.html', title='login', form=form)
+    return render_template('login.html', title='login', error=error, form=form)
 
 @app.route('/logout')
 @login_required
