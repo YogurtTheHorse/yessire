@@ -53,15 +53,15 @@ namespace YesSir.Backend.Managers {
 					return false;
 				}
 			}
-			
+
 			return false;
 		}
 
-		public static string[] GetArray(string key, string language="full") {
+		public static string[] GetArray(string key, string language = "full") {
 			List<string> res = new List<string>();
 			List<object> s;
 			string[] locals = language == "full" ? GetLocales() : new string[] { language };
-			
+
 			foreach (string l in locals) {
 				if (TryGet(key, l, out s)) {
 					foreach (object ss in s) {

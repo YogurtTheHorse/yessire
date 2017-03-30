@@ -1,0 +1,12 @@
+# Standart debugging model for cool admins
+!yegorf1
+start
+res
+
+
+Построить поле
+tas
+%7500
+Выращивай пшено
+tas
+deb

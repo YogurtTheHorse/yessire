@@ -6,7 +6,10 @@ namespace YesSir.Backend.Entities {
 		EUsableType GetUsableType();
 		bool IsBusy { get; set; }
 		Guid Id { get; set; }
+		Guid[] GetOwners();
+
 		void OnUse();
+		void OnUse(Guid h);
 	}
 	
 	public enum EUsableType {

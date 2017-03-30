@@ -7,6 +7,7 @@ namespace YesSir.Backend.Descriptions {
 	public class BuildingDescription {
 		public string Name;
 		public IDependency[] Dependencies;
+		public int Size = 1;
 
 		public string[] GetAcceptableNames(string language="full") {
 			return Locale.GetArray("buildings." + Name + ".names", language);
@@ -14,7 +15,8 @@ namespace YesSir.Backend.Descriptions {
 
 		public Building CreateBuilding() {
 			return new Building() {
-				Name = Name
+				Name = Name,
+				AvaibalePlace = Size
 			};
 		}
 

@@ -38,7 +38,8 @@ commands:
     - "отправь"
     - "отошли"
     no_kingdom: "Мы таких королевств не знаем"
-    recieved: "{0} из Королевства {1} прислал вам сообщение:\n{2}"
+    recieved: "{0} из {1} прислал вам сообщение:\n{2}"
+    empty_answer: "Ответа не пооследовало, Сир"
   create:
     list:
     - "Создай"
@@ -51,6 +52,13 @@ commands:
     list:
     - "выращивай"
     - "вырасти"
+    no_field: "Нужно свободное поле"
+  execute:
+    list:
+    - "казнить"
+    - "убить"
+    - "умертвить"
+    no_human: "Нужна жертва, Сир"
 jobs:
   no_job: "Кого нанять-то?"
   peasant:
@@ -77,6 +85,7 @@ jobs:
     name: "Строитель"
     names:
     - "строитель"
+    - "строителя"
     miss: "Нужен строитель"
   ambassador:
     name: "Посол"
@@ -216,6 +225,7 @@ resources:
     miss: "Нет зерна"
   millet:
     name: "Пшено"
+    growed: "Пшено выращено"
     names:
     - "пшено"
     miss: "Нужно пшено"
@@ -229,7 +239,7 @@ resources:
     names:
     - "ведро воды"
     - "ведро с водой"
-    miss: "Нужна вода"
+    miss: "Нужно ведро с водой"
   fish:
     name: "Рыба"
     names:
@@ -256,9 +266,11 @@ status:
   building: "Строит {0}"
   creating: "Создает {0}"
   extracting: "Добывает {0}"
-  sendingmessage: "Отправляет сообщение"
+  sendingmessage: "Отправляет сообщение в {0}"
+  waiting: "Ожидает"
 answers:
   yes: "Да, Сир"
+  write_message: "Что писать, Сир?"
 problems:
   no_people: "Все заняты, Милорд"
   dont_work: "{0} отказался работать."

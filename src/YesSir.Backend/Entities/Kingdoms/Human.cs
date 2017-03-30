@@ -23,15 +23,18 @@ namespace YesSir.Backend.Entities.Kingdoms {
 		public Dictionary<string, float> Skills;
 		public bool Died = false;
 
+		public Dictionary<Guid, float> FriendShips;
+
 		public bool IsInDepression = false;
 
 
 		public Human() {
 			Skills = new Dictionary<string, float>();
+			FriendShips = new Dictionary<Guid, float>();
+			TasksToDo = new List<HumanTask>();
 		}
 
 		public Human(string name, ESex sex, float age) : this() {
-			TasksToDo = new List<HumanTask>();
 			Name = name;
 			Sex = sex;
 			Age = age;
@@ -60,8 +63,10 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			Skills[name] = skill;
 		}
 
-		public void Worked(float delta, float difficulty) {
+		public bool Worked(float delta, float difficulty) {
 			Satiety -= delta * difficulty / 10f;
+
+			return true;
 		}
 
 		public string GetName(string language) {
@@ -83,17 +88,38 @@ namespace YesSir.Backend.Entities.Kingdoms {
 
 					case ETask.SendingMessage:
 						string kingdom_name = KingdomsManager.FindKingdom(Guid.Parse(TasksToDo[0].Destination)).Name;
-						return string.Format(Locale.Get("status.sennding_message", language), kingdom_name);
+						return string.Format(Locale.Get("status.sending_message", language), kingdom_name);
 
 					default:
-						return "-";
+						return Locale.Get("status." + TasksToDo[0].ToString().ToLower(), language);
 				}
 			}
 		}
 
-		private string GetJobName(string language) {
-			string bestat = Skills.Aggregate((first, second) => first.Value > second.Value ? first : second).Key;
-			return ContentManager.GetJobBySkill(bestat, language);
+		public float GetDefaultFriendhsip() {
+			if (FriendShips.Count > 0) {
+				float s = 0;
+				{
+					var ar = FriendShips.ToArray();
+					for (int i = 0; i < ar.Length; i++) {
+						s += ar[i].Value;
+					}
+
+					return s / ar.Length;
+				}
+			} else {
+				return 0.1f;
+			}
+		}
+
+		public float GetFriendShip(Human h) {
+			return FriendShips.ContainsKey(h.HumanId) ? FriendShips[h.HumanId] : GetDefaultFriendhsip();
+		}
+
+		public string GetJobName(string language) {
+			var skills = Skills.OrderBy(p => -p.Value);
+
+			return ContentManager.GetJobBySkill(skills.First(s => ContentManager.IsJobSkill(s.Key)).Key, language);
 		}
 
 		public bool Eat(Kingdom kingdom) {
@@ -106,6 +132,13 @@ namespace YesSir.Backend.Entities.Kingdoms {
 			}
 
 			return false;
+		}
+
+		public void UpdateFriendship(Guid h, float k=1) {
+			float f = FriendShips[h] + k / 100;
+			if (f > 0 && f < 1) {
+				FriendShips[h] = f;
+			}
 		}
 	}
 

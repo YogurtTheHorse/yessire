@@ -19,6 +19,8 @@ namespace YesSir.Backend.Commands.Parts {
 			}
 		};
 
+		public static readonly CommandPart Fill = new CommandPart("_", (s) => new Tuple<bool, int>(true, s.Length), (s) => null);
+
 		public static object ParseInt(string arg) {
 			return int.Parse(arg);
 		}

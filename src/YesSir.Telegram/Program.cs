@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 using YesSir.Shared;
@@ -6,7 +7,7 @@ using YesSir.Shared.Queues;
 
 namespace YesSir.Telegram {
 	class Program {
-		private static readonly TelegramBotClient Bot = new TelegramBotClient("275248602:AAElsfmV4NBoorQzHovyuLOiC2_GCNdcAio");
+		private static readonly TelegramBotClient Bot = new TelegramBotClient("317796681:AAFyKFi8Rs6rjZ9C5itvjs4tLLwrXrfX0eY");
 
 		public static void Main(string[] args) {
 			Bot.OnMessage += BotOnMessageReceived;

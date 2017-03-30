@@ -8,14 +8,25 @@ using YesSir.Backend.Entities;
 
 namespace YesSir.Backend.Managers {
 	public static class KingdomsManager {
+		private static HashSet<Guid> Saved;
 		private static List<Kingdom> Kingdoms;
+		private static List<Human> HumansOnJourney;
 		private static float TimeToSave;
+		private static long Time;
+
 		private const float TIME_TO_SAVE = 30;
-		private static Tuple<string, Guid> select;
 
 		public static void Init() {
+			Saved = new HashSet<Guid>();
 			Kingdoms = DatabaseManager.Kingdoms.Find(_ => true).ToList();
+			HumansOnJourney = DatabaseManager.HumansOnJourney.Find(_ => true).ToList();
 			TimeToSave = TIME_TO_SAVE;
+
+			Kingdoms.ForEach(k => Saved.Add(k.UserId));
+			HumansOnJourney.ForEach(h => Saved.Add(h.HumanId));
+
+
+//			Time = 
 		}
 
 		public static Kingdom FindKingdom(UserInfo userinfo) {
@@ -27,11 +38,11 @@ namespace YesSir.Backend.Managers {
 		}
 
 		public static void SaveKingdom(Kingdom kingdom) {
-			var cursor = DatabaseManager.Kingdoms.Find(k => k.UserId == kingdom.UserId);
-			if (cursor.Count() == 0) {
-				DatabaseManager.Kingdoms.InsertOneAsync(kingdom);
-			} else {
+			if (Saved.Contains(kingdom.UserId)) {
 				DatabaseManager.Kingdoms.ReplaceOneAsync(k => k.UserId == kingdom.UserId, kingdom);
+			} else {
+				Saved.Add(kingdom.UserId);
+				DatabaseManager.Kingdoms.InsertOneAsync(kingdom);
 			}
 		}
 
@@ -59,11 +70,9 @@ namespace YesSir.Backend.Managers {
 		}
 
 		public static string CreateKingdom(UserInfo ui) {
-			Kingdom kingdom = ScriptManager.DoFile("Scripts/new_kingdom.lua").ToObject() as Kingdom;
-			kingdom.UserId = ui.Id;
-			kingdom.Language = ui.Language;
-			kingdom.GenerateName();
+			Kingdom kingdom = ScriptManager.DoFile("Scripts/new_kingdom.lua", new Kingdom(ui)).ToObject() as Kingdom;
 
+			// TODO: Optimize
 			Kingdoms.RemoveAll(k => k.UserId == ui.Id);
 			Kingdoms.Add(kingdom);
 			SaveKingdom(kingdom);
@@ -83,25 +92,83 @@ namespace YesSir.Backend.Managers {
 		}
 
 		public static void UpdateKingdoms(int deltatime) {
+			Dictionary<Human, Guid> humansToAdd = new Dictionary<Human, Guid>();
+
+
+			for (int i = HumansOnJourney.Count - 1; i >= 0; i--) {
+				Human h = HumansOnJourney[i];
+				HumanTask t = h.TasksToDo[0];
+
+				t.TimeLeft -= deltatime;
+				if (t.TimeLeft <= 0) {
+					Guid k_id = Guid.Parse(t.Destination);
+					h.TasksToDo.RemoveAt(0);
+
+					humansToAdd.Add(h, k_id);
+					HumansOnJourney.RemoveAt(i);
+
+					Saved.Remove(h.HumanId);
+					DatabaseManager.HumansOnJourney.DeleteOneAsync(hh => h.HumanId == hh.HumanId);
+
+					MessageSent(h, k_id, t.Context as string);
+				}
+			}
 			foreach (Kingdom k in Kingdoms) {
+				if (humansToAdd.ContainsValue(k.UserId)) {
+					foreach (var kv in humansToAdd) {
+						if (kv.Value == k.UserId) {
+							k.Humans.Add(kv.Key);
+						}
+					}
+				}
 				MessageCallback[] msgs = k.Update((deltatime / 1000f) / k.GetDayTime());
 				foreach (MessageCallback msg in msgs) {
 					UsersManager.Send(k.UserId, msg);
 				}
 			}
+
 			TimeToSave -= deltatime / 1000f;
 			if (TimeToSave < 0) {
 				TimeToSave = TIME_TO_SAVE;
 				foreach (Kingdom k in Kingdoms) {
 					SaveKingdom(k);
 				}
+				foreach (Human h in HumansOnJourney) {
+					if (Saved.Contains(h.HumanId)) {
+						DatabaseManager.HumansOnJourney.ReplaceOneAsync(hh => h.HumanId == hh.HumanId, h);
+					} else {
+						Saved.Add(h.HumanId);
+						DatabaseManager.HumansOnJourney.InsertOneAsync(h);
+					}
+				}
 			}
-		 }
+		}
 
-		public static void SendMessage(Human ambassador, Guid destination, string msg) {
+		public static void MessageSent(Human ambassador, Guid destination, string msg) {
 			Kingdom k = FindKingdom(destination);
+
+			HumanTask gettingBackTask = new HumanTask(ambassador) {
+				TaskType = ETask.SendingMessage,
+				Destination = k.UserId.ToString(),
+				Context = Locale.Get("commands.send.empty_answer", k.Language)
+			};
+			gettingBackTask.CalculateTaskTime(ambassador);
+
+			ambassador.TasksToDo.AddRange(new[] {
+				new HumanTask(ambassador) {
+					TaskType = ETask.Waiting,
+					TimeLeft = 3
+				},
+				gettingBackTask
+			});
+
 			msg = string.Format(Locale.Get("commands.send.recieved", k.Language), ambassador.GetName(k.Language), k.Name, msg);
 			UsersManager.Send(destination, new MessageCallback(msg));
+		}
+
+		public static void OnJorney(Human human, Kingdom kingdom) {
+			HumansOnJourney.Add(human);
+			kingdom.Humans.Remove(human);
 		}
 	}
 }

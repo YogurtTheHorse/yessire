@@ -124,6 +124,13 @@ namespace YesSir.Backend.Managers {
 					new CommandPart[] { kingdomPart, new CommandPart() }
 				), (k, dict) => SendMessage(k, dict)
 			));
+
+			Commands.Add(new Command(
+				new IDependency[] { new HumanDependency() },
+				new CommandPart(Locale.GetArray("commands.execute.list"),
+					new CommandPart[] { CommandsStandartFunctions.Fill }
+				), (k, dict) => k.Kill(dict)
+			));
 #if DEBUG
 			LoadDebugCommands();
 #endif
@@ -145,7 +152,11 @@ namespace YesSir.Backend.Managers {
 			}));
 
 			Commands.Add(new Command(new IDependency[] { }, new CommandPart(new string[] { "res" }), (k, d) => {
-				string msg = string.Join("\n", k.Resources.Select(r => r.Key + ": " + r.Value.Count));
+				Dictionary<string, int> calc = new Dictionary<string, int>();
+				foreach (var kv in k.Resources) {
+					calc[kv.Key] = k.GetResourcesCount(kv.Key);
+				}
+				string msg = string.Join("\n", calc.Select(r => r.Key + ": " + (r.Value)));
 
 				return new ExecutionResult(new MessageCallback(msg, ECharacter.Admin));
 			}));
@@ -242,7 +253,7 @@ namespace YesSir.Backend.Managers {
 			int index;
 			for (index = 0; index < k.Humans.Count && k.Humans[index].HumanId != hid; ++index) ;
 
-			if (k.Humans[index].AddTask(new HumanTask() { Destination = dest, TaskType = ETask.ListeningKing })) {
+			if (k.Humans[index].AddTask(new HumanTask(k.Humans[index]) { Destination = dest, TaskType = ETask.ListeningKing })) {
 				k.Humans[index].TasksToDo.Last().CalculateTaskTime(k.Humans[index], 1, "dyplomacy");
 				k.Temp = k.Humans[index].HumanId.ToString();
 
@@ -268,8 +279,6 @@ namespace YesSir.Backend.Managers {
 					break;
 				}
 			}
-			
-			if (h == null) { }
 
 			int i;
 			for (i = 0; i < h.TasksToDo.Count; ++i) {
@@ -283,6 +292,7 @@ namespace YesSir.Backend.Managers {
 			h.TasksToDo[i].CalculateTaskTime(h);
 
 			UpdateState(message.UserInfo, EState.Main);
+			KingdomsManager.OnJorney(h, kingdom);
 
 			return new MessageCallback(Locale.Get("answers.yes", kingdom.Language));
 		}

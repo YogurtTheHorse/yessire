@@ -10,11 +10,18 @@ namespace YesSir.Backend.Entities {
 		public string Destination;
 		public ETask TaskType;
 		public float TimeLeft; // In days
+		public Guid HumanId;
 
 		public object Context;
 
 		public float Difficulty;
 		public string Skill;
+
+		public HumanTask(Guid hid) {
+			HumanId = hid;
+		}
+
+		public HumanTask(Human h) : this(h.HumanId) { }
 
 		public void CalculateTaskTime(Human h, float difficulty = 1f, string skill = null) {
 			this.Difficulty = difficulty;
@@ -42,13 +49,14 @@ namespace YesSir.Backend.Entities {
 					break;
 
 				case ETask.SendingMessage:
+					Skill = skill ?? "diplomacy";
 					float dist = KingdomsManager.Distance(h.KingdomId, Guid.Parse(Destination));
-					TimeLeft = dist / (60 * 24);
+					TimeLeft = dist / 60;
 					break;
 
 				default:
 					Skill = skill;
-					TimeLeft = 3;
+					TimeLeft = 1;
 					break;
 			}
 
@@ -58,7 +66,7 @@ namespace YesSir.Backend.Entities {
 		public void Use(IUsable usable) {
 			if (usable != null) {
 				InUse.Add(usable);
-				usable.OnUse();
+				usable.OnUse(HumanId);
 				usable.IsBusy = true;
 			}
 		}

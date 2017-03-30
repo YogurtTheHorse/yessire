@@ -7,6 +7,7 @@
 		Creating = 4,
 		ListeningKing = 5,
 		SendingMessage = 6,
+		Waiting = 7,
 
 		Other = 1000
 	}
